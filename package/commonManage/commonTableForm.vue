@@ -9,19 +9,21 @@
                :loading-config="{ icon: 'vxe-icon-indicator roll', text: '正在拼命加载中...' }"
                class="mytable-style" :data="tableData">
       <vxe-column v-for="(item, index) in formData" :key="index" sortable :fixed="index < 3 ? 'left':  null" :field="item.name" :title="item.text" :style="item.style" :class="item.class" :width="item.width">
+        <template #header>
+         <span>{{item.fun ? item.fun(formState) : item.text}}</span>
+        </template>
         <template #default="{ row }">
-
           <span v-if="item.type == 'text'">{{ row[item.name] }}</span>
           <span v-else-if="item.type == 'diy'">{{ item.fun(row) }}</span>
           <span :style="item.fun(row).style" v-else-if="item.type == 'diyStyle'">{{ item.fun(row).text }}</span>
           <span v-else-if="item.type == 'select'">
                     <span v-if="item.option">{{
-                        valueToName(item.option, row[item.name], 'value', 'name')
+                        $valueToName(item.option, row[item.name], 'value', 'name')
                       }}</span>
                     <span v-else>{{ row[item.name] }}</span>
                   </span>
           <span v-else-if="item.type == 'h'">
-              <div v-render="item.h(row, item)">
+              <div v-render="item.h(row, this)">
               </div>
           </span>
         </template>
@@ -50,14 +52,8 @@
 </template>
 
 <script setup lang="ts">
- import {useTableGetData} from "../hooks/crud";
- import { defineComponent, getCurrentInstance, onMounted, reactive, ref, render, h} from 'vue';
- import {getOptionList, setObjToUrlParams, valueToName} from "../utils";
- import {isNumber} from "../utils/is";
- import {Api} from "../hooks/crud/api";
-
-
- const { proxy } = getCurrentInstance();
+ import {useTableGetData} from "/@/hooks/crud";
+ import {render,h, ref, onMounted} from "vue";
  const props = defineProps({
    formData: {type: Object},
    loading: {type: Boolean},
@@ -83,14 +79,8 @@
 
 
  const  vRender =  {
-   beforeUpdate: async (el, ctx) => {
- },
-   mounted: async (el, ctx) => {
-     render(await ctx.value, el)
- },
    updated: async (el, ctx) => {
-
-
+     render(await ctx.value, el)
  },
  }
 
@@ -103,11 +93,6 @@ function getData(ev = 1) {
      }, 0);
    }
  }
-
-
-
-
-
  defineExpose({getData})
 
 
@@ -118,13 +103,11 @@ function getData(ev = 1) {
 
 
 </script>
-
 <script lang="ts">
 export default {
-  name: "commonTableForm"
-}
+  name: 'commonTableForm',
+};
 </script>
-
 <style  lang="less">
 .vxeTableData {
   .headerCellClassName {

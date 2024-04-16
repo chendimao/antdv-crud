@@ -5,7 +5,7 @@
         <a-col :span="item.span" >
           <a-form-item :label="item.text" :name="item.name" :label-col="item.labelCol" :wrapper-col="item.wrapperCol"
             v-bind="validateInfos[item.name]">
-            <InputItem v-model:value="formState[item.name]" :isDisabled="isDisabled" :form-state="formState"
+            <InputItem v-model:value="formState[item.name]"  :isDisabled="isDisabled" :form-state="formState"
               @change="inputChange" :item="item" />
 
           </a-form-item>
@@ -23,10 +23,9 @@
 </template>
 
 <script lang="ts" setup name="formInputItem">
-import {reactive, defineProps, onMounted, watch, getCurrentInstance} from "vue";
-import InputItem from '/@/components/InputItem';
+import {reactive, defineProps, watch, getCurrentInstance} from "vue";
+import InputItem from  '../../InputItem';
 import { Form } from "ant-design-vue";
-import { baseRow, fieldRow } from "/@/views/baseManage/model";
 import { onUpdated, ref } from "@vue/runtime-core";
 
 const { proxy } = getCurrentInstance();

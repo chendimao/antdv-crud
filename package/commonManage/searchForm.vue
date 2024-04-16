@@ -42,14 +42,21 @@
 </template>
 
 <script lang="ts" setup>
-import {getCurrentInstance, onMounted, ref, useSlots} from "vue";
+import {getCurrentInstance, onMounted, ref, useSlots, watch} from "vue";
 import FormInputItem from '/@/commonManage/FormInputItem/';
 import {PlusOutlined, SearchOutlined, UndoOutlined} from "@ant-design/icons-vue";
 const { proxy } = getCurrentInstance();
 defineExpose({
   submit
 })
-
+onMounted(() => {
+  params.value = props.formState;
+  const slots = useSlots();
+  if (slots && slots.default) {
+    mySlot.value = slots.default()[0]?.props;
+  }
+  console.log(mySlot.value);
+})
 const emit = defineEmits(['update:form-state', 'search']);
 const mySlot = ref();
 const props = defineProps({
@@ -64,14 +71,7 @@ const props = defineProps({
 
 const params = ref({});
 const searchFormRef = ref();
-onMounted(() => {
-  params.value = props.formState;
-  const slots = useSlots();
-  if (slots && slots.default) {
-    mySlot.value = slots.default()[0]?.props;
-  }
-  console.log(mySlot.value);
-})
+
 
 
 

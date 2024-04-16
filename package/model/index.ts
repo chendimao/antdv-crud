@@ -9,7 +9,7 @@ interface uploadFieldModel{
   type: string,
   field: object,
   params?: object
-  maxCount?: string|number, // 上传最大数量
+  maxCount?: string|number|undefined|null, // 上传最大数量
 }
 
 export interface tableFormModel{
@@ -49,11 +49,15 @@ export interface inputFormModel {
   initFun?: Function, // 初始化自定义方法
   dynamicParams?: dynamicParamsModel,
   uploadField?: uploadFieldModel,
+  afterSpan?: string,
+  afterText?: string,
+  $attrs?: object,// 表单原生属性
   show?: boolean, // 是否显示
   disabled?: boolean, // 是否禁用
   rows?: number, // type为textarea时 行数
   placeholder?: string, // 占位符
   accept?: string, // type为upload时 接受上传的文件类型
+  slots?: object,
   h?: Function, //自定义h函数
 }
 

@@ -1,7 +1,30 @@
-
+import {h} from 'vue';
 // 查询表单
 const searchForm = [
-  {text: '单位名称', type: 'text', name: 'unitName', span: 5,  style: 'min-width: 260px;', labelCol: {style: {width: '90px'}}, class: '',    },
+  {text: '单位名称',
+    type: 'text',
+    name: 'unitName',
+    span: 5,
+    style: 'min-width: 260px;',
+    labelCol: {style: {width: '90px'}},
+    class: '',
+    $attrs: {
+      defaultValue: 'test'
+    },
+
+  }, {text: '日期',
+    type: 'date',
+    name: 'date',
+    span: 5,
+    style: 'min-width: 260px;',
+    labelCol: {style: {width: '90px'}},
+    class: '',
+    $attrs: {
+      bordered: false,
+      defaultValue: '2024-04-16'
+    },
+
+  },
 ];
 
 

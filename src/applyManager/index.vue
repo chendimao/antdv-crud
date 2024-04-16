@@ -20,6 +20,11 @@
         >
         <!-- </a-space> -->
       </div>
+
+      <search-form ref="searchRef" :search-form="searchData.searchForm" v-model:form-state="query"
+                   :form-validate="searchData.validate" :reset-form="resetForm" @search="handleSearch">
+
+      </search-form>
     </template>
     <a-row>
       <a-col :span="24">
@@ -60,6 +65,7 @@
   import { defineComponent, getCurrentInstance, onMounted, reactive, ref } from 'vue';
 
   import retireData from './data/retire.data';
+  import searchData from './data/retire.search';
   import {
     PlusOutlined,
 
@@ -81,7 +87,7 @@
   const addVisible = ref(false);
   const roleData = ref([]);
   const loading = ref(false);
-  const query = ref({ limit: 10, page: 1, userId: '006' });
+  const query = ref({ limit: 10, page: 1, userId: '006', type: 0 });
   const type = ref('insert');
   const recordInfo = ref();
   const resetForm = ref();

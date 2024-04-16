@@ -144,3 +144,9 @@ export const getOptionList = async (curItem) => {
     }
   });
 };
+
+export default {
+  valueToName,
+  getOptionList
+
+}
