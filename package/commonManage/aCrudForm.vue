@@ -74,6 +74,7 @@
     ref,
     toRaw,
     watch,
+    defineProps
   } from 'vue';
   import { Form, message } from 'ant-design-vue';
   import FormInputItem from './FormInputItem/';
@@ -239,7 +240,7 @@
 </script>
 <script lang="ts">
   export default {
-    name: 'commonAddForm',
+    name: 'aCrudForm',
   };
 </script>
 <style lang="less">

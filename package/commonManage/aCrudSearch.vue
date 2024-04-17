@@ -42,8 +42,8 @@
 </template>
 
 <script lang="ts" setup>
-import {getCurrentInstance, onMounted, ref, useSlots, watch} from "vue";
-import FormInputItem from '/@/commonManage/FormInputItem/';
+import {getCurrentInstance, onMounted, ref, useSlots, defineProps,watch} from "vue";
+import FormInputItem from './FormInputItem/';
 import {PlusOutlined, SearchOutlined, UndoOutlined} from "@ant-design/icons-vue";
 const { proxy } = getCurrentInstance();
 defineExpose({
@@ -106,7 +106,7 @@ function handleResetForm() {
 
 <script lang="ts">
 export default {
-  name: "searchForm"
+  name: "aCrudSearch"
 }
 </script>
 

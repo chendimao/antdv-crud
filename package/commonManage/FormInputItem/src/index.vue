@@ -61,7 +61,6 @@ defineExpose({
 })
 
 watch(() => props.visible, (data) => {
-  console.log(data);
   if (data) {
     // 运行item初始化方法
     Data.value.forEach(item => {

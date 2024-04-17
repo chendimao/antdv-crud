@@ -1,6 +1,6 @@
 {
   "name": "antdv-crud",
-  "version": "0.0.1",
+  "version": "0.0.11",
   "type": "module",
   "files": [
     "dist/*",
@@ -17,19 +17,19 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "vue": "3.2.31"
+    "vue": "^3.2.31"
   },
   "devDependencies": {
     "@ant-design/colors": "^7.0.2",
     "@ant-design/icons-vue": "^7.0.1",
-    "@vitejs/plugin-vue": "2.3.1",
+    "@vitejs/plugin-vue": "^2.3.1",
     "ant-design-vue": "3.1.1",
     "axios": "^1.6.8",
     "dayjs": "^1.11.10",
     "less": "^4.2.0",
     "lodash-es": "^4.17.21",
     "qs": "^6.12.0",
-    "vite": "2.9.1",
+    "vite": ">=2.9.1",
     "vxe-table": "^4.5.21"
   }
 }

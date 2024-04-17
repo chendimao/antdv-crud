@@ -64,7 +64,7 @@ export interface inputFormModel {
 //computedFun model
 export interface computedFun {
   type: 'function' | 'option',
-  api?: string, // api字段，定义在function文件夹下面
+  api?: Function, // api字段，定义在function文件夹下面
   relationField?: string[], // 接口返回数组映射字段
   params?: object, // 接口请求携带参数
   fun?: Function, // type为function时的自定义方法

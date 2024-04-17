@@ -34,6 +34,7 @@
                                 v-model:value="inputValue" :rows="item.rows" />
                 </template>
                 <template v-else-if="item.type == 'select'">
+
                   <a-select
                       v-bind="item.$attrs"
                       size="default"
@@ -182,6 +183,7 @@ import {
   ref,
   computed,
   onMounted,
+  defineProps,
   getCurrentInstance,
   onUnmounted
 } from "vue";
@@ -221,7 +223,7 @@ watch(() => props.item, async (data) => {
         if(item.dynamicParams) {
           params = {...item.dynamicParams(props.formState)};
         }
-        inputItem.value.option = await getOptionList({proxy, ...item});
+        inputItem.value.option = await getOptionList(item.api, item.params, item.relationField, item.childrenField);
       } else if (item.type == 'function') {
 
       }
@@ -433,6 +435,10 @@ function handleTableSelectChange(ev,op,  re) {
 
 <style scoped lang="less">
 :deep(.ant-input[disabled]), :deep(.ant-picker-input > input[disabled]), :deep(span.ant-select-selection-item) {
+  color:#000;
+}
+
+:deep(.ant-select-multiple .ant-select-selection-item-content) {
   color:#000;
 }
 

@@ -93,7 +93,7 @@ h: \(data, that\) => \{
 
 #### 新增查看编辑页面
 
-commonManage/commonAddForm\.vue
+commonManage/aCrudForm\.vue
 
 主要参数：
 

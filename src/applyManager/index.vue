@@ -21,15 +21,15 @@
         <!-- </a-space> -->
       </div>
 
-      <search-form ref="searchRef" :search-form="searchData.searchForm" v-model:form-state="query"
+      <a-crud-search ref="searchRef" :search-form="searchData.searchForm" v-model:form-state="query"
                    :form-validate="searchData.validate" :reset-form="resetForm" @search="handleSearch">
 
-      </search-form>
+      </a-crud-search>
     </template>
     <a-row>
       <a-col :span="24">
         <div class="mr-0 overflow-hidden bg-white vben-basic-table vben-basic-table-form-container">
-          <common-table-form
+          <a-crud-table
             ref="tableRef"
             v-if="currentPage"
             :form-data="currentPage.tableForm"
@@ -41,13 +41,13 @@
               <a-button @click="handleShow('show', row)">查看</a-button>
 
             </template>
-          </common-table-form>
+          </a-crud-table>
         </div>
       </a-col>
     </a-row>
   </a-card>
   <div>
-    <commonAddForm
+    <a-crud-form
       v-if="currentPage"
       v-model:add-visible="addVisible"
       :row="currentRow"
@@ -87,7 +87,7 @@
   const addVisible = ref(false);
   const roleData = ref([]);
   const loading = ref(false);
-  const query = ref({ limit: 10, page: 1, userId: '006', type: 0 });
+  const query = ref({"szks":"","name":"","professionalTitlesName":"","limit":10,"page":1,"state":"","totalResult":0,"checked":""});
   const type = ref('insert');
   const recordInfo = ref();
   const resetForm = ref();

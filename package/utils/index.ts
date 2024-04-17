@@ -1,8 +1,9 @@
 import type { App, Plugin } from 'vue';
 
 import { unref } from 'vue';
-import { isObject } from '/@/utils/is';
+import { isObject } from './is';
 import {isNumber} from "./is";
+import {useGetTable} from "../hooks/useTable";
 
 export const noop = () => {};
 
@@ -94,35 +95,12 @@ export const valueToName = (arr, value , targetKey, returnKey) => {
  * @param api 请求接口
  * @param params 请求参数
  * @param relationField 映射关联字段
- * @param request 请求类型
- * @param paramsType 请求参数类型
+ * @param childrenField 树结构列表参数
  */
 
-export const getOptionList = async (curItem) => {
-  const { proxy, api, params = {}, relationField, request = 'post', paramsType, childrenField } = curItem;
-  let requestParamsType = '';
-  if (paramsType === '') {
-    request == 'get' ? requestParamsType = 'query' : requestParamsType = 'body';
-  } else {
-    requestParamsType = paramsType;
-  }
-  const requestData = requestParamsType == 'query' ? { url: `${setObjToUrlParams(api, params)}` } : { url: `${api}`, params };
-
-  const res: any = await proxy.$http[request](requestData);
-
-  console.log(res);
-  let data = [];
-  if (res.data.length > 0) {
-    data = res.data;
-  } else if (res?.data?.content?.length > 0) {
-    data = res?.data?.content;
-  } else if (res?.data?.data?.length > 0) {
-    data = res?.data.data;
-  } else if (res?.data?.data?.content?.length > 0) {
-    data = res.data.data.content;
-  } else {
-    data = [];
-  }
+export const getOptionList = async (api, params, relationField, childrenField = {field: 'children', name: 'name', value: 'value'}) => {
+  console.log(api);
+  const { data } = await useGetTable(api, params);
   return data.map((item) => {
     const returnValue = {};
     if (relationField) {

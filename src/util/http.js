@@ -28,7 +28,7 @@ _axios.interceptors.request.use(
 
 // /* 请求之后的操作 */
 _axios.interceptors.response.use((res) => {
-        console.log(res)
+
         // 在这里关闭请求时的loading动画效果
         // 这里用于处理返回的结果，比如如果是返回401无权限，可能会是跳回到登录页的操作，结合自己的业务逻辑写
         // 一定结合自己的后端的返回代码进行操作

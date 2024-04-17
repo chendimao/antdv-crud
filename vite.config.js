@@ -8,6 +8,9 @@ function pathResolve(dir) {
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [vue()],
+  esbuild: {
+    drop: ["console", "debugger"],
+  },
   build: {
     rollupOptions: {
       // 请确保外部化那些你的库中不需要的依赖
@@ -21,8 +24,8 @@ export default defineConfig({
     },
     lib: {
       entry: 'package/index.js',
-      name: 'antdv-crud-vue3',
-      fileName: (format) => `antdv-crud-vue3.${format}.js`,
+      name: 'antdv-crud',
+      fileName: (format) => `antdv-crud.${format}.js`,
     },
   },
   resolve: {

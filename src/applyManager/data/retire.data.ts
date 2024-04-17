@@ -1,9 +1,9 @@
 // 用户管理
 import {h} from 'vue';
 import { web_alterationApply_insertOrUpdate, web_alterationApply_getByList, web_archivesManagement_getManagement_details } from '../../api/index';
-import { inputFormModel } from '/@/model';
 import http from '../../util/http';
 import {valueToName} from "../../../package/utils";
+import {web_archivesManagement_getByGb25, web_archivesManagement_getByGb147} from '../../api/index';
 const searchForm = [
   { text: '单位名称', name: 'unitName', type: 'text' },
   // {text: '电话', name: 'phone', type: 'text' },
@@ -47,8 +47,16 @@ const getState = (row) => {
 
 const tableForm = [
   {
+    text: '序号',
+    type: 'seq',
+    $attrs: { width: '100',fixed: 'left', sortable: true},
+    style: '',
+    class: '',
+    labelCol: { style: { width: '130px' } },
+  },{
     text: '一卡通号',
     type: 'text',
+    $attrs: {fixed: 'left', sortable: true},
     name: 'userId',
     width: '100',
     style: '',
@@ -59,15 +67,14 @@ const tableForm = [
     text: '科室名称',
     type: 'h',
     width: '150',
-    name: 'szksName',
+    name: 'szks',
     h: async (data, item) => {
       const colorArr = { 4: 'green', 5: 'red', 7: 'green', 8: 'red', }
       if (!item.option) {
-        console.log(item.text, item.option);
         const res =  await http.post({url: '/web/archivesManagement/getByGb25', params: {}});
         item.option = res.data;
       }
-      return h('span', { style: { color: colorArr[5] ?? '' }, innerHTML: valueToName(item.option, '001', 'dmmc', 'dmmc') })
+      return h('span', { style: { color: colorArr[5] ?? '' }, innerHTML: valueToName(item.option, data.szks, 'dm', 'dmmc') })
     },
     labelCol: { style: { width: '130px' } },
     class: '',
@@ -143,13 +150,14 @@ const tableForm = [
 ];
 // 新增时显示字段
 
-const base: inputFormModel[] = [
+const base = [
   {
     text: '科室名称',
     type: 'select',
     name: 'szksName',
+    $attrs: {multiple: true},
     computedFun: [
-      { type: 'option', api: '/web/archivesManagement/getByGb25', relationField: ['dmmc', 'dm'] },
+      { type: 'option', api: web_archivesManagement_getByGb25, relationField: ['dmmc', 'dm'] },
     ],
     span: 8,
     labelCol: { style: { width: '100px' } },
@@ -179,7 +187,7 @@ const base: inputFormModel[] = [
     type: 'origin',
     name: 'personnelCategoryName',
     computedFun: [
-      { type: 'option', api: '/web/archivesManagement/getByGb147', relationField: ['dmmc', 'dmmc'] },
+      { type: 'option', api: web_archivesManagement_getByGb147, relationField: ['dmmc', 'dmmc'] },
     ],
     span: 8,
     labelCol: { style: { width: '100px' } },
