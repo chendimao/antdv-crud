@@ -18,12 +18,14 @@ app.use(antdCrud);
 
 #### 搜索组件
 
+```
 <a-crud-table
 ref="tableRef"
 :form-data="tableFormData"
 :api="web_alterationApply_getByList"
 :formState="searchQuery"
 />
+```
  
 
 主要参数：
@@ -39,14 +41,14 @@ form\-state：双向绑定数据
 具体格式参考record\.search\.ts
 
 #### 列表页面
-
+```
 <a-crud-table
 ref="tableRef"
 :form-data="tableFormData"
 :api="web_alterationApply_getByList"
 :formState="searchQuery"
  />
- 
+ ```
 
 主要参数：
 
@@ -114,7 +116,7 @@ h: \(data, that\) => \{
       \}\)\},
 
 #### 新增查看编辑页面
-
+```
 <a-crud-form
 v-if="currentPage"
 v-model:add-visible="addVisible"
@@ -126,7 +128,7 @@ height="350px"
 @refreshList="getData"
 :currentPageData="currentPage"
 />
-
+```
 主要参数：
 
 add\-visible控制弹窗显示隐藏
