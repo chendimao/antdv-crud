@@ -9,7 +9,7 @@
                :loading-config="{ icon: 'vxe-icon-indicator roll', text: '正在拼命加载中...' }"
                class="mytable-style" :data="tableData">
 
-          <template v-for="(item, index) in formData" :key="index" >
+          <template v-for="(item, index) in formData.values()" :key="index" >
             <vxe-column v-if="item.type === 'seq'" :sortable="tableConfig.sortable??true" v-bind="item.$attrs" :type="'seq'" :title="item.text"></vxe-column>
             <vxe-column v-else-if="item.type === 'checkbox'" :sortable="tableConfig.sortable??true" v-bind="item.$attrs" :type="'checkbox'"></vxe-column>
             <vxe-column v-else-if="item.type === 'radio'" :sortable="tableConfig.sortable??true" v-bind="item.$attrs" :type="'radio'"></vxe-column>
@@ -38,7 +38,7 @@
           </template>
 
 
-      <vxe-column field="a" title="操作" fixed="right" v-if="isOp"  :min-width="'200px'" >
+      <vxe-column field="a" title="操作" fixed="right" v-if="isOp"  min-width="200" >
         <template #default="{ row }">
 
           <slot :row="row"></slot>
@@ -46,7 +46,7 @@
       </vxe-column>
     </vxe-table>
 
-    <div class="text-right p-2">
+    <div style="text-align: right;padding: 10px;"   v-if="isPagination">
       <a-pagination
         :hideOnSinglePage="true"
         :showSizeChanger="false"
@@ -64,6 +64,10 @@
 <script setup lang="ts">
 import {useGetTable} from "../hooks/useTable";
  import {render,h, ref, onMounted, defineProps} from "vue";
+
+
+ const emits = defineEmits(['update:formState']);
+
  const props = defineProps({
    formData: {type: Object},
    loading: {type: Boolean},
@@ -71,18 +75,20 @@ import {useGetTable} from "../hooks/useTable";
    size: {type: String, default: 'mini'},
    resetForm: {type: Object},
    api: {type: Function},
+   dataCallback: {},
+   immediate: {type: Boolean, default: true},
+   isPagination: {type: Boolean, default: true},
    tableConfig: {type: Object ,default: () => ({})},
    paginationConfig: {type: Object ,default: () => ({})},
    formState: {type: Object},
  });
-
  const tableTotal = ref(0);
  const tableLoading = ref(false);
  const tableData = ref([]);
  const xTable = ref();
 
  onMounted(() => {
-     getData();
+   props.immediate && getData();
 
  })
 
@@ -97,25 +103,15 @@ import {useGetTable} from "../hooks/useTable";
 
 
 
-function getData(ev = 1) {
+async function getData(ev = 1) {
+
    if (props.api) {
-     setTimeout(async () => {
-       tableLoading.value = true;
-      const {data, total, loading} = await useGetTable(props.api,  {...props.formState, page: ev}, dataCallback);
-      tableData.value = data;
-      tableTotal.value = total;
-      tableLoading.value = loading;
-     }, 0);
+     emits('update:formState', props.formState);
+       tableData.value = await useGetTable(props.api,  props.formState, tableTotal, tableLoading, props.dataCallback) || [];
+     console.log('table', tableData.value);
    }
  }
 
- function dataCallback(res) {
-     return {
-       data: res.data.content,
-       total: res.data.total,
-       loading: false,
-     }
- }
 
  defineExpose({getData})
 

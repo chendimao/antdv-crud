@@ -11,26 +11,28 @@
     :width="width || '100%'"
   >
     <div
-      class="p-2"
+
       :style="{ maxHeight: 'calc(95vh - 60px)', height: height ? height : 'calc(95vh - 60px)' }"
       style="overflow: auto"
     >
-      <div class="mb-2" v-if="formData?.length > 0 && formData[0]?.formList?.length > 0">
-        <a-card v-for="item in formData">
-          <template #title>
-            <div v-if="item.title">{{ item.title }}</div>
+      <div class="mb-2 form-card" v-if="formData?.length > 0">
+        <a-card v-for="item in formData" :bordered="false">
+          <template #title v-if="item.title">
+            <div >{{ item.title }}</div>
+
           </template>
           <FormInputItem
             :ref="(el) => setItemRefs(el, item)"
             :visible="addVisible"
             v-model:formState="formState"
             :is-disabled="isTableDisabled"
-            :formData="item.formList"
+            :formData="item.formList()"
             :type="type"
-            :formValidate="item.formValidate"
+            :formValidate="item.formValidate()"
             :labelCol="{ span: 8 }"
             :wrapperCol="{ span: 16 }"
           />
+
         </a-card>
       </div>
 
@@ -120,18 +122,19 @@
 
       formData.value = props.currentPageData.FORM;
 
-      // 重新初始化validate
+      // 重新初始化validate，加入数据 以便动态校验
       formData.value.forEach((form, index) => {
         let newValidate = {};
-        Object.keys(form.formValidate).forEach((key) => {
-          newValidate[key] = form.formValidate[key].map((item) => {
+        const oldValidate = form.formValidate();
+        Object.keys(oldValidate).forEach((key) => {
+          newValidate[key] = oldValidate[key].map((item) => {
             if (item.validator) {
               item.validator = item.validator.bind(proxy, formState);
             }
             return toRaw(item);
           });
         });
-        formData.value[index].formValidate = newValidate;
+        formData.value[index].formValidate = () => newValidate;
       });
       formState.value = JSON.parse(JSON.stringify(props.row));
       props.currentPageData.other?.detailField
@@ -150,7 +153,7 @@
       }
       let formList = [];
       formData.value.forEach((item) => {
-        formList = [...item.formList];
+        formList = [...item.formList()];
       });
       formList.forEach((item) => {
         if (item.type == 'upload') {
@@ -204,10 +207,6 @@
         if (tableErr) {
           return;
         }
-      }
-
-      for (const formDataKey in formData) {
-        console.log(formDataKey);
       }
 
       loading.value = true;
@@ -267,5 +266,15 @@
       font-weight: bold;
       font-size: 18px;
     }
+
   }
+  .form-card {
+    .ant-card-body  {
+      padding: 12px !important;
+    }
+    .ant-card-head-title {
+      padding: 5px !important;
+    }
+  }
+
 </style>

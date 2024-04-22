@@ -1,6 +1,6 @@
 {
   "name": "antdv-crud",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "type": "module",
   "files": [
     "dist/*",
@@ -23,6 +23,7 @@
     "@ant-design/colors": "^7.0.2",
     "@ant-design/icons-vue": "^7.0.1",
     "@vitejs/plugin-vue": "^2.3.1",
+    "@vitejs/plugin-vue-jsx": "^3.1.0",
     "ant-design-vue": "3.1.1",
     "axios": "^1.6.8",
     "dayjs": "^1.11.10",

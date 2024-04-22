@@ -52,6 +52,7 @@ export interface inputFormModel {
   afterSpan?: string,
   afterText?: string,
   $attrs?: object,// 表单原生属性
+  picker?: 'week' | 'month' | 'year'
   show?: boolean, // 是否显示
   disabled?: boolean, // 是否禁用
   rows?: number, // type为textarea时 行数

@@ -1,28 +1,25 @@
 import {h} from 'vue';
+import {testFun} from "./fun";
 // 查询表单
-const searchForm = [
+const search = [
   {text: '单位名称',
     type: 'text',
-    name: 'unitName',
+    name: 'szksName',
     span: 5,
     style: 'min-width: 260px;',
     labelCol: {style: {width: '90px'}},
     class: '',
-    $attrs: {
-      defaultValue: 'test'
-    },
+    initFun: testFun,
+
 
   }, {text: '日期',
-    type: 'date',
+    type: 'daterange',
     name: 'date',
-    span: 5,
-    style: 'min-width: 260px;',
+    span: 8,
+    picker: "month",
     labelCol: {style: {width: '90px'}},
     class: '',
-    $attrs: {
-      bordered: false,
-      defaultValue: '2024-04-16'
-    },
+
 
   },
 ];
@@ -33,24 +30,33 @@ const searchForm = [
 
 
 // 查询表单验证
-const validate =  {
-  // 'unitName':  [{ required: true, message: '请输入单位名称', trigger: 'blur' }],
-};
+const validateForm =  (() => (
+    {
+      // 'name':  [{ required: true, message: '请输入单位名称', trigger: 'blur' }],
+    }
+))
 
 // 表单数据初始化
-const   resetForm = {
-  unitName: '',
+const   resetForm = (() => (
+    {
+  professionalTitlesName: 'test',
+  szksName: '',
   limit: 10,
   page: 1,
   totalResult: 0
-};
+}
+));
+
+const searchForm: Function = ((): Map =>
+  new Map(search.map(item => [item.name, item]))
+);
 
 
 // 封装页面统一数据
 export default {
   searchForm,
   resetForm,
-  validate
+  validateForm
 }
 
 

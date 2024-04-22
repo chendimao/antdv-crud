@@ -84,13 +84,17 @@ watch(() => props.formState, (data) => {
 
 
 async function submit() {
+  console.log(searchFormRef.value);
   return await searchFormRef.value.submit();
 }
 
 
-function getData() {
-  setTimeout(() => {
-    emit('search', params.value);
+  function getData() {
+  setTimeout(async () => {
+   await submit() && emit('search', params.value);
+
+
+
   }, 0);
 
 }
@@ -110,7 +114,7 @@ export default {
 }
 </script>
 
-<style lang="less" scoped>
+<style lang="less"  >
 
 .search-form {
   .add-form {

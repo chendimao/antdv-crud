@@ -102,6 +102,9 @@
                 <template v-else-if="item.type == 'month'">
                   <a-date-picker      v-bind="item.$attrs" style="width: 100%;" v-model:value="inputValue"  valueFormat="MM"  format="MM"  picker="month" :disabled="isDisabled  || item.disabled" size="default" @change="inputChange(inputValue)" />
                 </template>
+                <template v-else-if="item.type == 'daterange'">
+                  <a-range-picker v-bind="item.$attrs" style="width: 100%;" :picker="item.picker" v-model:value="inputValue"   :disabled="isDisabled  || item.disabled" size="default" @change="inputChange(inputValue)" />
+                </template>
                 <template v-else-if="item.type == 'upload' && isArray(inputValue)">
                   <a-upload
                       v-bind="item.$attrs"

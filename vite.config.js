@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
+import vueJsx from '@vitejs/plugin-vue-jsx'
 import { resolve } from 'path';
 
 function pathResolve(dir) {
@@ -7,9 +8,9 @@ function pathResolve(dir) {
 }
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [vue()],
+  plugins: [vue(), vueJsx()],
   esbuild: {
-    drop: ["console", "debugger"],
+    drop: process.env.NODE_ENV !=='development' ? ["console", "debugger"] : [],
   },
   build: {
     rollupOptions: {

@@ -28,51 +28,46 @@ export const useDeleteTable = async (Function, id) => {
 };
 
 // 查询
-export const useGetTable = async (api, params, dataCallBack = undefined) => {
-  let loading = true;
-  let total = 0;
+export const useGetTable = async (api, params, total = ref(), loading = ref(),dataCallBack = undefined ) => {
+
   let data;
-  const res = await api(params).catch((err) => {
-    loading = false;
-    message.error(`查询失败:${err}`);
-  });
+  loading.value = true;
+  const res = await api(params);
+  loading.value = false;
   console.log(res);
-  if (res.code == 0) {
-    // message.success('查询成功');
-  } else {
-    message.error('查询失败');
-  }
-
-  loading = false;
-
 
   if (dataCallBack ) {
+    console.log(dataCallBack);
     return  dataCallBack (res);
   } else {
+
+    if (res.code != 0) {
+      message.error('查询失败');
+      return;
+    }
+    console.log(res);
+
     if (res.data && isArray(res.data)) {
-      total = res.total;
+      total.value = res.total;
       data = res.data;
     } else if (res?.data?.content?.length > 0) {
-      total = res.data.total;
+      total.value = res.data.total;
       data = res.data.content;
     } else if (res?.data?.data?.content?.length > 0) {
-      total = res.data.data.total;
+      total.value = res.data.data.total;
       data = res?.data?.data.content;
     } else if (res?.data?.data?.length > 0) {
-      total = res.data.total;
+      total.value = res.data.total;
       data = res?.data?.data;
     } else if (res?.data?.list?.length > 0) {
       total = res.data.total;
       data = res?.data?.list;
     } else {
-      total = 0;
-      data =  res || [];
+      total.value = 0;
+      data =    [];
     }
-    return {
-      data,
-      total,
-      loading,
-    };
+    console.log(data, total.value);
+    return data;
   }
 
 

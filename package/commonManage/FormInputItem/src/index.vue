@@ -1,8 +1,8 @@
 <template>
-  <a-form :model="Data" labelWrap name="basic" ref="formRef" :label-col="labelCol" :wrapper-col="wrapperCol" autocomplete="off">
+  <a-form :model="Data" labelWrap name="basic" ref="formRef" :rules="Validate" :label-col="labelCol" :wrapper-col="wrapperCol" autocomplete="off">
     <a-row :gutter="24">
-      <template v-for="item in Data">
-        <a-col :span="item.span" >
+      <template v-for="item in Data.values()">
+        <a-col :span="item.span" v-if="item.show??true">
           <a-form-item :label="item.text" :name="item.name" :label-col="item.labelCol" :wrapper-col="item.wrapperCol"
             v-bind="validateInfos[item.name]">
             <InputItem v-model:value="formState[item.name]"  :isDisabled="isDisabled" :form-state="formState"
@@ -23,10 +23,9 @@
 </template>
 
 <script lang="ts" setup name="formInputItem">
-import {reactive, defineProps, watch, getCurrentInstance} from "vue";
+import {reactive, defineProps, ref, watch, getCurrentInstance, onMounted} from "vue";
 import InputItem from  '../../InputItem';
 import { Form } from "ant-design-vue";
-import { onUpdated, ref } from "@vue/runtime-core";
 
 const { proxy } = getCurrentInstance();
 const formRef = ref();
@@ -60,17 +59,18 @@ defineExpose({
   clear
 })
 
+onMounted(() => {
+  initFun();
+})
+
+
 watch(() => props.visible, (data) => {
   if (data) {
-    // 运行item初始化方法
-    Data.value.forEach(item => {
 
-      if (item.initFun) {
-        item.initFun(formState, Data, props.type);
-      }
-    })
+    // 运行item初始化方法
+    initFun();
   }
-}, {immediate: true});
+});
 
 
 watch(() => props.formState, (data) => {
@@ -85,7 +85,16 @@ watch(() => props.formData, (d) => {
 
 
 
+function initFun() {
+  // 运行item初始化方法
+  Data.value.forEach(item => {
 
+    if (item.initFun) {
+      console.log(item);
+      item.initFun(formState, Data, props.type);
+    }
+  })
+}
 
 
 function inputChange(inputItem, value) {
@@ -116,13 +125,14 @@ function inputChange(inputItem, value) {
 
 }
 async function submit() {
-
+  console.log('submit', await formRef.value.validate());
   return await validate().then((res) => {
-
+    console.log(res);
     //emit('update:formState', formState)
     formRef.value.clearValidate();
     return true;
   }, err => {
+    console.log(err);
     // emit('update:formState', formState)
     formRef.value.clearValidate();
     return false;

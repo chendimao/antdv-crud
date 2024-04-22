@@ -45,7 +45,7 @@ const getState = (row) => {
 }
 // 列表显示的字段
 
-const tableForm = [
+const table = [
   {
     text: '序号',
     type: 'seq',
@@ -61,6 +61,7 @@ const tableForm = [
     width: '100',
     style: '',
     class: '',
+
     labelCol: { style: { width: '130px' } },
   },
   {
@@ -74,7 +75,9 @@ const tableForm = [
         const res =  await http.post({url: '/web/archivesManagement/getByGb25', params: {}});
         item.option = res.data;
       }
-      return h('span', { style: { color: colorArr[5] ?? '' }, innerHTML: valueToName(item.option, data.szks, 'dm', 'dmmc') })
+
+     // return h('span', { style: { color: colorArr[5] ?? '' }, innerHTML: valueToName(item.option, data.szks, 'dm', 'dmmc') })
+      return (<span style={{ color: colorArr[data.state] ?? '' }}>{valueToName(item.option, data.szks, 'dm', 'dmmc')}</span>)
     },
     labelCol: { style: { width: '130px' } },
     class: '',
@@ -238,7 +241,7 @@ const base = [
 ];
 
 // 新增form验证
-const validate = {
+const validateForm = (() => ({
   szksName: [{ required: true, message: '请输入科室名称', trigger: 'blur' }],
   name: [{ required: true, message: '请输入人员名称', trigger: 'blur' }],
   sex: [{ required: true, message: '请选择性别', trigger: 'blur' }],
@@ -247,10 +250,10 @@ const validate = {
   createTime: [{ required: true, message: '请选择申请时间', trigger: 'blur' }],
   beginTime: [{ required: true, message: '请选择退休时间', trigger: 'blur' }],
   path: [{ required: true, message: '请选择退休资料上传', trigger: 'blur' }],
-};
+}));
 
 // 新增初始化数据
-const resetForm = {
+const resetForm = (()=>({
   szksName: '',
   szks: '',
   name: '',
@@ -264,7 +267,16 @@ const resetForm = {
   type: 0, // 0 退休
   userId: '006',
   path: ''
-};
+}));
+
+const baseForm: Function = ((): Map =>
+        new Map(base.map(item => [item.name, item]))
+)
+
+const tableForm: Function = (() =>
+        new Map(table.map(item => [item.name, item]))
+)
+
 
 // 封装页面统一数据
 export default {
@@ -278,8 +290,8 @@ export default {
     getList: web_alterationApply_getByList,
     remove: web_alterationApply_getByList,
   },
-  FORM: [{ formList: base, formValidate: validate, title: '退休申请信息' }],
+  FORM: [{ formList: baseForm, formValidate: validateForm, title: '退休申请信息' }],
   resetForm,
-  searchForm,
   tableForm,
+  baseForm,
 };

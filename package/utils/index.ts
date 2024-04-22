@@ -100,7 +100,7 @@ export const valueToName = (arr, value , targetKey, returnKey) => {
 
 export const getOptionList = async (api, params, relationField, childrenField = {field: 'children', name: 'name', value: 'value'}) => {
   console.log(api);
-  const { data } = await useGetTable(api, params);
+  const data = await useGetTable(api, params);
   return data.map((item) => {
     const returnValue = {};
     if (relationField) {
