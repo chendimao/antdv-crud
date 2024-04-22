@@ -31,7 +31,6 @@
         <div class="mr-0 overflow-hidden bg-white vben-basic-table vben-basic-table-form-container">
           <a-crud-table
             ref="tableRef"
-
             :form-data="tableFormData"
             :api="web_alterationApply_getByList"
             :formState="searchQuery"

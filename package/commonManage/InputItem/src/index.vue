@@ -36,7 +36,7 @@
                 <template v-else-if="item.type == 'select'">
 
                   <a-select
-                      v-bind="item.$attrs"
+
                       size="default"
                       v-model:value="inputValue"
                       :allowClear="item.allowClear"
@@ -45,6 +45,7 @@
                       @change="inputChange(inputValue)"
                       :options="item.option"
                       :filter-option="filterOption"
+                      v-bind="item.$attrs"
                       style="width: 100%;border: 0;"
                       :fieldNames="{label: 'name', value: 'value'}"
                   >
@@ -54,7 +55,7 @@
                 </template>
                 <template v-else-if="item.type == 'cascader'">
                   <a-cascader
-                      v-bind="item.$attrs"
+
                       size="default"
                       v-model:value="inputValue"
                       :allowClear="item.allowClear"
@@ -65,6 +66,7 @@
                       :options="item.option"
                       style="width: 100%;border: 0;"
                       :fieldNames="{label: 'name', value: 'value'}"
+                      v-bind="item.$attrs"
                   />
 
 
@@ -77,13 +79,14 @@
 
                 <template v-else-if="item.type == 'checkbox'">
                   <a-select
-                      v-bind="item.$attrs"
+
                       size="default"
                       mode="multiple"
                       v-model:value="inputValue"
                       :disabled="isDisabled  || item.disabled"
                       @change="inputChange(inputValue)"
                       style="width: 100%;border: 0;height: 30px;border-bottom: 1px solid #ccc;"
+                      v-bind="item.$attrs"
                   >
                     <a-select-option v-for="data in item.option" :value="data.value">{{ data.name }}</a-select-option>
                   </a-select>
@@ -91,29 +94,30 @@
 
                 </template>
                 <template v-else-if="item.type == 'datetime'">
-                  <a-date-picker      v-bind="item.$attrs" style="width: 100%;"  v-model:value="inputValue" valueFormat="YYYY-MM-DD HH:mm:ss" show-time format="YYYY-MM-DD HH:mm:ss" :disabled="isDisabled  || item.disabled" size="default" @change="inputChange(inputValue)" />
+                  <a-date-picker      style="width: 100%;"  v-model:value="inputValue" valueFormat="YYYY-MM-DD HH:mm:ss" show-time format="YYYY-MM-DD HH:mm:ss" :disabled="isDisabled  || item.disabled" size="default" @change="inputChange(inputValue)"  v-bind="item.$attrs"/>
                 </template>
                 <template v-else-if="item.type == 'date'">
-                  <a-date-picker     v-bind="item.$attrs" style="width: 100%;"  v-model:value="inputValue" valueFormat="YYYY-MM-DD" format="YYYY-MM-DD" :disabled="isDisabled  || item.disabled" size="default" @change="inputChange(inputValue)" />
+                  <a-date-picker       style="width: 100%;"  v-model:value="inputValue" valueFormat="YYYY-MM-DD" format="YYYY-MM-DD" :disabled="isDisabled  || item.disabled" size="default" @change="inputChange(inputValue)"  v-bind="item.$attrs"/>
                 </template>
                 <template v-else-if="item.type == 'year'">
-                  <a-date-picker      v-bind="item.$attrs" style="width: 100%;"  v-model:value="inputValue"  valueFormat="YYYY"   format="YYYY"   picker="year" :disabled="isDisabled  || item.disabled" size="default" @change="inputChange(inputValue)" />
+                  <a-date-picker        style="width: 100%;"  v-model:value="inputValue"  valueFormat="YYYY"   format="YYYY"   picker="year" :disabled="isDisabled  || item.disabled" size="default" @change="inputChange(inputValue)"  v-bind="item.$attrs"/>
                 </template>
                 <template v-else-if="item.type == 'month'">
-                  <a-date-picker      v-bind="item.$attrs" style="width: 100%;" v-model:value="inputValue"  valueFormat="MM"  format="MM"  picker="month" :disabled="isDisabled  || item.disabled" size="default" @change="inputChange(inputValue)" />
+                  <a-date-picker        style="width: 100%;" v-model:value="inputValue"  valueFormat="MM"  format="MM"  picker="month" :disabled="isDisabled  || item.disabled" size="default" @change="inputChange(inputValue)"  v-bind="item.$attrs"/>
                 </template>
                 <template v-else-if="item.type == 'daterange'">
-                  <a-range-picker v-bind="item.$attrs" style="width: 100%;" :picker="item.picker" v-model:value="inputValue"   :disabled="isDisabled  || item.disabled" size="default" @change="inputChange(inputValue)" />
+                  <a-range-picker   style="width: 100%;" :picker="item.picker" v-model:value="inputValue"   :disabled="isDisabled  || item.disabled" size="default" @change="inputChange(inputValue)"  v-bind="item.$attrs"/>
                 </template>
                 <template v-else-if="item.type == 'upload' && isArray(inputValue)">
                   <a-upload
-                      v-bind="item.$attrs"
+
                       v-model:file-list="inputValue"
                       :action="item.url"
                       :maxCount="item.uploadField.maxCount??100"
                       :disabled="isDisabled  || item.disabled"
                       list-type="picture-card"
                       @change="handleChange"
+                      v-bind="item.$attrs"
                   >
                     <div  >
                       <plus-outlined />
@@ -123,20 +127,22 @@
                 </template>
 
                 <template v-else-if="item.type == 'switch'">
-                  <a-switch     v-bind="item.$attrs" v-model:checked="inputValue"  :disabled="isDisabled  || item.disabled"  :unCheckedValue="item.unCheckedValue" :checkedValue="item.checkedValue" :checked-children="item.checkedChildren" :un-checked-children="item.unCheckedChildren" />
+                  <a-switch      v-model:checked="inputValue"  :disabled="isDisabled  || item.disabled"  :unCheckedValue="item.unCheckedValue" :checkedValue="item.checkedValue" :checked-children="item.checkedChildren" :un-checked-children="item.unCheckedChildren" v-bind="item.$attrs"/>
                 </template>
                 <template v-else-if="item.type == 'origin'">
                   {{inputValue}}
                 </template>
                <template v-else-if="item.type == 'list'">
                   <vxe-table
-                      v-bind="item.$attrs"
+
                       border
                       show-overflow
                       :data="inputValue"
                       ref="xTable"
                       :column-config="{resizable: true}"
-                      :edit-config="!item.disabled ? {trigger: 'click', mode: 'cell'} : {}">
+                      :edit-config="!item.disabled ? {trigger: 'click', mode: 'cell'} : {}"
+                      v-bind="item.$attrs"
+                  >
                     <vxe-column type="seq" width="60"></vxe-column>
                     <vxe-column v-for="list in item.listField" :field="list.key" :title="list.label" :edit-render="{autofocus: '.vxe-input--inner'}">
                       <template #edit="{ row }" v-if="list.type == 'text'">

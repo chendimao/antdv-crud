@@ -117,6 +117,9 @@ export default {
 <style lang="less"  >
 
 .search-form {
+  :deep(.ant-form-item) {
+    margin-bottom: 10px !important;
+  }
   .add-form {
     :deep(.ant-form-item) {
       margin-bottom: 0 !important;

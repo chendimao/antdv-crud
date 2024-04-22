@@ -38,7 +38,7 @@
           </template>
 
 
-      <vxe-column field="a" title="操作" fixed="right" v-if="isOp"  min-width="200" >
+      <vxe-column field="a" title="操作" fixed="right" v-if="isMenu"    :width="menuWidth" >
         <template #default="{ row }">
 
           <slot :row="row"></slot>
@@ -63,7 +63,7 @@
 
 <script setup lang="ts">
 import {useGetTable} from "../hooks/useTable";
- import {render,h, ref, onMounted, defineProps} from "vue";
+import {render, h, ref, onMounted, defineProps, watch} from "vue";
 
 
  const emits = defineEmits(['update:formState']);
@@ -71,7 +71,8 @@ import {useGetTable} from "../hooks/useTable";
  const props = defineProps({
    formData: {type: Object},
    loading: {type: Boolean},
-     isOp: {type: Boolean, default: true}, // 是否有操作列
+   isMenu: {type: Boolean, default: true}, // 是否有操作列
+   menuWidth: {type: Number||String, default: 150}, // 操作列宽度
    size: {type: String, default: 'mini'},
    resetForm: {type: Object},
    api: {type: Function},
@@ -93,7 +94,9 @@ import {useGetTable} from "../hooks/useTable";
  })
 
 
-
+watch(() => props.formState, (data) => {
+  console.log(data, 97);
+}, {deep: true, immediate: true})
 
  const  vRender =  {
    updated: async (el, ctx) => {
@@ -106,6 +109,7 @@ import {useGetTable} from "../hooks/useTable";
 async function getData(ev = 1) {
 
    if (props.api) {
+     console.log(props.formState, 109);
      emits('update:formState', props.formState);
        tableData.value = await useGetTable(props.api,  props.formState, tableTotal, tableLoading, props.dataCallback) || [];
      console.log('table', tableData.value);

@@ -38,7 +38,7 @@ export const useGetTable = async (api, params, total = ref(), loading = ref(),da
 
   if (dataCallBack ) {
     console.log(dataCallBack);
-    return  dataCallBack (res);
+    return  dataCallBack (res, total);
   } else {
 
     if (res.code != 0) {
