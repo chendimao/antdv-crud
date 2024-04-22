@@ -55,10 +55,14 @@
     </div>
     <template #footer>
       <div :style="{ textAlign: footerPosition }">
-        <a-button @click="handleCancel">取消</a-button>
+
 
         <slot :formState="formState">
-          <a-button type="primary" @click="handleSubmit">确定</a-button>
+          <template v-if="props.type != 'show'">
+            <a-button @click="handleCancel"   >取消</a-button>
+            <a-button type="primary" @click="handleSubmit"  >确定</a-button>
+          </template>
+
         </slot>
       </div>
     </template>

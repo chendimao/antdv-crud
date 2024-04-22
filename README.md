@@ -1,4 +1,18 @@
-## antdv-crud-vue3
+## antdv-crud
+
+### 安装
+
+`npm install antdv-crud -D`
+
+main.js中引入
+```
+import antdCrud from 'antdv-crud';
+import 'antdv-crud/dist/style.css'；
+app.use(antdCrud);
+```
+
+
+
 ### 基础页面三个公共组件
 
 #### 搜索组件
