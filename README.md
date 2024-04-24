@@ -1,6 +1,18 @@
 ## antdv-crud
 ## 基于 ant-design-vue vxe-table封装的crud组件
 
+### 本插件使用的依赖，使用前需要安装这些插件并正确引入
+```
+{
+    "ant-design-vue": "^3",
+    "axios": "^1.6.8",
+    "dayjs": "^1.11.10",
+    "less": "^4.2.0",
+    "vite": ">=2.9.1",
+    "vxe-table": "^4"
+  }
+  ```
+
 ### 安装
 
 `npm install antdv-crud -D`

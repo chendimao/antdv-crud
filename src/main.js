@@ -7,7 +7,6 @@ import VXETable from "vxe-table";
 import antd from 'ant-design-vue';
 import 'vxe-table/lib/style.css'
 import 'ant-design-vue/dist/antd.css';
-import http from "../package/utils/http.js";
 
 // 安装vxe-table
 const  useTable = (app) => {
@@ -22,7 +21,7 @@ const app = createApp(App)
 app.use(useTable);
 app.use(antd);
 // app.use(antdCrud.install(app, {baseUrl: 'http://zbzt.tongchealth.com/basic-api/'}));
- app.use(antdCrud.install(app, {http: new http('http://zbzt.tongchealth.com/basic-api/')}));
+ app.use(antdCrud);
 
 
 app.mount('#app');

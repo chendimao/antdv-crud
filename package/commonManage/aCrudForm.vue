@@ -11,7 +11,7 @@
     :width="width || '100%'"
   >
     <div
-
+      class="aCardForm"
       :style="{ maxHeight: 'calc(95vh - 60px)', height: height ? height : 'calc(95vh - 60px)' }"
       style="overflow: auto"
     >

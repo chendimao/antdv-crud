@@ -8,8 +8,10 @@ const search = [
     span: 5,
     style: 'min-width: 260px;',
     labelCol: {style: {width: '90px'}},
+    computedFun: [
+      {type: 'function', fun: testFun, immediate: true}
+    ],
     class: '',
-    initFun: testFun,
 
 
   },

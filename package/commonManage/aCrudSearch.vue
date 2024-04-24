@@ -1,6 +1,6 @@
 <template>
   <!--  查询共用组件-->
-  <div class="search-form">
+  <div class="search-form aCardSearch">
     <FormInputItem ref="searchFormRef" v-model:formState="params" :formData="searchForm" :formValidate="formValidate"
       :labelCol="{ span: 8 }" :wrapperCol="{ span: 16 }">
       <a-col   v-if="isSearch">
@@ -117,21 +117,21 @@ export default {
 <style lang="less"  >
 
 .search-form {
-  :deep(.ant-form-item) {
+   .ant-form-item  {
     margin-bottom: 10px !important;
   }
   .add-form {
-    :deep(.ant-form-item) {
+     .ant-form-item  {
       margin-bottom: 0 !important;
     }
 
-    :deep(.ant-divider-horizontal) {
+    .ant-divider-horizontal  {
       margin: 14px 0 !important;
     }
 
   }
 
-  :deep(.ant-card-head-title) {
+  .ant-card-head-title  {
     padding: 16px 0 0 !important;
   }
 }

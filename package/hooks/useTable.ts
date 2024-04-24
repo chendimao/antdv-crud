@@ -32,7 +32,9 @@ export const useGetTable = async (api, params, total = ref(), loading = ref(),da
 
   let data;
   loading.value = true;
-  const res = await api(params);
+  const res = await api(params).catch((err) => {
+    loading.value = false;
+  });
   loading.value = false;
   console.log(res);
 

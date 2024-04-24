@@ -1,0 +1,10 @@
+.basic-table{max-width:100%;height:100%}
+.overflow-hidden {
+    overflow: hidden;
+}
+.bg-white{--un-bg-opacity:1;background-color:rgb(255 255 255 / var(--un-bg-opacity))}
+.mr-0{margin-right:0}
+.p-2{padding:.5rem}
+.basic-table-form-container{padding:16px}
+.mb-2{margin-bottom:.5rem}
+

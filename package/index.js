@@ -2,9 +2,8 @@ import aCrudForm from "./commonManage/aCrudForm.vue";
 import aCrudTable from "./commonManage/aCrudTable.vue";
 import aCrudSearch from "./commonManage/aCrudSearch.vue";
 
-import http from './utils/http.js';
  import crudUtil from "./utils/index.ts";
-
+import './utils/common.css';
 const components = [
     aCrudForm,
     aCrudTable,

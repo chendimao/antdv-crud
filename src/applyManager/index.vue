@@ -72,7 +72,6 @@
   import { web_archivesManagement_getManagement_details, web_alterationApply_getByList } from '../api/';
 
 
-  import _ from 'lodash';
   import dayjs from 'dayjs';
   import {message} from "ant-design-vue";
 
@@ -141,7 +140,7 @@
   }
 </script>
 <style scoped lang="less">
-  :deep(.ant-card-body) {
+  .ant-card-body {
     padding: 0 5px !important;
   }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <div class="p-2 mr-0 overflow-hidden bg-white vben-basic-table vben-basic-table-form-container vxeTableData">
+  <div class="p-2 mr-0 overflow-hidden bg-white basic-table basic-table-form-container aCrudTable vxeTableData">
     <vxe-table ref="xTable" v-if="formData" v-bind="tableConfig" max-height="600px" align="center"  :loading="tableLoading"
                :column-config="{ isCurrent: true, isHover: true }" :row-config="{ isCurrent: true, isHover: true }"
                :header-cell-class-name="() => 'headerCellClassName'"

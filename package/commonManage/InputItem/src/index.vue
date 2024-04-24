@@ -1,5 +1,5 @@
 <template>
-      <span>
+      <span class="aCardInput">
         <a-col :span="24" class="input-item" :class="item.class"  :offset="item.offset ? item.offset : 0">
         <template v-if="item.type == 'null'">
             <div  >
@@ -443,11 +443,11 @@ function handleTableSelectChange(ev,op,  re) {
 </script>
 
 <style scoped lang="less">
-:deep(.ant-input[disabled]), :deep(.ant-picker-input > input[disabled]), :deep(span.ant-select-selection-item) {
+.ant-input[disabled], .ant-picker-input > input[disabled], span.ant-select-selection-item {
   color:#000;
 }
 
-:deep(.ant-select-multiple .ant-select-selection-item-content) {
+.ant-select-multiple .ant-select-selection-item-content {
   color:#000;
 }
 
