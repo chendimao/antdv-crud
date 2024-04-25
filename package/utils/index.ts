@@ -3,7 +3,7 @@ import type { App, Plugin } from 'vue';
 import { unref } from 'vue';
 import { isObject } from './is';
 import {isNumber} from "./is";
-import {useGetTable} from "../hooks/useTable";
+import {useGetTable} from "../hooks/useGetData";
 
 export const noop = () => {};
 

@@ -1,7 +1,7 @@
 import http from '../util/http.js';
 
 export const web_alterationApply_getByList = function (params) {
-    return http.post({url: '/web/archivesManagement/getManagementNew', params})
+    return http.post({url: '/web/consultationManagement/hzsp', params})
 }
 
 // Copy的代码作参考

@@ -8,7 +8,7 @@
 
         <!-- </a-space> -->
       </div>
-
+        <a-button @click="test">test</a-button>
       <a-crud-search ref="searchRef" :search-form="searchForm" v-model:form-state="searchQuery"
                    :form-validate="searchValidate" :reset-form="searchData.resetForm()" @search="handleSearch">
         <a-button
@@ -31,9 +31,8 @@
         <div class="mr-0 overflow-hidden bg-white vben-basic-table vben-basic-table-form-container">
           <a-crud-table
             ref="tableRef"
-            :form-data="tableFormData"
-            :api="web_alterationApply_getByList"
-            :formState="searchQuery"
+            @register="register"
+
           >
             <template #default="{ row }">
 
@@ -74,6 +73,8 @@
 
   import dayjs from 'dayjs';
   import {message} from "ant-design-vue";
+  import {useTable, useTableClass} from "../../package/hooks/useTable";
+  import {testClass} from "../../package/hooks/test";
 
 
   const categoryName = ref();
@@ -91,30 +92,49 @@
   const resetForm = ref();
   const currentRow = ref({});
 
-  const tableData = ref([]);
   const searchForm = searchData.searchForm();
   const searchValidate = searchData.validateForm();
   const searchQuery = searchData.resetForm();
 
   const tableFormData = retireData.tableForm();
   const tableFormState = retireData.resetForm();
+  const [register, {getData, getTotalPagination, getCurrentPagination, setCurrentPagination} ]= useTable(
+      {
+        api: web_alterationApply_getByList,
+        columns: retireData.tableForm(),
+        params: retireData.resetForm(),
+        isMenu: true,
+        menuWidth: 300,
+        size: 'mini',
+        isSortable: true, // 是否开启排序，这是总开关，这里开启后，如果column中设置sortable: false，则该字段也不会排序
+        $attrs: {
+          sortConfig:  {defaultSort:  {field: 'medicalRecordNo', order: 'asc'} }
+        },
 
+        pagination: {
+          isPagination: true,
+          pageSizeOptions: ['10', '20', '30', '40', '50'],
+          showQuickJumper: true,
+          showSizeChanger: true,
+
+
+        }
+      }
+  );
   onMounted(async () => {
 
-      currentPage.value = retireData;
-
-      resetForm.value = { ...currentPage.value.resetForm(), type:  0 };
-
+       currentPage.value = retireData;
+      //
+       resetForm.value = { ...currentPage.value.resetForm(), type:  0 };
 
     //roleData.value = await getOptionList('roleGetRoleSelect', {limit: 1000, page: 1}, ['name/roleName', 'id/id']);
   });
 
 
-
-  function getData() {
-    tableRef.value.getData();
+  async function test() {
+    await setCurrentPagination(3);
+    console.log(await getTotalPagination(), await getCurrentPagination());
   }
-
 
   async function handleShow(t, row: any = {}) {
 

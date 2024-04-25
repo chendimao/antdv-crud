@@ -191,13 +191,12 @@
     }
     let flag = true;
     for (const ref of itemRefs.value) {
-      console.log(ref, await ref.submit(), 176); // 提交两次
+     // console.log( 176, ref, await ref.submit()); // 提交两次
       if (!(await ref.submit())) {
         flag = false;
       }
     }
 
-    console.log(flag, 180);
 
     if (flag) {
       // 如果有明细表 参数单独处理

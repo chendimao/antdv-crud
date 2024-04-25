@@ -4,6 +4,7 @@ import { web_alterationApply_insertOrUpdate, web_alterationApply_getByList, web_
 import http from '../../util/http';
 import {valueToName} from "../../../package/utils";
 import {web_archivesManagement_getByGb25, web_archivesManagement_getByGb147} from '../../api/index';
+import dayjs from 'dayjs';
 const searchForm = [
   { text: '单位名称', name: 'unitName', type: 'text' },
   // {text: '电话', name: 'phone', type: 'text' },
@@ -49,16 +50,7 @@ const table = [
   {
     text: '序号',
     type: 'seq',
-    $attrs: { width: '100',fixed: 'left', sortable: true},
-    style: '',
-    class: '',
-    labelCol: { style: { width: '130px' } },
-  },{
-    text: '一卡通号',
-    type: 'text',
-    $attrs: {fixed: 'left', sortable: true},
-    name: 'userId',
-    width: '100',
+    $attrs: { width: '100',fixed: 'left'},
     style: '',
     class: '',
 
@@ -71,13 +63,13 @@ const table = [
     name: 'szks',
     h: async (data, item) => {
       const colorArr = { 4: 'green', 5: 'red', 7: 'green', 8: 'red', }
-      if (!item.option) {
-        const res =  await http.post({url: '/web/archivesManagement/getByGb25', params: {}});
-        item.option = res.data;
-      }
+      // if (!item.option) {
+      //   const res =  await http.post({url: '/web/archivesManagement/getByGb25', params: {}});
+      //   item.option = res.data;
+      // }
 
      // return h('span', { style: { color: colorArr[5] ?? '' }, innerHTML: valueToName(item.option, data.szks, 'dm', 'dmmc') })
-      return (<span style={{ color: colorArr[data.state] ?? '' }}>{valueToName(item.option, data.szks, 'dm', 'dmmc')}</span>)
+      return (<span style={{ color: colorArr[data.state] ?? '' }}>test</span>)
     },
     labelCol: { style: { width: '130px' } },
     class: '',
@@ -89,7 +81,36 @@ const table = [
     width: '120',
     style: '',
     class: '',
+    $attrs: {sortable: false},
     labelCol: { style: { width: '130px' } },
+  },{
+    text: '住院病例号',
+    type: 'text',
+    name: 'medicalRecordNo',
+    span: 8,
+    style: '',
+    sortable: false,
+    class: '',
+    labelCol: { style: { width: '100px' } },
+  },{
+    text: '申请会诊医师',
+    type: 'text',
+    name: 'applicationDoctor',
+    span: 8,
+    style: '',
+    class: '',
+    labelCol: { style: { width: '100px' } },
+  },{
+    text: '申请时间',
+    type: 'h',
+    name: 'applicationTime',
+    span: 8,
+    style: '',
+    class: '',
+    h: (data) => {
+      return (<span>{dayjs(data.applicationTime).format('YYYY-MM-DD')}</span>)
+  },
+    labelCol: { style: { width: '100px' } },
   },
   {
     text: '性别',
@@ -101,41 +122,8 @@ const table = [
     class: '',
     labelCol: { style: { width: '130px' } },
   },
-  {
-    text: '人员类别',
-    type: 'text',
-    name: 'personnelCategoryName',
-    width: '120',
-    labelCol: { style: { width: '130px' } },
-    class: '',
-  },
-  {
-    text: '职称',
-    type: 'text',
-    name: 'professionalTitlesName',
 
-    width: '120',
-    labelCol: { style: { width: '130px' } },
-    class: '',
-  },
-  {
-    text: '申请时间',
-    type: 'text',
-    name: 'createTime',
-    width: '130',
-    style: '',
-    class: '',
-    labelCol: { style: { width: '130px' } },
-  },
-  {
-    text: '退休时间',
-    type: 'text',
-    name: 'beginTime',
-    width: '130',
-    style: '',
-    class: '',
-    labelCol: { style: { width: '130px' } },
-  },
+
   // {text: '退休资料上传', type: 'upload', name: 'picList', value: [], uploadField: {type: 'string', field: {name: 'path', url: 'path'}}, url: '/basic-api/web/archivesManagement/uploadPic',maxCount: 1,  labelCol: {style: {width: '130px'}},  width: '120px', class: '',   },
   {
     text: '状态',
@@ -154,22 +142,35 @@ const table = [
 // 新增时显示字段
 
 const base = [
-  {
-    text: '科室名称',
-    type: 'select',
-    name: 'szksName',
-    $attrs: {multiple: true},
-    computedFun: [
-      { type: 'option', api: web_archivesManagement_getByGb25, relationField: ['dmmc', 'dm'] },
-    ],
-    span: 8,
-    labelCol: { style: { width: '100px' } },
-    class: '',
-  },
+
   {
     text: '人员名称',
     type: 'origin',
     name: 'name',
+    span: 8,
+    style: '',
+    class: '',
+    labelCol: { style: { width: '100px' } },
+  },{
+    text: '住院病例号',
+    type: 'origin',
+    name: 'medicalRecordNo',
+    span: 8,
+    style: '',
+    class: '',
+    labelCol: { style: { width: '100px' } },
+  },{
+    text: '申请会诊医师',
+    type: 'origin',
+    name: 'applicationDoctor',
+    span: 8,
+    style: '',
+    class: '',
+    labelCol: { style: { width: '100px' } },
+  },{
+    text: '申请时间',
+    type: 'origin',
+    name: 'applicationTime',
     span: 8,
     style: '',
     class: '',
@@ -185,17 +186,7 @@ const base = [
     class: '',
     labelCol: { style: { width: '130px' } },
   },
-  {
-    text: '人员类别',
-    type: 'origin',
-    name: 'personnelCategoryName',
-    computedFun: [
-      { type: 'option', api: web_archivesManagement_getByGb147, relationField: ['dmmc', 'dmmc'] },
-    ],
-    span: 8,
-    labelCol: { style: { width: '100px' } },
-    class: '',
-  },
+
   {
     text: '职称',
     type: 'origin',
@@ -243,7 +234,7 @@ const base = [
 // 新增form验证
 const validateForm = (() => ({
   szksName: [{ required: true, message: '请输入科室名称', trigger: 'blur' }],
-  name: [{ required: true, message: '请输入人员名称', trigger: 'blur' }],
+
   sex: [{ required: true, message: '请选择性别', trigger: 'blur' }],
   personnelCategoryName: [{ required: true, message: '请选择人员类别', trigger: 'blur' }],
   professionalTitlesName: [{ required: true, message: '请选择职称', trigger: 'blur' }],
@@ -253,21 +244,7 @@ const validateForm = (() => ({
 }));
 
 // 新增初始化数据
-const resetForm = (()=>({
-  szksName: '',
-  szks: '',
-  name: '',
-  sex: '',
-  personnelCategoryName: '',
-  professionalTitlesName: '',
-  createTime: '',
-  beginTime: '',
-  picList: [],
-  state: 1,
-  type: 0, // 0 退休
-  userId: '006',
-  path: ''
-}));
+const resetForm = (()=>({"applicationDept":"","limit":10,"page":1,"roleid":3,"states":"", name: '', beginTime: ''}));
 
 const baseForm: Function = ((): Map =>
         new Map(base.map(item => [item.name, item]))

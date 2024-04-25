@@ -130,18 +130,19 @@ function inputChange(inputItem, value) {
 
 }
 async function submit() {
-  console.log('submit', await formRef.value.validate());
-  return await validate().then((res) => {
-    console.log(res);
-    //emit('update:formState', formState)
-    formRef.value.clearValidate();
-    return true;
-  }, err => {
+  console.log('submit', );
+  console.log(await validate().catch(err => {
     console.log(err);
-    // emit('update:formState', formState)
-    formRef.value.clearValidate();
+
+  }))
+
+  const res = await validate().catch(err => {
+    clear();
     return false;
-  });
+  })
+
+ return !!res;
+
 }
 
 async function clear() {
