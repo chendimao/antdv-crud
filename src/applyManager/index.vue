@@ -8,16 +8,16 @@
 
         <!-- </a-space> -->
       </div>
-        <a-button @click="test">test</a-button>
-      <a-crud-search ref="searchRef" :search-form="searchForm" v-model:form-state="searchQuery"
-                   :form-validate="searchValidate" :reset-form="searchData.resetForm()" @search="handleSearch">
+      <a-crud-search ref="searchRef"
+                     @register="registerSearch"
+                     @search="getSearch"
+                     >
         <a-button
             @click="handleShow('insert')"
             type="primary"
             style="float: left; magin-top: 10px"
             size="middle"
             class="!px-2"
-            v-if="!(currentPage?.other?.showAdd === false)"
         >
           <template #icon>
             <PlusOutlined />
@@ -30,14 +30,10 @@
       <a-col :span="24">
         <div class="mr-0 overflow-hidden bg-white vben-basic-table vben-basic-table-form-container">
           <a-crud-table
-            ref="tableRef"
-            @register="register"
-
+            @register="registerTable"
           >
             <template #default="{ row }">
-
               <a-button @click="handleShow('show', row)">查看</a-button>
-
             </template>
           </a-crud-table>
         </div>
@@ -46,15 +42,7 @@
   </a-card>
   <div>
     <a-crud-form
-      v-if="currentPage"
-      v-model:add-visible="addVisible"
-      :row="currentRow"
-      :type="type"
-      width="80%"
-      height="350px"
-      :name="'bmgl'"
-      @refreshList="getData"
-      :currentPageData="currentPage"
+        @register="registerForm"
     />
   </div>
   <!-- </PageWrapper> -->
@@ -72,68 +60,70 @@
 
 
   import dayjs from 'dayjs';
-  import {message} from "ant-design-vue";
-  import {useTable, useTableClass} from "../../package/hooks/useTable";
-  import {testClass} from "../../package/hooks/test";
+  import {useTable} from "../../package/hooks/useTable";
 
 
-  const categoryName = ref();
-  const tableRef = ref();
   const currentPage = ref<any>();
-  const base = ref([]);
-  const total = ref(0);
-  const editVisible = ref(false);
   const addVisible = ref(false);
-  const roleData = ref([]);
-  const loading = ref(false);
-  const query = ref(searchData.resetForm);
   const type = ref('insert');
-  const recordInfo = ref();
   const resetForm = ref();
   const currentRow = ref({});
-
-  const searchForm = searchData.searchForm();
-  const searchValidate = searchData.validateForm();
-  const searchQuery = searchData.resetForm();
-
-  const tableFormData = retireData.tableForm();
-  const tableFormState = retireData.resetForm();
-  const [register, {getData, getTotalPagination, getCurrentPagination, setCurrentPagination} ]= useTable(
+  const [
+    {
+      registerTable,
+      registerSearch,
+      registerForm
+    },
+    {getData,
+      getTotalPagination,
+      getCurrentPagination,
+      setCurrentPagination,
+      handleFormShow,
+      getSearch,
+      resetSearch,
+      reset}
+  ]= useTable(
       {
-        api: web_alterationApply_getByList,
-        columns: retireData.tableForm(),
-        params: retireData.resetForm(),
-        isMenu: true,
-        menuWidth: 300,
-        size: 'mini',
-        isSortable: true, // 是否开启排序，这是总开关，这里开启后，如果column中设置sortable: false，则该字段也不会排序
-        $attrs: {
-          sortConfig:  {defaultSort:  {field: 'medicalRecordNo', order: 'asc'} }
+        table: {
+          api: web_alterationApply_getByList,
+          columns: retireData.tableForm(),
+          params: searchData.resetForm(),
+          isMenu: true,
+          menuWidth: 300,
+          size: 'mini',
+          isSortable: true, // 是否开启排序，这是总开关，这里开启后，如果column中设置sortable: false，则该字段也不会排序
+          $attrs: {
+            sortConfig:  {defaultSort:  {field: 'medicalRecordNo', order: 'asc'} },
+            onCheckboxChange: checkBoxChange
+          },
+          pagination: {
+            isPagination: true,
+            pageSizeOptions: ['10', '20', '30', '40', '50'],
+            showQuickJumper: true,
+            showSizeChanger: true,
+          },
         },
+        search: {
+          searchForm: searchData.searchForm(),
+          params: searchData.resetForm(),
+        },
+        form: {
+          title: retireData.title,
+          type: type,
+          typeInfo: retireData.typeInfo,
+          formData: retireData.formData,
+          visible: addVisible,
+          formState: currentRow,
+          width: '80%',
 
-        pagination: {
-          isPagination: true,
-          pageSizeOptions: ['10', '20', '30', '40', '50'],
-          showQuickJumper: true,
-          showSizeChanger: true,
-
-
-        }
+          height: '350px',
+          name: 'bmgl',
+        },
       }
   );
-  onMounted(async () => {
 
-       currentPage.value = retireData;
-      //
-       resetForm.value = { ...currentPage.value.resetForm(), type:  0 };
+  function checkBoxChange(ev) {
 
-    //roleData.value = await getOptionList('roleGetRoleSelect', {limit: 1000, page: 1}, ['name/roleName', 'id/id']);
-  });
-
-
-  async function test() {
-    await setCurrentPagination(3);
-    console.log(await getTotalPagination(), await getCurrentPagination());
   }
 
   async function handleShow(t, row: any = {}) {
@@ -142,22 +132,17 @@
     type.value = t;
 
     if (type.value == 'update' || type.value == 'show') {
-      currentRow.value = { ...row, departments: '0318' };
+      currentRow.value = { ...row };
     } else if (type.value == 'insert') {
 
-      resetForm.value.createTime = dayjs().format('YYYY-MM-DD HH:mm:ss');
-      let state =3;
-      currentRow.value = { ...resetForm.value, departments: '0318', state };
+      currentRow.value =searchData.resetForm();
 
     }
+    console.log(type.value, currentRow.value);
+    await handleFormShow(type.value, currentRow.value);
 
-    console.log('currentPage.value', currentPage.value);
   }
 
-
-  function handleSearch() {
-    getData();
-  }
 </script>
 <style scoped lang="less">
   .ant-card-body {

@@ -21,7 +21,12 @@ const app = createApp(App)
 app.use(useTable);
 app.use(antd);
 // app.use(antdCrud.install(app, {baseUrl: 'http://zbzt.tongchealth.com/basic-api/'}));
- app.use(antdCrud);
+ app.use(
+     antdCrud.install(app,
+     {
+         formConfig: {FooterCancelText: '退出', FooterSubmitText: '保存'}
+     })
+ );
 
 
 app.mount('#app');

@@ -4,9 +4,10 @@ import {testFun} from "./fun";
 const search = [
   {text: '单位名称',
     type: 'text',
-    name: 'szksName',
+    name: 'applicationDept',
     span: 5,
     style: 'min-width: 260px;',
+    rules: [{required: true, message: '请输入单位名称', trigger: 'blur'}],
     labelCol: {style: {width: '90px'}},
     computedFun: [
       {type: 'function', fun: testFun, immediate: true}
@@ -47,22 +48,10 @@ const search = [
 
 
 
-// 查询表单验证
-const validateForm =  (() => (
-    {
-      // 'name':  [{ required: true, message: '请输入单位名称', trigger: 'blur' }],
-    }
-))
 
 // 表单数据初始化
 const   resetForm = (() => (
-    {
-  professionalTitlesName: 'test',
-  szksName: '',
-  limit: 10,
-  page: 1,
-  totalResult: 0
-}
+    {"applicationDept":"","limit":10,"page":1,"roleid":3,"states":"", name: '', beginTime: ''}
 ));
 
 const searchForm: Function = ((): Map =>
@@ -73,8 +62,7 @@ const searchForm: Function = ((): Map =>
 // 封装页面统一数据
 export default {
   searchForm,
-  resetForm,
-  validateForm
+  resetForm
 }
 
 

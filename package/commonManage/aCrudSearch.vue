@@ -1,11 +1,11 @@
 <template>
   <!--  查询共用组件-->
   <div class="search-form aCardSearch">
-    <FormInputItem ref="searchFormRef" v-model:formState="params" :formData="searchForm" :formValidate="formValidate"
-      :labelCol="{ span: 8 }" :wrapperCol="{ span: 16 }">
-      <a-col   v-if="isSearch">
+    <FormInputItem ref="searchFormRef" v-model:formState="params"
+      :labelCol="{ span: 8 }" :wrapperCol="{ span: 16 }" :formData="formData" :formValidate="searchValidate"  >
+      <a-col   v-if="isSearch !== false">
           <a-form-item :wrapper-col="{ style: { width: '200px' } }">
-              <a-button style="margin-left: 15px" type="primary" @click="getData"
+              <a-button style="margin-left: 15px" type="primary" @click="getSearchParams"
               >
                   <template #icon>
                       <SearchOutlined />
@@ -13,7 +13,7 @@
                   查询
               </a-button
               >
-              <a-button style="margin-left: 15px" @click="handleResetForm">
+              <a-button style="margin-left: 15px" @click="getResetParams">
                   <template #icon>
                       <UndoOutlined />
                   </template>
@@ -45,66 +45,86 @@
 import {getCurrentInstance, onMounted, ref, useSlots, defineProps,watch} from "vue";
 import FormInputItem from './FormInputItem/';
 import {PlusOutlined, SearchOutlined, UndoOutlined} from "@ant-design/icons-vue";
+import {deepCopy} from "../utils";
 const { proxy } = getCurrentInstance();
+
+const emits = defineEmits([ 'search','reset',  'register']);
+
+
 defineExpose({
   submit
 })
-onMounted(() => {
-  params.value = props.formState;
-  const slots = useSlots();
-  if (slots && slots.default) {
-    mySlot.value = slots.default()[0]?.props;
-  }
-  console.log(mySlot.value);
-})
-const emit = defineEmits(['update:form-state', 'search']);
+
 const mySlot = ref();
-const props = defineProps({
-  searchData: { type: Object, default: () => { return {} } },
-  formState: { type: Object, default: () => { return {} } },
-    searchForm: { type: Object, default: () => { return {} } },
-    resetForm: { type: Object, default: () => { return {} } },
-    formValidate: { type: Object, default: () => { return {} } },
-    isSearch: { type: Boolean, default: true },
-});
 
 
 const params = ref({});
 const searchFormRef = ref();
-
-
-
-
-watch(() => props.formState, (data) => {
-  params.value = data;
-
-
-  emit('update:form-state', data);
-}, { deep: true, immediate: true })
-
-
+const aCardSearchRef = ref();
+const resetForm = ref();
+const formData = ref();
+const searchValidate = ref({});
+const isSearch = ref();
 async function submit() {
   console.log(searchFormRef.value);
   return await searchFormRef.value.submit();
 }
 
 
-  function getData() {
-  setTimeout(async () => {
-   await submit() && emit('search', params.value);
+  async function validateSearch() {
+   return await submit();
+}
+
+function setSearchProps(props) {
+  aCardSearchRef.value = {...props,  ...proxy.$crudGlobalSearchConfig??{}};
+  params.value = props.params;
+  formData.value = props.searchForm;
+  isSearch.value = props.isSearch;
+  searchValidate.value = {};
+  resetForm.value = deepCopy(props.searchParams);
+
+  searchValidate.value = {};
+  formData.value.forEach((item) => {
+
+    // 自定义validator的 传入当前表单值以便动态校验
+    item.rules ? searchValidate.value[item.name] = item.rules.map(ruleItem => {
+      if (ruleItem.validator) {
+        ruleItem.validator = ruleItem.validator.bind(proxy,  params.value);
+      }
+      return ruleItem;
+    }) : '';
+  });
 
 
-
-  }, 0);
+  const slots = useSlots();
+  if (slots && slots.default) {
+    mySlot.value = slots.default()[0]?.props;
+  }
 
 }
 
 
-// 重置查询条件
-function handleResetForm() {
-  emit('update:form-state', props.resetForm);
-  getData();
+function getSearchParams() {
+  emits('search', params.value);
 }
+
+function getResetParams() {
+  params.value = deepCopy(resetForm.value);
+  emits('search', params.value);
+}
+
+
+const searchMethods = {
+  validateSearch,
+  getSearchParams,
+  setSearchProps,
+  getResetParams
+}
+
+
+
+emits('register', searchMethods);
+
 
 </script>
 

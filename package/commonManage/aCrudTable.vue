@@ -7,9 +7,9 @@
 
           <template v-for="(item, index) in tableTransferPropsRef.columns.values()" :key="index" >
             <vxe-column v-if="item.type === 'seq'"    v-bind="item.$attrs" :type="'seq'"  ></vxe-column>
-            <vxe-column v-else-if="item.type === 'checkbox'"    v-bind="item.$attrs"  ></vxe-column>
-            <vxe-column v-else-if="item.type === 'radio'"  v-bind="item.$attrs" ></vxe-column>
-            <vxe-column v-else-if="item.type === 'expand'"    v-bind="item.$attrs"  ></vxe-column>
+            <vxe-column v-else-if="item.type === 'checkbox'"    v-bind="item.$attrs"  :type="'checkbox'"  ></vxe-column>
+            <vxe-column v-else-if="item.type === 'radio'"  v-bind="item.$attrs"  :type="'radio'" ></vxe-column>
+            <vxe-column v-else-if="item.type === 'expand'"    v-bind="item.$attrs"   :type="'expand'" ></vxe-column>
             <vxe-column  v-else   :sortable="tableTransferPropsRef.isSortable !== false && item.sortable !== false"   :field="item.name" :title="item.text"  v-bind="item.$attrs">
               <template #header>
                 <span>{{item.fun ? item.fun(formState) : item.text}}</span>
@@ -55,32 +55,32 @@
 
 <script setup lang="ts">
 import {useGetTable} from "../hooks/useGetData";
-import {render, h, ref, onMounted, defineProps, watch} from "vue";
-import {valueToName} from "../utils";
+import {render, h, ref, onMounted, defineProps, watch, getCurrentInstance} from "vue";
+import {deepCopy, valueToName} from "../utils";
 import {message} from "ant-design-vue";
+const { proxy } = getCurrentInstance();
+const tableDefaultProps = ref({...{
+    maxHeight: "600px",
+    align: "center",
+    loading: false,
+    columnConfig:{ isCurrent: true, isHover: true },
+    rowConfig: { isCurrent: true, isHover: true },
+    headerCellClassName: () => 'headerCellClassName',
+    cellClassName: () => 'cellClassName',
+    stripe: true,
+    size: 'mini',
+    loadingConfig:{ icon: 'vxe-icon-indicator roll', text: '正在拼命加载中...' },
+    class: "mytable-style" ,
+    data:"tableData",
+    menuWidth: 150,
+    isMenu: true,
+    immediate: true,
+    isPagination: true,
 
-const tableDefaultProps = ref({
-  maxHeight: "600px",
-  align: "center",
-  loading: false,
-  columnConfig:{ isCurrent: true, isHover: true },
-  rowConfig: { isCurrent: true, isHover: true },
-  headerCellClassName: () => 'headerCellClassName',
-  cellClassName: () => 'cellClassName',
-  stripe: true,
-  size: 'mini',
-  loadingConfig:{ icon: 'vxe-icon-indicator roll', text: '正在拼命加载中...' },
-  class: "mytable-style" ,
-  data:"tableData",
-  menuWidth: 150,
-  isMenu: true,
-  immediate: true,
-  isPagination: true,
-
-})
+  }, ...proxy.$crudGlobalTableConfig??{}})
 
 
- const emits = defineEmits(['update:formState', 'register']);
+ const emits = defineEmits([ 'register']);
 
 
  const tableTotal = ref(0);
@@ -107,28 +107,51 @@ const paginationTransferPropsRef = ref();
  })
 
 watch(currentPage, (data) => {
+  // 默认设置page
   tableTransferPropsRef.value?.pagination?.pageField ?
       tableTransferPropsRef.value.params[tableTransferPropsRef.value?.pagination.pageField]  = data:
       tableTransferPropsRef.value.params.page  = data;
   getData();
 })
 watch(pageSize, (data) => {
+  // 默认设置limit字段
   tableTransferPropsRef.value?.pagination?.pageSizeField ?
       tableTransferPropsRef.value.params[tableTransferPropsRef.value?.pagination.pageSizeField]  = data:
       tableTransferPropsRef.value.params.limit  = data;
   getData();
 })
 
+// 初始化当前页和每页条数
+function initPage(params) {
+  currentPage.value = tableTransferPropsRef.value?.pagination?.pageField ?
+       params[tableTransferPropsRef.value?.pagination.pageField] :
+      params.page;
+  pageSize.value = tableTransferPropsRef.value?.pagination?.pageSizeField ?
+      params[tableTransferPropsRef.value?.pagination.pageSizeField] :
+       params.limit;
+}
+
+
 
 // 设置 table props
 function setTableProps(props) {
   tableTransferPropsRef.value = props
+  // 设置 table props， 由默认props 和 传入的 props 组成
     tablePropsRef.value = { ...tableDefaultProps.value, ...tableTransferPropsRef.value?.$attrs??{}};
+  console.log(tablePropsRef.value);
+
+  // 设置分页参数 由默认分页参数 和 传入的分页参数 组成
   paginationConfig.value = { ...tableDefaultPaginationConfig.value, ...tableTransferPropsRef.value?.pagination??{}};
-  resetParams.value = { ...tableTransferPropsRef.value.params};
-  console.log(paginationConfig.value);
+
+  // 设置初始页和初始每页条数 默认设置page和limit字段
+  resetParams.value = deepCopy(tableTransferPropsRef.value.params);
+  initPage(deepCopy(tableTransferPropsRef.value.params));
 
 
+  // 判断初始化时是否需要请求数据
+  if (tableTransferPropsRef.value.immediate !== false) {
+    getData();
+  }
 }
 
 function setPaginationProps(props) {
@@ -154,6 +177,19 @@ function getTotalPagination() {
   return tableTotal.value;
 }
 
+// 设置最新参数
+function setTableParams(params) {
+   tableTransferPropsRef.value.params = deepCopy({...tableTransferPropsRef.value.params, ...params});
+}
+
+
+// 重置
+function reset() {
+  tableTransferPropsRef.value.params = deepCopy(resetParams.value);
+  initPage(deepCopy(resetParams.value));
+  getData();
+}
+
  const  vRender =  {
    updated: async (el, ctx) => {
      render(await ctx.value, el)
@@ -164,6 +200,8 @@ function getTotalPagination() {
  // 导出外部需要使用的方法
  const tableMethods = {
    getData,
+   reset,
+   setTableParams,
    setTableProps,
    setCurrentPagination,
    getCurrentPagination,

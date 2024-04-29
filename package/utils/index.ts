@@ -77,7 +77,37 @@ export const withInstall = <T>(component: T, alias?: string) => {
   return component as T & Plugin;
 };
 
+export function deepCopy(obj, clones = new WeakMap()) {
+  // 如果不是对象或者是 null，则直接返回该值
+  if (typeof obj !== 'object' || obj === null) {
+    return obj;
+  }
 
+  // 如果已经复制过该对象，则直接返回复制后的对象
+  if (clones.has(obj)) {
+    return clones.get(obj);
+  }
+
+  // 创建一个新对象，用于存储深拷贝的结果
+  let newObj = Array.isArray(obj) ? [] : {};
+
+  // 将当前对象记录到 clones 中，防止循环引用
+  clones.set(obj, newObj);
+
+  // 复制函数
+  if (typeof obj === 'function') {
+    // 如果是函数，则直接复制函数
+    newObj = obj.bind({});
+  } else {
+    // 遍历对象的每个属性
+    for (let key in obj) {
+      // 递归地对每个属性进行深拷贝
+      newObj[key] = deepCopy(obj[key], clones);
+    }
+  }
+
+  return newObj;
+}
 
 export const valueToName = (arr, value , targetKey, returnKey) => {
 
@@ -104,8 +134,8 @@ export const getOptionList = async (api, params, relationField, childrenField = 
   return data.map((item) => {
     const returnValue = {};
     if (relationField) {
-      returnValue['name'] = item[relationField[0]];
-      returnValue['value'] = item[relationField[1]];
+      returnValue['name'] = item[relationField.name];
+      returnValue['value'] = item[relationField.value];
 
       if (childrenField && item[childrenField['field']]) {
         returnValue[childrenField['field']] = item[childrenField['field']]?.map(child => {

@@ -1,34 +1,34 @@
 <!--新增修改查看统一页面-->
 <template>
   <a-modal
-    v-if="currentPageData && visible"
-    v-model:visible="visible"
-    :title="currentPageData.INFO[type].title"
-    :wrap-class-name="!width ? 'full-modal' : ''"
+    v-if="aCardFormRef.visible"
+    v-model:visible="aCardFormRef.visible"
+    :title="aCardFormRef.title"
+    :wrap-class-name="!aCardFormRef.width ? 'full-modal' : ''"
     :confirmLoading="loading"
-    @ok.prevent="handleSubmit"
-    @cancel="handleCancel"
-    :width="width || '100%'"
+    @ok.prevent="handleFormSubmit"
+    @cancel="handleFormCancel"
+    :width="aCardFormRef.width || '100%'"
   >
     <div
       class="aCardForm"
-      :style="{ maxHeight: 'calc(95vh - 60px)', height: height ? height : 'calc(95vh - 60px)' }"
+      :style="{ maxHeight: 'calc(95vh - 60px)', height: aCardFormRef.height ? aCardFormRef.height : 'calc(95vh - 60px)' }"
       style="overflow: auto"
     >
-      <div class="mb-2 form-card" v-if="formData?.length > 0">
-        <a-card v-for="item in formData" :bordered="false">
+      <div class="mb-2 form-card" v-if="aCardFormRef.formData?.length > 0">
+        <a-card v-for="item in aCardFormRef.formData" :bordered="false">
           <template #title v-if="item.title">
             <div >{{ item.title }}</div>
 
           </template>
           <FormInputItem
             :ref="(el) => setItemRefs(el, item)"
-            :visible="addVisible"
-            v-model:formState="formState"
+            :visible="aCardFormRef.visible"
+            v-model:formState="aCardFormRef.formState"
             :is-disabled="isTableDisabled"
             :formData="item.formList()"
-            :type="type"
-            :formValidate="item.formValidate()"
+            :type="aCardFormRef.type"
+            :formValidate="validateList"
             :labelCol="{ span: 8 }"
             :wrapperCol="{ span: 16 }"
           />
@@ -36,32 +36,29 @@
         </a-card>
       </div>
 
-      <a-card v-if="currentPageData.tableCom">
-        <template #title>
-          <div v-if="currentPageData?.other?.tableComTitle">{{
-            currentPageData?.other?.tableComTitle
-          }}</div>
-        </template>
+      <a-card v-if="aCardFormRef.detailComponent">
         <component
-          :is="currentPageData.tableCom"
-          :ref="name"
-          :formState="formState"
+          :is="aCardFormRef.detailComponent"
+          :ref="aCardFormRef.name"
           :is-disabled="isTableDisabled"
-          :visible="addVisible"
-          :type="type"
-          v-model:tData="formState"
+          :visible="aCardFormRef.visible"
+          :type="aCardFormRef.type"
+          v-model:tData="aCardFormRef.formState"
         ></component>
       </a-card>
     </div>
     <template #footer>
-      <div :style="{ textAlign: footerPosition }">
+      <div :style="{ textAlign: aCardFormRef.footerPosition }">
 
 
-        <slot :formState="formState">
-          <template v-if="props.type != 'show'">
-            <a-button @click="handleCancel"   >取消</a-button>
-            <a-button type="primary" @click="handleSubmit"  >确定</a-button>
-          </template>
+        <slot :formState="aCardFormRef.formState">
+<!--          show 默认不显示确认取消按钮，除非手动配置显示-->
+
+            <a-button @click="handleFormCancel"   v-if="aCardFormRef.type != 'show' || aCardFormRef.showDefaultFooterCancel === true">
+              {{ aCardFormRef.FooterCancelText }}</a-button>
+            <a-button type="primary" @click="handleFormSubmit"   v-if="aCardFormRef.type != 'show' || aCardFormRef.showDefaultFooterSubmit === true">
+              {{ aCardFormRef.FooterSubmitText }}</a-button>
+
 
         </slot>
       </div>
@@ -72,173 +69,178 @@
 <script lang="ts" setup>
   import {
     computed,
-    createVNode,
-    defineAsyncComponent,
     getCurrentInstance,
-    markRaw,
-    reactive,
     ref,
     toRaw,
     watch,
-    defineProps
   } from 'vue';
   import { Form, message } from 'ant-design-vue';
   import FormInputItem from './FormInputItem/';
 
   const { proxy } = getCurrentInstance();
-  const props = defineProps({
-    footerPosition: { type: String, default: 'right' },
-    addVisible: { type: Boolean },
-    type: { type: String, default: 'insert' },
-    row: { type: Object },
-    name: { type: String },
-    currentPageData: {},
-    width: { type: String },
-    height: { type: String },
-  });
-  const emit = defineEmits(['update:addVisible', 'refreshList']);
 
-  const visible = ref(props.addVisible);
-  const fileList = ref([]);
-  const useForm = Form.useForm;
-  const roleList = ref([]);
-  const formRefBase = ref<any>([]);
-  const formState = ref<object>();
-  const formData = ref<[]>([]);
+  // props集合
+  const aCardFormRef = ref();
+  // 默认props
+  const aCardDefaultFormRef = ref({...{
+      footerPosition: 'right',
+      visible: false,
+      type: 'insert',
+      row: {},
+      name: '',
+      width: '',
+      height: '',
+      FooterCancelText: '取消',
+      FooterSubmitText: '确定',
+    }, ...proxy.$crudGlobalFormConfig??{}});
+  // 外部传入props
+  const formTransferPropsRef = ref();
+
+  const emits = defineEmits(['register', 'formCancel', 'formSubmit']);
+
   const loading = ref(false);
   let itemRefs = ref([]);
-
+  const validateList = ref({});
   const isTableDisabled = computed(() => {
-    return props.type == 'show' || props.type == 'check';
+    return aCardFormRef.value.type == 'show' || aCardFormRef.value.type == 'check';
   });
 
-  watch(
-    () => props.addVisible,
-    async (data) => {
-      visible.value = data;
-      for (const ref of itemRefs.value) {
-        //ref && ref.clear();
-      }
+  watch(() => aCardFormRef.value, (newVal, oldVal) => {
+    console.log(newVal, oldVal);
+    //newVal && initForm();
+  }, {deep: true, immediate: true});
 
-      if (!data) {
-        return;
-      }
 
-      formData.value = props.currentPageData.FORM;
+  function initForm() {
 
-      // 重新初始化validate，加入数据 以便动态校验
-      formData.value.forEach((form, index) => {
-        let newValidate = {};
-        const oldValidate = form.formValidate();
-        Object.keys(oldValidate).forEach((key) => {
-          newValidate[key] = oldValidate[key].map((item) => {
-            if (item.validator) {
-              item.validator = item.validator.bind(proxy, formState);
-            }
-            return toRaw(item);
-          });
-        });
-        formData.value[index].formValidate = () => newValidate;
-      });
-      formState.value = JSON.parse(JSON.stringify(props.row));
-      props.currentPageData.other?.detailField
-        ? (formState.value[props.currentPageData.other.detailField] = [])
-        : '';
+    // for (const ref of itemRefs.value) {
+    //   //ref && ref.clear();
+    // }
 
-      itemRefs.value = [];
-
-      if (
-        props.type == 'update' ||
-        props.type == 'examine' ||
-        props.type == 'show' ||
-        props.type == 'check'
-      ) {
-        formState.value = JSON.parse(JSON.stringify(props.row));
-      }
-      let formList = [];
-      formData.value.forEach((item) => {
-        formList = [...item.formList()];
-      });
-      formList.forEach((item) => {
-        if (item.type == 'upload') {
-          // if (props.type == 'update' || props.type == 'show') {
-          //   if (item.uploadField.type == 'string' && formState.value[item.uploadField.field.url]) {
-          //     formState.value[item.name] = [];
-          //     formState.value[item.name][0] = { name: formState.value[item.uploadField.field.name] ?? formState.value[item.uploadField.field.url], url: formState.value[item.uploadField.field.url] };
-          //   }
-          // } else {
-          //   formState.value[item.name] = [];
-          // }
-        }
-      });
-    },
-    { immediate: true },
-  );
-
-  function setItemRefs(el, item) {
-    itemRefs.value.push(el);
-  }
-
-  function handleCancel() {
-    emit('update:addVisible', false);
-  }
-
-  async function handleSubmit(params) {
-    console.log(formState.value, props.type);
-    if (props.type == 'show') {
-      emit('update:addVisible', false);
+    if (!aCardFormRef.value.visible) {
       return;
     }
-    let flag = true;
-    for (const ref of itemRefs.value) {
-     // console.log( 176, ref, await ref.submit()); // 提交两次
-      if (!(await ref.submit())) {
-        flag = false;
-      }
-    }
+
+    let formList = [];
+    validateList.value = {};
+    aCardFormRef.value.formData.forEach((item) => {
+      formList = [...item.formList()];
+    });
+   formList.forEach((item) => {
+     console.log(item);
+     // 自定义validator的 传入当前表单值以便动态校验
+     item[1].rules ? validateList.value[item[0]] = item[1].rules.map(ruleItem => {
+       if (ruleItem.validator) {
+        ruleItem.validator = ruleItem.validator.bind(proxy, aCardFormRef.value.formState);
+       }
+       return ruleItem;
+     }) : '';
+   });
+
+    console.log(validateList.value);
+  }
 
 
-    if (flag) {
-      // 如果有明细表 参数单独处理
-      console.log(props.currentPageData.tableCom, 'test');
-      if (props.currentPageData.tableCom) {
-        let tableErr = '';
-        console.log(proxy.$refs[props.name]);
+  function setFormProps(props) {
+    itemRefs.value = [];
+    formTransferPropsRef.value = props;
+      aCardFormRef.value = {...aCardDefaultFormRef.value, ...props};
+    console.log(aCardFormRef.value, props);
+   // initForm();
+  }
 
-        tableErr = (await proxy.$refs[props.name].validAllEvent()) ?? undefined;
+  function setItemRefs(el, item) {
+    el && itemRefs.value.push(el);
+  }
 
-        if (tableErr) {
-          return;
+
+
+  function handleFormCancel() {
+    setFormVisible(false);
+    emits('formCancel', getFormState())
+  }
+
+  function handleFormShow(t, formState) {
+    itemRefs.value = [];
+    console.log(t, formState, itemRefs.value);
+    aCardFormRef.value.type = t;
+    aCardFormRef.value.formState = formState;
+    initForm();
+  }
+
+
+  async function handleFormSubmit(params) {
+    // 查看模式不掉保存接口
+    if (aCardFormRef.value.type == 'show') {
+      setFormVisible(false);
+      return;
+    } else {
+      let flag = true;
+      for (const ref of itemRefs.value) {
+         console.log( 176, ref); // 提交两次
+        if (!(await ref.submit())) {
+          flag = false;
         }
       }
 
-      loading.value = true;
+      // 校验通过
+      if (flag) {
+        // 如果有明细表 参数单独处理
+        if (aCardFormRef.value.detailComponent) {
+          let tableErr = '';
+          console.log(proxy.$refs[aCardFormRef.value.name]);
 
-      props.currentPageData.INFO[props.type]
-        .api(params ? { ...formState.value, ...params } : formState.value)
-        .then((res) => {
-          if (res.code == 0) {
-            message.success('保存成功');
+          tableErr = (await proxy.$refs[aCardFormRef.value.name].validAllEvent()) ?? undefined;
 
-            // for (const ref of itemRefs.value) {
-            //
-            //   ref && ref.clear();
-            // }
-
-            emit('update:addVisible', false);
-            emit('refreshList', '');
-          } else {
-            message.error(res.msg);
+          if (tableErr) {
+            return;
           }
-          loading.value = false;
-        })
-        .catch((err) => {
-          loading.value = false;
-        });
+        }
+        loading.value = true;
+
+        aCardFormRef.value.typeInfo[aCardFormRef.value.type]
+            .api(params ? { ...aCardFormRef.value.formState, ...params } : aCardFormRef.value.formState)
+            .then((res) => {
+              if (res.code == 0) {
+                message.success('保存成功');
+              } else {
+                message.error(res.msg || '保存失败');
+              }
+              loading.value = false;
+            })
+            .catch((err) => {
+              loading.value = false;
+              message.error( '保存失败');
+            });
+      }
     }
+
   }
 
-  defineExpose({ handleSubmit });
+  function getFormState() {
+    return aCardFormRef.value.formState;
+  }
+
+  function getFormRefData() {
+    return aCardFormRef.value;
+  }
+
+  function setFormVisible(visible) {
+    aCardFormRef.value.visible = visible;
+  }
+
+
+  const formMethods = {
+    setFormProps,
+    getFormState,
+    handleFormShow,
+    getFormRefData,
+    setFormVisible
+  }
+
+
+
+  emits('register', formMethods);
 </script>
 <script lang="ts">
   export default {

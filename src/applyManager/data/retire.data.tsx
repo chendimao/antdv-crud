@@ -5,6 +5,7 @@ import http from '../../util/http';
 import {valueToName} from "../../../package/utils";
 import {web_archivesManagement_getByGb25, web_archivesManagement_getByGb147} from '../../api/index';
 import dayjs from 'dayjs';
+import {testValidate} from "./fun";
 const searchForm = [
   { text: '单位名称', name: 'unitName', type: 'text' },
   // {text: '电话', name: 'phone', type: 'text' },
@@ -51,6 +52,14 @@ const table = [
     text: '序号',
     type: 'seq',
     $attrs: { width: '100',fixed: 'left'},
+    style: '',
+    class: '',
+
+    labelCol: { style: { width: '130px' } },
+  },  {
+    text: '多选',
+    type: 'checkbox',
+    $attrs: { width: '50',fixed: 'left'},
     style: '',
     class: '',
 
@@ -191,7 +200,6 @@ const base = [
     text: '职称',
     type: 'origin',
     name: 'professionalTitlesName',
-
     span: 8,
     labelCol: { style: { width: '100px' } },
     class: '',
@@ -211,6 +219,10 @@ const base = [
     name: 'beginTime',
     span: 8,
     style: '',
+    rules: [
+      { required: true, message: '请选择退休时间', trigger: 'blur' },
+      { validator: testValidate, trigger: 'change' },
+    ],
     class: '',
     labelCol: { style: { width: '100px' } },
   },
@@ -231,17 +243,8 @@ const base = [
   },
 ];
 
-// 新增form验证
-const validateForm = (() => ({
-  szksName: [{ required: true, message: '请输入科室名称', trigger: 'blur' }],
 
-  sex: [{ required: true, message: '请选择性别', trigger: 'blur' }],
-  personnelCategoryName: [{ required: true, message: '请选择人员类别', trigger: 'blur' }],
-  professionalTitlesName: [{ required: true, message: '请选择职称', trigger: 'blur' }],
-  createTime: [{ required: true, message: '请选择申请时间', trigger: 'blur' }],
-  beginTime: [{ required: true, message: '请选择退休时间', trigger: 'blur' }],
-  path: [{ required: true, message: '请选择退休资料上传', trigger: 'blur' }],
-}));
+
 
 // 新增初始化数据
 const resetForm = (()=>({"applicationDept":"","limit":10,"page":1,"roleid":3,"states":"", name: '', beginTime: ''}));
@@ -258,16 +261,12 @@ const tableForm: Function = (() =>
 // 封装页面统一数据
 export default {
   title: '退休申请管理',
-  INFO: {
+  typeInfo: {
     insert: { api: web_alterationApply_insertOrUpdate, title: '新增退休申请' },
     update: { api: web_alterationApply_insertOrUpdate, title: '编辑退休申请' },
     show: { title: '查看退休申请' },
   },
-  API: {
-    getList: web_alterationApply_getByList,
-    remove: web_alterationApply_getByList,
-  },
-  FORM: [{ formList: baseForm, formValidate: validateForm, title: '退休申请信息' }],
+  formData: [{ formList: baseForm,  title: '退休申请信息' }],
   resetForm,
   tableForm,
   baseForm,
