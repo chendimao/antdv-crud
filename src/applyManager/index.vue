@@ -10,10 +10,9 @@
       </div>
       <a-crud-search ref="searchRef"
                      @register="registerSearch"
-                     @search="getSearch"
                      >
         <a-button
-            @click="handleShow('insert')"
+            @click="handleFormShow('insert', searchData.resetForm())"
             type="primary"
             style="float: left; magin-top: 10px"
             size="middle"
@@ -33,7 +32,8 @@
             @register="registerTable"
           >
             <template #default="{ row }">
-              <a-button @click="handleShow('show', row)">查看</a-button>
+              <a-button type="link" @click="handleFormShow('show', row)">查看</a-button>
+              <a-button type="link" @click="handleFormShow('update', row)">编辑</a-button>
             </template>
           </a-crud-table>
         </div>
@@ -41,33 +41,31 @@
     </a-row>
   </a-card>
   <div>
-    <a-crud-form
-        @register="registerForm"
-    />
+    <a-crud-form @register="registerForm"/>
   </div>
   <!-- </PageWrapper> -->
 </template>
 <script lang="ts" setup>
   import { defineComponent, getCurrentInstance, onMounted, reactive, ref } from 'vue';
 
-  import retireData from './data/retire.data.tsx';
-  import searchData from './data/retire.search';
+  import retireData from './data/form.tsx';
+  import searchData from './data/search';
   import {
     PlusOutlined,
 
   } from '@ant-design/icons-vue';
   import { web_archivesManagement_getManagement_details, web_alterationApply_getByList } from '../api/';
 
+const {proxy } = getCurrentInstance() as any;
 
   import dayjs from 'dayjs';
-  import {useTable} from "../../package/hooks/useTable";
+  import tableData from "./data/table";
+  import antdCrud from '../../package/index.js';
 
-
-  const currentPage = ref<any>();
   const addVisible = ref(false);
   const type = ref('insert');
-  const resetForm = ref();
   const currentRow = ref({});
+  const resetForm = ref();
   const [
     {
       registerTable,
@@ -82,11 +80,11 @@
       getSearch,
       resetSearch,
       reset}
-  ]= useTable(
+  ]= antdCrud.useCrudTable(
       {
         table: {
           api: web_alterationApply_getByList,
-          columns: retireData.tableForm(),
+          columns: tableData.tableForm(),
           params: searchData.resetForm(),
           isMenu: true,
           menuWidth: 300,
@@ -104,8 +102,9 @@
           },
         },
         search: {
-          searchForm: searchData.searchForm(),
+          formData: searchData.searchForm(),
           params: searchData.resetForm(),
+
         },
         form: {
           title: retireData.title,
@@ -114,6 +113,7 @@
           formData: retireData.formData,
           visible: addVisible,
           formState: currentRow,
+          initData: searchData.resetForm(),
           width: '80%',
 
           height: '350px',
@@ -126,22 +126,10 @@
 
   }
 
-  async function handleShow(t, row: any = {}) {
-
-    addVisible.value = true;
-    type.value = t;
-
-    if (type.value == 'update' || type.value == 'show') {
-      currentRow.value = { ...row };
-    } else if (type.value == 'insert') {
-
-      currentRow.value =searchData.resetForm();
-
-    }
-    console.log(type.value, currentRow.value);
-    await handleFormShow(type.value, currentRow.value);
-
+  function test(res) {
+    console.log(res);
   }
+
 
 </script>
 <style scoped lang="less">

@@ -7,7 +7,6 @@ const search = [
     name: 'applicationDept',
     span: 5,
     style: 'min-width: 260px;',
-    rules: [{required: true, message: '请输入单位名称', trigger: 'blur'}],
     labelCol: {style: {width: '90px'}},
     computedFun: [
       {type: 'function', fun: testFun, immediate: true}

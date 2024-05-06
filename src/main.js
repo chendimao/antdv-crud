@@ -1,7 +1,6 @@
 import { createApp } from 'vue'
 import './style.css'
 import App from './App.vue'
- //import antdCrud from '../dist/antdv-crud.es.js';
  import antdCrud from '../package/index.js';
 import VXETable from "vxe-table";
 import antd from 'ant-design-vue';
@@ -24,7 +23,8 @@ app.use(antd);
  app.use(
      antdCrud.install(app,
      {
-         formConfig: {FooterCancelText: '退出', FooterSubmitText: '保存'}
+         formConfig: {FooterCancelText: '退出', FooterSubmitText: '保存'},
+         searchConfig: {searchText: '搜索', resetText: '重载'}
      })
  );
 

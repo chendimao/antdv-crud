@@ -10,7 +10,7 @@
             <vxe-column v-else-if="item.type === 'checkbox'"    v-bind="item.$attrs"  :type="'checkbox'"  ></vxe-column>
             <vxe-column v-else-if="item.type === 'radio'"  v-bind="item.$attrs"  :type="'radio'" ></vxe-column>
             <vxe-column v-else-if="item.type === 'expand'"    v-bind="item.$attrs"   :type="'expand'" ></vxe-column>
-            <vxe-column  v-else   :sortable="tableTransferPropsRef.isSortable !== false && item.sortable !== false"   :field="item.name" :title="item.text"  v-bind="item.$attrs">
+            <vxe-column  v-else   :sortable="tableTransferPropsRef.isSortable !== false && item.sortable !== false"   :field="item.name" :title="item.text" :width="item.width" v-bind="item.$attrs">
               <template #header>
                 <span>{{item.fun ? item.fun(formState) : item.text}}</span>
               </template>
@@ -23,7 +23,7 @@
                     <span v-else>{{ row[item.name] }}</span>
                   </span>
                 <span v-else-if="item.type == 'h'">
-              <div v-render="item.h(row, item)">
+              <div v-render="item.h(row, item, tableMethods)">
               </div>
           </span>
               </template>
@@ -95,7 +95,7 @@ const tableDefaultProps = ref({...{
 
  const paginationConfig = ref();
 const tableDefaultPaginationConfig = ref({
-
+    showTotal: (total) => `共 ${total} 条数据`,
    showSizeChanger: false,
    showLessItems: true
  });
@@ -108,14 +108,14 @@ const paginationTransferPropsRef = ref();
 
 watch(currentPage, (data) => {
   // 默认设置page
-  tableTransferPropsRef.value?.pagination?.pageField ?
+  tableTransferPropsRef.value?.pagination.isPagination !== false && tableTransferPropsRef.value?.pagination?.pageField ?
       tableTransferPropsRef.value.params[tableTransferPropsRef.value?.pagination.pageField]  = data:
       tableTransferPropsRef.value.params.page  = data;
   getData();
 })
 watch(pageSize, (data) => {
   // 默认设置limit字段
-  tableTransferPropsRef.value?.pagination?.pageSizeField ?
+  tableTransferPropsRef.value?.pagination.isPagination !== false && tableTransferPropsRef.value?.pagination?.pageSizeField ?
       tableTransferPropsRef.value.params[tableTransferPropsRef.value?.pagination.pageSizeField]  = data:
       tableTransferPropsRef.value.params.limit  = data;
   getData();
@@ -123,6 +123,11 @@ watch(pageSize, (data) => {
 
 // 初始化当前页和每页条数
 function initPage(params) {
+
+   if (tableTransferPropsRef.value?.pagination.isPagination === false) {
+     return;
+   }
+
   currentPage.value = tableTransferPropsRef.value?.pagination?.pageField ?
        params[tableTransferPropsRef.value?.pagination.pageField] :
       params.page;

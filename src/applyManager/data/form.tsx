@@ -47,107 +47,6 @@ const getState = (row) => {
 }
 // 列表显示的字段
 
-const table = [
-  {
-    text: '序号',
-    type: 'seq',
-    $attrs: { width: '100',fixed: 'left'},
-    style: '',
-    class: '',
-
-    labelCol: { style: { width: '130px' } },
-  },  {
-    text: '多选',
-    type: 'checkbox',
-    $attrs: { width: '50',fixed: 'left'},
-    style: '',
-    class: '',
-
-    labelCol: { style: { width: '130px' } },
-  },
-  {
-    text: '科室名称',
-    type: 'h',
-    width: '150',
-    name: 'szks',
-    h: async (data, item) => {
-      const colorArr = { 4: 'green', 5: 'red', 7: 'green', 8: 'red', }
-      // if (!item.option) {
-      //   const res =  await http.post({url: '/web/archivesManagement/getByGb25', params: {}});
-      //   item.option = res.data;
-      // }
-
-     // return h('span', { style: { color: colorArr[5] ?? '' }, innerHTML: valueToName(item.option, data.szks, 'dm', 'dmmc') })
-      return (<span style={{ color: colorArr[data.state] ?? '' }}>test</span>)
-    },
-    labelCol: { style: { width: '130px' } },
-    class: '',
-  },
-  {
-    text: '人员名称',
-    type: 'text',
-    name: 'name',
-    width: '120',
-    style: '',
-    class: '',
-    $attrs: {sortable: false},
-    labelCol: { style: { width: '130px' } },
-  },{
-    text: '住院病例号',
-    type: 'text',
-    name: 'medicalRecordNo',
-    span: 8,
-    style: '',
-    sortable: false,
-    class: '',
-    labelCol: { style: { width: '100px' } },
-  },{
-    text: '申请会诊医师',
-    type: 'text',
-    name: 'applicationDoctor',
-    span: 8,
-    style: '',
-    class: '',
-    labelCol: { style: { width: '100px' } },
-  },{
-    text: '申请时间',
-    type: 'h',
-    name: 'applicationTime',
-    span: 8,
-    style: '',
-    class: '',
-    h: (data) => {
-      return (<span>{dayjs(data.applicationTime).format('YYYY-MM-DD')}</span>)
-  },
-    labelCol: { style: { width: '100px' } },
-  },
-  {
-    text: '性别',
-    type: 'text',
-    name: 'sex',
-    option: sexList,
-    width: '100',
-    style: '',
-    class: '',
-    labelCol: { style: { width: '130px' } },
-  },
-
-
-  // {text: '退休资料上传', type: 'upload', name: 'picList', value: [], uploadField: {type: 'string', field: {name: 'path', url: 'path'}}, url: '/basic-api/web/archivesManagement/uploadPic',maxCount: 1,  labelCol: {style: {width: '130px'}},  width: '120px', class: '',   },
-  {
-    text: '状态',
-    type: 'h',
-    name: 'state',
-    width: '130',
-    option: stateList,
-    labelCol: { style: { width: '90px' } },
-    class: '',
-    h: (data) => {
-      const colorArr = { 4: 'green', 5: 'red', 7: 'green', 8: 'red', }
-      return h('span', { style: { color: colorArr[data.state] ?? '' }, innerHTML: valueToName(stateList, data.state, 'value', 'name') })
-    }
-  },
-];
 // 新增时显示字段
 
 const base = [
@@ -245,16 +144,8 @@ const base = [
 
 
 
-
-// 新增初始化数据
-const resetForm = (()=>({"applicationDept":"","limit":10,"page":1,"roleid":3,"states":"", name: '', beginTime: ''}));
-
 const baseForm: Function = ((): Map =>
         new Map(base.map(item => [item.name, item]))
-)
-
-const tableForm: Function = (() =>
-        new Map(table.map(item => [item.name, item]))
 )
 
 
@@ -267,7 +158,4 @@ export default {
     show: { title: '查看退休申请' },
   },
   formData: [{ formList: baseForm,  title: '退休申请信息' }],
-  resetForm,
-  tableForm,
-  baseForm,
 };

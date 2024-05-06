@@ -15,17 +15,17 @@
   }
   ```
 **npm**
-
+ 
 ```bash{4}
  npm i antdv-crud-vue3 -D
 ``` 
 **yarn**
-
+ 
 ```bash{4}
  yarn add antdv-crud-vue3 -D
 ``` 
 
-## 注册全局组件
+ ## 注册全局组件
 ```js{4}
 import antdCrud from 'antdv-crud';
 import 'antdv-crud/dist/style.css';
@@ -205,6 +205,17 @@ export default {
 
 ```
 
+
+***search效果图***
+![search image](../img/search.png)
+
+***table效果图***
+![search image](../img/table.png)
+
+***form效果图***
+![search image](../img/form.png)
+
+ 
 
 
 

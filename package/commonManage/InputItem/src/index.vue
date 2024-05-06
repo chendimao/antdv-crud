@@ -16,7 +16,6 @@
                   <a-input
                       :disabled="isDisabled  || item.disabled"
                       size="default"
-                      @change="inputChange(inputValue)"
                       v-model:value="inputValue"
                       v-bind="item.$attrs"
                       type="text" >
@@ -30,7 +29,6 @@
                   <a-textarea      v-bind="item.$attrs" :disabled="isDisabled  || item.disabled"
                                 size="default"
 
-                                @change="inputChange(inputValue)"
                                 v-model:value="inputValue" :rows="item.rows" />
                 </template>
                 <template v-else-if="item.type == 'select'">
@@ -42,7 +40,6 @@
                       :allowClear="item.allowClear"
                       :show-search="item.showSearch"
                       :disabled="isDisabled  || item.disabled"
-                      @change="inputChange(inputValue)"
                       :options="item.option"
                       :filter-option="filterOption"
                       v-bind="item.$attrs"
@@ -84,7 +81,6 @@
                       mode="multiple"
                       v-model:value="inputValue"
                       :disabled="isDisabled  || item.disabled"
-                      @change="inputChange(inputValue)"
                       style="width: 100%;border: 0;height: 30px;border-bottom: 1px solid #ccc;"
                       v-bind="item.$attrs"
                   >
@@ -94,19 +90,19 @@
 
                 </template>
                 <template v-else-if="item.type == 'datetime'">
-                  <a-date-picker      style="width: 100%;"  v-model:value="inputValue" valueFormat="YYYY-MM-DD HH:mm:ss" show-time format="YYYY-MM-DD HH:mm:ss" :disabled="isDisabled  || item.disabled" size="default" @change="inputChange(inputValue)"  v-bind="item.$attrs"/>
+                  <a-date-picker      style="width: 100%;"  v-model:value="inputValue" valueFormat="YYYY-MM-DD HH:mm:ss" show-time format="YYYY-MM-DD HH:mm:ss" :disabled="isDisabled  || item.disabled" size="default"   v-bind="item.$attrs"/>
                 </template>
                 <template v-else-if="item.type == 'date'">
-                  <a-date-picker       style="width: 100%;"  v-model:value="inputValue" valueFormat="YYYY-MM-DD" format="YYYY-MM-DD" :disabled="isDisabled  || item.disabled" size="default" @change="inputChange(inputValue)"  v-bind="item.$attrs"/>
+                  <a-date-picker       style="width: 100%;"  v-model:value="inputValue" valueFormat="YYYY-MM-DD" format="YYYY-MM-DD" :disabled="isDisabled  || item.disabled" size="default"   v-bind="item.$attrs"/>
                 </template>
                 <template v-else-if="item.type == 'year'">
-                  <a-date-picker        style="width: 100%;"  v-model:value="inputValue"  valueFormat="YYYY"   format="YYYY"   picker="year" :disabled="isDisabled  || item.disabled" size="default" @change="inputChange(inputValue)"  v-bind="item.$attrs"/>
+                  <a-date-picker        style="width: 100%;"  v-model:value="inputValue"  valueFormat="YYYY"   format="YYYY"   picker="year" :disabled="isDisabled  || item.disabled" size="default"   v-bind="item.$attrs"/>
                 </template>
                 <template v-else-if="item.type == 'month'">
-                  <a-date-picker        style="width: 100%;" v-model:value="inputValue"  valueFormat="MM"  format="MM"  picker="month" :disabled="isDisabled  || item.disabled" size="default" @change="inputChange(inputValue)"  v-bind="item.$attrs"/>
+                  <a-date-picker        style="width: 100%;" v-model:value="inputValue"  valueFormat="MM"  format="MM"  picker="month" :disabled="isDisabled  || item.disabled" size="default"  v-bind="item.$attrs"/>
                 </template>
                 <template v-else-if="item.type == 'daterange'">
-                  <a-range-picker   style="width: 100%;" :picker="item.picker" v-model:value="inputValue"   :disabled="isDisabled  || item.disabled" size="default" @change="inputChange(inputValue)"  v-bind="item.$attrs"/>
+                  <a-range-picker   style="width: 100%;" :picker="item.picker" v-model:value="inputValue"   :disabled="isDisabled  || item.disabled" size="default"   v-bind="item.$attrs"/>
                 </template>
                 <template v-else-if="item.type == 'upload' && isArray(inputValue)">
                   <a-upload
@@ -338,6 +334,13 @@ watch(() => props.value, async (data) => {
 
 
 }, {immediate: true})
+
+watch(() => inputValue.value, (data) => {
+  console.log(data);
+  inputChange(data);
+})
+
+
 const filterOption = (input: string, option: any, fieldNames: any) => {
   return option.name.toLowerCase().indexOf(input.toLowerCase()) >= 0;
 };

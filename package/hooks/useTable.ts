@@ -7,21 +7,6 @@ export function useTable(props) {
   const searchRef = ref();
   const formRef = ref();
 
-
-  function registerTable(Ref) {
-    tableRef.value = Ref;
-    Ref.setTableProps(props.table);
-  }
-  function registerSearch(Ref) {
-    searchRef.value = Ref;
-    Ref.setSearchProps(props.search);
-    console.log(searchRef.value);
-  }
-  function registerForm(Ref) {
-    formRef.value = Ref;
-    Ref.setFormProps(props.form);
-    console.log(formRef.value);
-  }
   function getTableRef(){
     return tableRef.value;
   }
@@ -31,6 +16,23 @@ export function useTable(props) {
   }
   function getSearchRef(){
     return searchRef.value;
+  }
+
+
+
+  function registerTable(Ref) {
+    tableRef.value = Ref;
+    Ref.setTableProps(props.table, {searchRef, formRef});
+  }
+  function registerSearch(Ref) {
+    searchRef.value = Ref;
+    Ref.setSearchProps(props.search, {tableRef, formRef});
+    console.log(searchRef.value);
+  }
+  function registerForm(Ref) {
+    formRef.value = Ref;
+    Ref.setFormProps(props.form, {tableRef, searchRef});
+    console.log(formRef.value);
   }
 
   const methods = {

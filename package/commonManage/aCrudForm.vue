@@ -76,9 +76,12 @@
   } from 'vue';
   import { Form, message } from 'ant-design-vue';
   import FormInputItem from './FormInputItem/';
+  import {deepCopy} from "../utils";
 
   const { proxy } = getCurrentInstance();
 
+  const searchRef = ref();
+  const tableRef = ref();
   // props集合
   const aCardFormRef = ref();
   // 默认props
@@ -95,7 +98,7 @@
     }, ...proxy.$crudGlobalFormConfig??{}});
   // 外部传入props
   const formTransferPropsRef = ref();
-
+  const resetForm = ref();// 重置数据 修改时为当前行数据 新增时为resetForm数据
   const emits = defineEmits(['register', 'formCancel', 'formSubmit']);
 
   const loading = ref(false);
@@ -105,10 +108,6 @@
     return aCardFormRef.value.type == 'show' || aCardFormRef.value.type == 'check';
   });
 
-  watch(() => aCardFormRef.value, (newVal, oldVal) => {
-    console.log(newVal, oldVal);
-    //newVal && initForm();
-  }, {deep: true, immediate: true});
 
 
   function initForm() {
@@ -141,15 +140,18 @@
   }
 
 
-  function setFormProps(props) {
+  function setFormProps(props, ref) {
     itemRefs.value = [];
+    tableRef.value = ref.tableRef;
+    searchRef.value = ref.searchRef;
     formTransferPropsRef.value = props;
       aCardFormRef.value = {...aCardDefaultFormRef.value, ...props};
-    console.log(aCardFormRef.value, props);
+
    // initForm();
   }
 
   function setItemRefs(el, item) {
+    console.log(el);
     el && itemRefs.value.push(el);
   }
 
@@ -161,10 +163,13 @@
   }
 
   function handleFormShow(t, formState) {
+    console.log(t, formState);
+
     itemRefs.value = [];
-    console.log(t, formState, itemRefs.value);
+    setFormVisible(true);
     aCardFormRef.value.type = t;
-    aCardFormRef.value.formState = formState;
+    aCardFormRef.value.formState = deepCopy(formState);
+    resetForm.value = deepCopy(formState);
     initForm();
   }
 
@@ -177,7 +182,7 @@
     } else {
       let flag = true;
       for (const ref of itemRefs.value) {
-         console.log( 176, ref); // 提交两次
+       //  console.log( 176, ref.submit()); // 提交两次
         if (!(await ref.submit())) {
           flag = false;
         }
@@ -203,14 +208,26 @@
             .then((res) => {
               if (res.code == 0) {
                 message.success('保存成功');
+                setFormVisible(false);
+                if (tableRef.value && aCardFormRef.value.isTable !== false) {
+                  tableRef.value._value.getData();
+                } else {
+                  emits('formSubmit', res);
+                }
+
+
+
+
               } else {
                 message.error(res.msg || '保存失败');
+                emits('formSubmit', res);
               }
               loading.value = false;
             })
             .catch((err) => {
               loading.value = false;
               message.error( '保存失败');
+              emits('formSubmit', err);
             });
       }
     }
@@ -225,6 +242,10 @@
     return aCardFormRef.value;
   }
 
+  function getResetFormData() {
+    return deepCopy(resetForm.value);
+  }
+
   function setFormVisible(visible) {
     aCardFormRef.value.visible = visible;
   }
@@ -234,6 +255,7 @@
     setFormProps,
     getFormState,
     handleFormShow,
+    getResetFormData,
     getFormRefData,
     setFormVisible
   }

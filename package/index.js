@@ -4,6 +4,7 @@ import aCrudSearch from "./commonManage/aCrudSearch.vue";
 
  import crudUtil from "./utils/index.ts";
 import './utils/common.css';
+import {useTable as useCrudTable} from "./hooks/useTable.ts";
 const components = [
     aCrudForm,
     aCrudTable,
@@ -11,7 +12,8 @@ const components = [
 ];
 
 const install = function(Vue, config = undefined) {
-   Vue.config.globalProperties.$crudUtil = crudUtil; //匹配枚举字段
+   Vue.config.globalProperties.$crudUtil = crudUtil; //
+   Vue.config.globalProperties.$useCrudTable = useCrudTable; //
    Vue.config.globalProperties.$crudGlobalTableConfig = config?.tableConfig??{}; //table全局配置
    Vue.config.globalProperties.$crudGlobalSearchConfig = config?.searchConfig??{}; //search全局配置
    Vue.config.globalProperties.$crudGlobalFormConfig = config?.formConfig??{}; //form全局配置
@@ -22,6 +24,9 @@ const install = function(Vue, config = undefined) {
 
 };
 
+
 export default {
-  install
+  install,
+  useCrudTable,
+  crudUtil
 };

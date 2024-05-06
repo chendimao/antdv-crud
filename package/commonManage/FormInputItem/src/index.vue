@@ -47,9 +47,9 @@ const labelCol = reactive(props.labelCol);
 const wrapperCol = reactive(props.wrapperCol);
 const formState = ref(props.formState);
 const useForm = Form.useForm;
-const { validate, validateInfos } = useForm(
+const { validate, validateInfos, clearValidate } = useForm(
   formState,
-  Validate.value,
+  Validate,
 
 );
 
@@ -130,23 +130,20 @@ function inputChange(inputItem, value) {
 
 }
 async function submit() {
-  console.log('submit', );
-  console.log(await validate().catch(err => {
-    console.log(err);
-
-  }))
-
+  console.log(formState,
+      Validate,)
   const res = await validate().catch(err => {
-    clear();
+    console.log(err, 135);
     return false;
   })
-
+  //onst res2 = await formRef.value.validate();
+  console.log(res, 138);
  return !!res;
 
 }
 
 async function clear() {
-  formRef.value.clearValidate();
+      clearValidate();
 }
 
 
