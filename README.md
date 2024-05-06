@@ -10,8 +10,7 @@
     "ant-design-vue": "^3",  
     "less": "^4.2.0",
     "vite": ">=2.9.1",
-    "vxe-table": "^4",
-    "vue": "^3.2.31"
+    "vxe-table": "^4"
   }
   ```
 **npm**
