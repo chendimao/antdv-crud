@@ -71,5 +71,6 @@ export interface computedFun {
   fun?: Function, // type为function时的自定义方法
   paramsType?: 'query' | 'body', // 参数类型 query或者 body
   setField?: string, // 设置option后设置对应的value
+  immediate: boolean, // 是否首次立即执行
   childrenField?: object, // 多级下拉框children字段和value字段
 }

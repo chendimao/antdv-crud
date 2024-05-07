@@ -1,6 +1,5 @@
 # Ant Design Vue 3 CRUD 入门指南
-
-## 介绍
+ 
 ### Ant Design Vue 3 CRUD 插件是一个基于 Vue 3 和 Ant Design Vue 的通用增删改查（CRUD）功能插件。它旨在简化开发过程，为开发人员提供一个快速构建管理界面的解决方案，无需编写重复的 CRUD 功能。
 
 ## 安装
@@ -17,12 +16,12 @@
 **npm**
  
 ```bash{4}
- npm i antdv-crud-vue3 -D
+ npm i antdv-crud -D
 ``` 
 **yarn**
  
 ```bash{4}
- yarn add antdv-crud-vue3 -D
+ yarn add antdv-crud -D
 ``` 
 
  ## 注册全局组件
@@ -34,6 +33,8 @@ app.use(antdCrud);
 
 
 ``` 
+
+ 
 
 ## 基本使用
 ####  插件有三个基础组件，分别是搜索组件（查询）、表格组件（列表）和表单组件（新增修改）。每个组件都有自己的配置文件，用于配置组件的属性和行为。
@@ -61,6 +62,7 @@ import formData from './data/form';
 import searchData from './data/search';
 import tableData from './data/table';
 import { web_alterationApply_getByList } from '../api/';
+import antdCrud from 'antdv-crud';
 
 const {proxy } = getCurrentInstance() as any;
 
@@ -84,7 +86,7 @@ const [
         resetSearch,
         reset
     }
-] = proxy.$useCrudTable(
+] = antdCrud.useCrudTable(
 {
     table: {
     api: web_alterationApply_getByList,
@@ -116,7 +118,7 @@ const [
 
 ***form.ts***
 ```form.ts
-const base = [
+const base: inputFormModel[] = [
 
   {
     text: '人员名称',
@@ -150,7 +152,7 @@ export default {
 
 ***table.ts***
 ```table.ts
-const table = [
+const table: inputFormModel[] = [
      {
         text: '名称',
         type: 'text',
@@ -176,7 +178,7 @@ export default {
 
 ***search.ts***
 ```search.ts
-const search = [
+const search: inputFormModel[] = [
   {
   text: '名称',
     type: 'text',
@@ -221,4 +223,4 @@ export default {
 
 ## 更多
 
-具体查看github 地址： [antdv-crud-vue3](https://github.com/chendimao/antdv-crud).
+具体查看github 地址： [antdv-crud-vue3](https://github.com/chendimao/antdv-crud)。有问题联系qq：122803265

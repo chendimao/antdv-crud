@@ -122,13 +122,6 @@ const {proxy } = getCurrentInstance() as any;
       }
   );
 
-  function checkBoxChange(ev) {
-
-  }
-
-  function test(res) {
-    console.log(res);
-  }
 
 
 </script>

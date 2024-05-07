@@ -8,7 +8,7 @@ export default defineConfig({
     // https://vitepress.dev/reference/default-theme-config
     nav: [
       { text: '介绍', link: '/guide/introduce' },
-      { text: '示例', link: '/markdown-examples' }
+      { text: 'API示例', link: '/api-examples' }
     ],
 
     sidebar: [
@@ -16,13 +16,13 @@ export default defineConfig({
         text: '介绍',
         items: [
           { text: '入门指南', link: '/guide/introduce' },
-          { text: 'Runtime API Examples', link: '/api-examples' }
+          { text: 'API示例', link: '/api-examples' }
         ]
       }
     ],
 
     socialLinks: [
-      { icon: 'github', link: 'https://github.com/vuejs/vitepress' }
+      { icon: 'github', link: 'https://github.com/chendimao/antdv-crud' }
     ]
   }
 })
