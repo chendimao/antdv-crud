@@ -49,11 +49,14 @@ const search = [
 
 
 // 表单数据初始化
-const   resetForm = (() => (
-    {"applicationDept":"","limit":10,"page":1,"roleid":3,"states":"", name: '', applicationTime: ''}
+const   resetForm = ((xxx) => (
+
+    { "limit":10,"page":1,"roleid":3,"date":"", name: '' }
 ));
 
-const searchForm: Function = ((): Map =>
+const searchForm: Function = ((type): Map =>
+
+
   new Map(search.map(item => [item.name, item]))
 );
 

@@ -23,8 +23,8 @@ app.use(antd);
  app.use(
      antdCrud.install(app,
      {
-         formConfig: {FooterCancelText: '退出', FooterSubmitText: '保存'},
-         searchConfig: {searchText: '搜索', resetText: '重载'}
+         formConfig: {FooterCancelText: '退出234', FooterSubmitText: '保存234'},
+         searchConfig: {searchText: '搜索234', resetText: '重载234'}
      })
  );
 

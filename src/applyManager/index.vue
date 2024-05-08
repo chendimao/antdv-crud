@@ -12,7 +12,7 @@
                      @register="registerSearch"
                      >
         <a-button
-            @click="handleFormShow('insert', searchData.resetForm())"
+            @click="handleAddShow('insert', retireData.resetForm())"
             type="primary"
             style="float: left; magin-top: 10px"
             size="middle"
@@ -31,14 +31,15 @@
           <a-crud-table
             @register="registerTable"
           >
-            <template #default="{ row }">
-              <a-button type="link" @click="handleFormShow('show', row)">查看</a-button>
-              <a-button type="link" @click="handleFormShow('update', row)">编辑</a-button>
+            <template #default="{row}">
+              <a-button v-if="row.pid != 0" @click="handleAddShow('insert', row)">新建下级</a-button>
             </template>
           </a-crud-table>
         </div>
       </a-col>
     </a-row>
+
+
   </a-card>
   <div>
     <a-crud-form @register="registerForm"/>
@@ -58,14 +59,16 @@
 
 const {proxy } = getCurrentInstance() as any;
 
-  import dayjs from 'dayjs';
   import tableData from "./data/table";
   import antdCrud from '../../package/index.js';
-
-  const addVisible = ref(false);
-  const type = ref('insert');
-  const currentRow = ref({});
-  const resetForm = ref();
+  const checkboxConfig = ref({
+    checkAll: true,
+    checkAllText: '全选',
+    checkAllField: 'id',
+    checkMethod: ()=>{
+      return false;
+    }
+  });
   const [
     {
       registerTable,
@@ -89,10 +92,13 @@ const {proxy } = getCurrentInstance() as any;
           isMenu: true,
           menuWidth: 300,
           size: 'mini',
-          isSortable: true, // 是否开启排序，这是总开关，这里开启后，如果column中设置sortable: false，则该字段也不会排序
+          stripe: false,
+          isSortable: false, // 是否开启排序，这是总开关，这里开启后，如果column中设置sortable: false，则该字段也不会排序
           $attrs: {
             sortConfig:  {defaultSort:  {field: 'medicalRecordNo', order: 'asc'} },
-
+            treeConfig: { childrenField: 'thirdPhysicianList' },
+            onCheckboxChange: checkboxChange,
+        checkboxConfig: checkboxConfig
           },
           pagination: {
             isPagination: true,
@@ -108,14 +114,10 @@ const {proxy } = getCurrentInstance() as any;
         },
         form: {
           title: retireData.title,
-          type: type,
           typeInfo: retireData.typeInfo,
           formData: retireData.formData,
-          visible: addVisible,
-          formState: currentRow,
-          initData: searchData.resetForm(),
+          FooterCancelText: 'test',
           width: '80%',
-
           height: '350px',
           name: 'bmgl',
         },
@@ -123,6 +125,14 @@ const {proxy } = getCurrentInstance() as any;
   );
 
 
+ function handleAddShow(t, row) {
+
+
+   handleFormShow(t, {...retireData.resetForm(), pid: row.id});
+ }
+  function checkboxChange(e) {
+    console.log(e);
+  }
 
 </script>
 <style scoped lang="less">

@@ -7,10 +7,10 @@
 
           <template v-for="(item, index) in tableTransferPropsRef.columns.values()" :key="index" >
             <vxe-column v-if="item.type === 'seq'"    v-bind="item.$attrs" :type="'seq'"  ></vxe-column>
-            <vxe-column v-else-if="item.type === 'checkbox'"    v-bind="item.$attrs"  :type="'checkbox'"  ></vxe-column>
+            <vxe-column v-else-if="item.type === 'checkbox'"    v-bind="item.$attrs"  :type="'checkbox'"   ></vxe-column>
             <vxe-column v-else-if="item.type === 'radio'"  v-bind="item.$attrs"  :type="'radio'" ></vxe-column>
             <vxe-column v-else-if="item.type === 'expand'"    v-bind="item.$attrs"   :type="'expand'" ></vxe-column>
-            <vxe-column  v-else   :sortable="tableTransferPropsRef.isSortable !== false && item.sortable !== false"   :field="item.name" :title="item.text" :width="item.width" v-bind="item.$attrs">
+            <vxe-column  v-else   :sortable="tableTransferPropsRef.isSortable !== false && item.sortable !== false"   :field="item.name" :title="item.text" :width="item.width" v-bind="item.$attrs" >
               <template #header>
                 <span>{{item.fun ? item.fun(formState) : item.text}}</span>
               </template>
@@ -34,9 +34,23 @@
 
       <vxe-column field="a" title="操作" fixed="right" v-if="tableTransferPropsRef.isMenu"    :width="tableTransferPropsRef.menuWidth" >
         <template #default="{ row }">
+          <a-button type="link" v-if="tableTransferPropsRef.isView !== false" @click="handleFormShow('show', row)">
+            <template #icon v-if="tableTransferPropsRef.viewIcon">
+              <component v-if="tableTransferPropsRef.viewIcon" :is="tableTransferPropsRef.viewIcon"></component>
+
+            </template>
+            {{ tableTransferPropsRef?.viewText??'查看' }}</a-button>
+          <a-button type="link" v-if="tableTransferPropsRef.isEdit !== false" @click="handleFormShow('update', row)">
+            <template #icon v-if="tableTransferPropsRef.editIcon">
+              <component v-if="tableTransferPropsRef.editIcon" :is="tableTransferPropsRef.editIcon"></component>
+            </template>
+            {{ tableTransferPropsRef?.editText??'编辑' }}
+          </a-button>
 
           <slot :row="row"></slot>
         </template>
+
+
       </vxe-column>
     </vxe-table>
 
@@ -93,6 +107,10 @@ const tableDefaultProps = ref({...{
  const pageSize = ref(10);
  const resetParams = ref();
 
+ const formRef = ref();
+const searchRef = ref();
+
+
  const paginationConfig = ref();
 const tableDefaultPaginationConfig = ref({
     showTotal: (total) => `共 ${total} 条数据`,
@@ -139,10 +157,14 @@ function initPage(params) {
 
 
 // 设置 table props
-function setTableProps(props) {
+function setTableProps(props, ref) {
   tableTransferPropsRef.value = props
   // 设置 table props， 由默认props 和 传入的 props 组成
     tablePropsRef.value = { ...tableDefaultProps.value, ...tableTransferPropsRef.value?.$attrs??{}};
+
+  formRef.value = ref.formRef;
+  searchRef.value = ref.searchRef;
+
   console.log(tablePropsRef.value);
 
   // 设置分页参数 由默认分页参数 和 传入的分页参数 组成
@@ -202,6 +224,12 @@ function reset() {
  }
 
 
+ // 如果有查看和编辑
+ function handleFormShow(t, row) {
+   console.log(formRef.value);
+   formRef.value._value.handleFormShow(t, row);
+ }
+
  // 导出外部需要使用的方法
  const tableMethods = {
    getData,
@@ -239,12 +267,12 @@ export default {
 <style  lang="less">
 .vxeTableData {
   .headerCellClassName {
-    //background-color: #f7f7f7;
-    //color: black;
-    //font-size: 14px;
+    background-color: #f7f7f7;
+    color: black;
+    font-size: 14px;
   }
   .cellClassName {
-    //color: black;
+    color: black;
   }
 
 

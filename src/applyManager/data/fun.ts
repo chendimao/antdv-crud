@@ -8,6 +8,8 @@ export const testFun = (formState, data, type) => {
 export const testValidate = (form, val) => {
 
     console.log( form, val);
+
+
     return new Promise((resolve, reject) => {
         if (val) {
             resolve()
@@ -15,4 +17,13 @@ export const testValidate = (form, val) => {
             reject('请选择申请时间')
         }
     })
+}
+
+export const showDate = (formState, data, type) => {
+
+    if (formState.value.name  == '1') {
+        data.value.get('time').show = false;
+    } else {
+        data.value.get('time').show = true;
+    }
 }

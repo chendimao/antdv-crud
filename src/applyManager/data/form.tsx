@@ -2,10 +2,11 @@
 import {h} from 'vue';
 import { web_alterationApply_insertOrUpdate, web_alterationApply_getByList, web_archivesManagement_getManagement_details } from '../../api/index';
 import http from '../../util/http';
-import {valueToName} from "../../../package/utils";
+import {getOptionList, valueToName} from "../../../package/utils";
 import {web_archivesManagement_getByGb25, web_archivesManagement_getByGb147} from '../../api/index';
 import dayjs from 'dayjs';
-import {testValidate} from "./fun";
+import {showDate, testValidate} from "./fun";
+import {inputFormModel} from "../../../package/model";
 const searchForm = [
   { text: '单位名称', name: 'unitName', type: 'text' },
   // {text: '电话', name: 'phone', type: 'text' },
@@ -49,100 +50,45 @@ const getState = (row) => {
 
 // 新增时显示字段
 
-const base = [
+const base: inputFormModel[] = [
 
-  {
-    text: '人员名称',
-    type: 'origin',
-    name: 'name',
-    span: 8,
-    style: '',
-    class: '',
-    labelCol: { style: { width: '100px' } },
-  },{
-    text: '住院病例号',
-    type: 'origin',
-    name: 'medicalRecordNo',
-    span: 8,
-    style: '',
-    class: '',
-    labelCol: { style: { width: '100px' } },
-  },{
-    text: '申请会诊医师',
-    type: 'origin',
-    name: 'applicationDoctor',
-    span: 8,
-    style: '',
-    class: '',
-    labelCol: { style: { width: '100px' } },
-  },{
-    text: '申请时间',
-    type: 'origin',
-    name: 'applicationTime',
-    span: 8,
-    style: '',
-    class: '',
-    labelCol: { style: { width: '100px' } },
-  },
-  {
-    text: '性别',
-    type: 'origin',
-    name: 'sex',
-    option: sexList,
-    span: 8,
-    style: '',
-    class: '',
-    labelCol: { style: { width: '130px' } },
-  },
 
   {
     text: '职称',
-    type: 'origin',
-    name: 'professionalTitlesName',
+    type: 'text',
+    name: 'name',
     span: 8,
     labelCol: { style: { width: '100px' } },
+    rules:[
+      { required: true, message: '请输入姓名', trigger: 'blur'},
+      { validator: testValidate, trigger: 'blur'}
+    ],
+    computedFun: [
+      {type: 'function', fun: showDate , immediate: true},
+    ],
     class: '',
   },
   {
     text: '申请时间',
-    type: 'origin',
-    name: 'createTime',
+    type: 'date',
+    name: 'time',
     span: 8,
     style: '',
     class: '',
+    rules:[
+      { required: true, message: '请输入姓名', trigger: 'blur'},
+      { validator: testValidate, trigger: 'blur'}
+    ],
     labelCol: { style: { width: '130px' } },
   },
-  {
-    text: '退休时间',
-    type: 'date',
-    name: 'applicationTime',
-    span: 8,
-    style: '',
-    rules: [
-      { required: true, message: '请选择退休时间', trigger: 'blur' },
 
-    ],
-    class: '',
-    labelCol: { style: { width: '100px' } },
-  },
-
-  {
-    text: '上传退休资料',
-    type: 'upload',
-    name: 'path',
-    value: [],
-    uploadField: { type: 'string', field: { name: 'pathName', url: 'path' }, maxCount: 1 },
-    url: '/basic-api/web/archivesManagement/uploadPic',
-
-    labelCol: { style: { width: '110px' } },
-    wrapperCol: { span: 22 },
-    span: 8,
-    style: '',
-    class: '',
-  },
 ];
 
-
+const resetForm = () => ({
+  name: '',
+  time: '',
+  tablelist: []
+});
 
 const baseForm: Function = ((): Map =>
         new Map(base.map(item => [item.name, item]))
@@ -157,5 +103,7 @@ export default {
     update: { api: web_alterationApply_insertOrUpdate, title: '编辑退休申请' },
     show: { title: '查看退休申请' },
   },
-  formData: [{ formList: baseForm,  title: '退休申请信息' }],
+
+  formData: [{ formList: baseForm,  title: '' }],
+  resetForm,
 };
