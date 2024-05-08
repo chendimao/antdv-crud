@@ -209,13 +209,13 @@ export default {
 
 
 ***search效果图***
-![search image](../img/search.png)
+![search image](../public/img/search.png)
 
 ***table效果图***
-![search image](../img/table.png)
+![search image](../public/img/table.png)
 
 ***form效果图***
-![search image](../img/form.png)
+![search image](../public/img/form.png)
 
  
 

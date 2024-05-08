@@ -3,7 +3,7 @@ import aCrudTable from "./commonManage/aCrudTable.vue";
 import aCrudSearch from "./commonManage/aCrudSearch.vue";
 
  import crudUtil from "./utils/index.ts";
-import './utils/common.css';
+import './utils/common.less';
 import {useTable as useCrudTable} from "./hooks/useTable.ts";
 const components = [
     aCrudForm,

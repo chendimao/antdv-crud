@@ -239,12 +239,12 @@ export default {
 <style  lang="less">
 .vxeTableData {
   .headerCellClassName {
-    background-color: #f7f7f7;
-    color: black;
-    font-size: 14px;
+    //background-color: #f7f7f7;
+    //color: black;
+    //font-size: 14px;
   }
   .cellClassName {
-    color: black;
+    //color: black;
   }
 
 

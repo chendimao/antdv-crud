@@ -50,7 +50,7 @@ const search = [
 
 // 表单数据初始化
 const   resetForm = (() => (
-    {"applicationDept":"","limit":10,"page":1,"roleid":3,"states":"", name: '', beginTime: ''}
+    {"applicationDept":"","limit":10,"page":1,"roleid":3,"states":"", name: '', applicationTime: ''}
 ));
 
 const searchForm: Function = ((): Map =>

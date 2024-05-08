@@ -92,7 +92,7 @@ const {proxy } = getCurrentInstance() as any;
           isSortable: true, // 是否开启排序，这是总开关，这里开启后，如果column中设置sortable: false，则该字段也不会排序
           $attrs: {
             sortConfig:  {defaultSort:  {field: 'medicalRecordNo', order: 'asc'} },
-            onCheckboxChange: checkBoxChange
+
           },
           pagination: {
             isPagination: true,

@@ -115,12 +115,12 @@ const base = [
   {
     text: '退休时间',
     type: 'date',
-    name: 'beginTime',
+    name: 'applicationTime',
     span: 8,
     style: '',
     rules: [
       { required: true, message: '请选择退休时间', trigger: 'blur' },
-      { validator: testValidate, trigger: 'change' },
+
     ],
     class: '',
     labelCol: { style: { width: '100px' } },
