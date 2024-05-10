@@ -3,7 +3,7 @@
   <a-modal
     v-if="aCardFormRef.visible"
     v-model:visible="aCardFormRef.visible"
-    :title="aCardFormRef.title"
+    :title="aCardFormRef?.typeInfo[aCardFormRef?.type]?.title??aCardFormRef.title"
     :wrap-class-name="!aCardFormRef.width ? 'full-modal' : ''"
     :confirmLoading="loading"
     @ok.prevent="handleFormSubmit"

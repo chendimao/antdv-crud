@@ -69,6 +69,8 @@ const {proxy } = getCurrentInstance() as any;
       return false;
     }
   });
+
+
   const [
     {
       registerTable,
@@ -90,7 +92,9 @@ const {proxy } = getCurrentInstance() as any;
           columns: tableData.tableForm(),
           params: searchData.resetForm(),
           isMenu: true,
-          menuWidth: 300,
+           menuWidth: 300,
+          // editIcon: false,
+          // viewIcon: false,
           size: 'mini',
           stripe: false,
           isSortable: false, // 是否开启排序，这是总开关，这里开启后，如果column中设置sortable: false，则该字段也不会排序
@@ -102,9 +106,7 @@ const {proxy } = getCurrentInstance() as any;
           },
           pagination: {
             isPagination: true,
-            pageSizeOptions: ['10', '20', '30', '40', '50'],
-            showQuickJumper: true,
-            showSizeChanger: true,
+
           },
         },
         search: {

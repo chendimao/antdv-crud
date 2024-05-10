@@ -1,6 +1,6 @@
 {
   "name": "antdv-crud",
-  "version": "0.0.20",
+  "version": "0.0.23",
   "type": "module",
   "files": [
     "dist/*",
@@ -20,7 +20,7 @@
     "docs:preview": "vitepress preview docs"
   },
   "dependencies": {
-    "vue": "^3.2.31"
+    "vue": "^3.2"
   },
   "devDependencies": {
     "@ant-design/colors": "^7.0.2",

@@ -35,14 +35,19 @@
       <vxe-column field="a" title="操作" fixed="right" v-if="tableTransferPropsRef.isMenu"    :width="tableTransferPropsRef.menuWidth" >
         <template #default="{ row }">
           <a-button type="link" v-if="tableTransferPropsRef.isView !== false" @click="handleFormShow('show', row)">
-            <template #icon v-if="tableTransferPropsRef.viewIcon">
-              <component v-if="tableTransferPropsRef.viewIcon" :is="tableTransferPropsRef.viewIcon"></component>
-
+            <template #icon v-if="tableTransferPropsRef.viewIcon !== undefined">
+              <component v-if="tableTransferPropsRef.viewIcon !== false && typeof tableTransferPropsRef.editIcon === 'function'" :is="tableTransferPropsRef.viewIcon"></component>
+            </template>
+            <template #icon v-else>
+             <EyeOutlined />
             </template>
             {{ tableTransferPropsRef?.viewText??'查看' }}</a-button>
           <a-button type="link" v-if="tableTransferPropsRef.isEdit !== false" @click="handleFormShow('update', row)">
-            <template #icon v-if="tableTransferPropsRef.editIcon">
-              <component v-if="tableTransferPropsRef.editIcon" :is="tableTransferPropsRef.editIcon"></component>
+            <template #icon v-if="tableTransferPropsRef.editIcon !== undefined">
+              <component v-if="tableTransferPropsRef.editIcon !== false && typeof tableTransferPropsRef.editIcon === 'function'" :is="tableTransferPropsRef.editIcon"></component>
+            </template>
+            <template #icon v-else>
+              <EditOutlined />
             </template>
             {{ tableTransferPropsRef?.editText??'编辑' }}
           </a-button>
@@ -72,6 +77,10 @@ import {useGetTable} from "../hooks/useGetData";
 import {render, h, ref, onMounted, defineProps, watch, getCurrentInstance} from "vue";
 import {deepCopy, valueToName} from "../utils";
 import {message} from "ant-design-vue";
+import {
+  EyeOutlined,
+  EditOutlined
+} from '@ant-design/icons-vue';
 const { proxy } = getCurrentInstance();
 const tableDefaultProps = ref({...{
     maxHeight: "600px",
@@ -126,14 +135,14 @@ const paginationTransferPropsRef = ref();
 
 watch(currentPage, (data) => {
   // 默认设置page
-  tableTransferPropsRef.value?.pagination.isPagination !== false && tableTransferPropsRef.value?.pagination?.pageField ?
+  tableTransferPropsRef.value?.pagination?.isPagination !== false && tableTransferPropsRef.value?.pagination?.pageField ?
       tableTransferPropsRef.value.params[tableTransferPropsRef.value?.pagination.pageField]  = data:
       tableTransferPropsRef.value.params.page  = data;
   getData();
 })
 watch(pageSize, (data) => {
   // 默认设置limit字段
-  tableTransferPropsRef.value?.pagination.isPagination !== false && tableTransferPropsRef.value?.pagination?.pageSizeField ?
+  tableTransferPropsRef.value?.pagination?.isPagination !== false && tableTransferPropsRef.value?.pagination?.pageSizeField ?
       tableTransferPropsRef.value.params[tableTransferPropsRef.value?.pagination.pageSizeField]  = data:
       tableTransferPropsRef.value.params.limit  = data;
   getData();
@@ -142,7 +151,7 @@ watch(pageSize, (data) => {
 // 初始化当前页和每页条数
 function initPage(params) {
 
-   if (tableTransferPropsRef.value?.pagination.isPagination === false) {
+   if (tableTransferPropsRef.value?.pagination?.isPagination === false) {
      return;
    }
 
@@ -243,6 +252,14 @@ function reset() {
 
 
 async function getData() {
+
+   if (tableTransferPropsRef.value.mockData) {
+     tableData.value = tableTransferPropsRef.value.mockData;
+     return tableData.value;
+   }
+
+
+
    if (tableTransferPropsRef.value.api) {
      console.log(tableTransferPropsRef.value.params, 109);
        tableData.value = await useGetTable(tableTransferPropsRef.value.api,  tableTransferPropsRef.value.params, tableTotal, tableLoading, tableTransferPropsRef.value.dataCallback) || [];
