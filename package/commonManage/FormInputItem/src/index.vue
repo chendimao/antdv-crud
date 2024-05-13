@@ -105,17 +105,9 @@ function initFun() {
 
 function inputChange(inputItem, value) {
   const {type, uploadField, name, computedFun} = inputItem;
-  console.log(value);
+
   if (type == 'upload') {
-    if (uploadField.type == 'string') {
-
-      uploadField.field?.name ? formState.value[uploadField.field.name] = value[0]?.name??'' : '';
-      uploadField.field?.url ? formState.value[uploadField.field.url] = value[0]?.url??'' : '';
-    } else  if (uploadField.type == 'list') {
-      formState.value[name] = value;
-    }
-    console.log(value, formState.value[name], 101);
-
+    uploadField.changeCallback(formState, inputItem, value );
   } else {
     formState.value[name] = value;
   }

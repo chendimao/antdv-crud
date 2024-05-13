@@ -7,9 +7,10 @@ interface ColModel {
 }
 interface uploadFieldModel{
   url: string,
-  type: 'string' | 'list',
-  field: object,
-  params?: object
+  params?: object,
+  changeCallback: Function, // 上传更改回调
+  initCallback: Function, // 初始化回调
+  uploadCallback: Function, // 上传前回调
   maxCount?: string|number|undefined|null, // 上传最大数量
 }
 

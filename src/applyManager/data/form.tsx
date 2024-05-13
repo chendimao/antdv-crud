@@ -29,9 +29,7 @@ export const stateList = [
   { name: '医务处主任审核未通过', value: '8' },
 ];
 
-const setUpload = (values, value) => {
-  console.log(values, value);
-};
+
 const getState = (row) => {
   let label = stateList.find(item => item.value == row.state)?.name
   if (row.state == 4) {
@@ -56,22 +54,20 @@ const base: inputFormModel[] = [
   {
     text: '职称',
     type: 'text',
-    name: 'name',
+    name: 'describe',
     span: 24,
     labelCol: { style: { width: '100px' } },
     rules:[
       { required: true, message: '请输入姓名'},
       {  validator: testValidate, trigger: 'change'}
     ],
-    computedFun: [
-      {type: 'function', fun: showDate , immediate: true},
-    ],
+
     class: '',
   },
   {
     text: '申请时间',
     type: 'text',
-    name: 'time',
+    name: 'department',
     span: 24,
     style: '',
     class: '',
@@ -82,22 +78,35 @@ const base: inputFormModel[] = [
   },
   {text: '退休资料上传',
     type: 'upload',
-    name: 'picList',
+    name: 'filePath',
     value: [],
     uploadField: {
       url: 'http://ywgl.tongchealth.com/basic-api/web/archivesManagement/uploadPic',
-    type: 'string',
-      field: {name: 'pathname', url: 'path'},
-      maxCount: 1,
+      changeCallback: (formState, item, value) => {
+        console.log(value);
+         if (value.file.status == 'done') {
+           formState.value.filePath.push({name: value.file.response.data.name, url: value.file.response.data.url});
+         } else  {
+           formState.value.filePath = formState.value.filePath.filter(item => item.name != value.file.name);
+         }
+        console.log(formState.value.filePath);
+      },
+      initCallback: (formState): { name: string, url: string}[] => {
+        if (formState.filePath?.length > 0) {
+          return   formState.filePath;
+        } else {
+          return [];
+        }
+
+      },
+      maxCount: 5,
     },
     labelCol: {style: {width: '130px'}},
     width: '120px', class: '',   },
 ];
 
 const resetForm = () => ({
-  name: '',
-  time: '',
-  tablelist: []
+"describe":"","complaintName":"","complaintPhone":"","departmentCode":"", filePath: [],
 });
 
 const baseForm: Function = ((): Map =>

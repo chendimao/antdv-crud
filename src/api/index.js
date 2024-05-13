@@ -3,6 +3,15 @@ import http from '../util/http.js';
 export const web_alterationApply_getByList = function (params) {
     return http.post({url: '/getPhysicians', params})
 }
+// 文件
+export const ywwjPageList = function (params) {
+    return http.post({url: '/web/ywwj/ywwjPageList', params})
+}
+
+// 定期总结
+export const summaryPageList = function (params) {
+    return http.post({url: '/disput/summaryPageList', params})
+}
 
 // Copy的代码作参考
 // 保存都是post

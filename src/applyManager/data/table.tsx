@@ -44,7 +44,7 @@ const table: inputFormModel[] = [
     {
         text: '人员名称',
         type: 'text',
-        name: 'name',
+        name: 'describe',
         width: '120',
         style: '',
         class: '',
@@ -64,7 +64,7 @@ const table: inputFormModel[] = [
     },{
         text: '申请会诊医师234',
         type: 'text',
-        name: 'applicationDoctor',
+        name: 'departmentCode',
         width: '180',
         style: '',
         class: '',

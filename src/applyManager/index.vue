@@ -55,7 +55,7 @@
     PlusOutlined,
 
   } from '@ant-design/icons-vue';
-  import { web_archivesManagement_getManagement_details, web_alterationApply_getByList } from '../api/';
+  import { web_archivesManagement_getManagement_details, web_alterationApply_getByList, summaryPageList } from '../api/';
 
 const {proxy } = getCurrentInstance() as any;
 
@@ -88,7 +88,7 @@ const {proxy } = getCurrentInstance() as any;
   ]= antdCrud.useCrudTable(
       {
         table: {
-          api: web_alterationApply_getByList,
+          api: summaryPageList,
           columns: tableData.tableForm(),
           params: searchData.resetForm(),
           isMenu: true,

@@ -67,7 +67,7 @@ const search = [
 // 表单数据初始化
 const   resetForm = (() => (
 
-    { "limit":10,"page":1,"roleid":3,"date":"", name: '', szksName3: '' }
+    {"complainedDepartments":"","complaintName":"","complaintPhone":"","undelete":0,"limit":10,"page":1,"departmentCode":""}
 ));
 
 const searchForm: Function = ((): Map =>

@@ -156,7 +156,7 @@
                       :maxCount="item.uploadField.maxCount??100"
                       :disabled="isDisabled  || item.disabled"
                       list-type="picture-card"
-                      @change="handleChange"
+                      @change="handleFileChange"
                       v-bind="item.$attrs"
                   >
                     <div  >
@@ -336,41 +336,9 @@ watch(() => props.value, async (data) => {
 
   } else if (inputItem.value.type == 'upload') {
 
+    inputValue.value = inputItem.value.uploadField.initCallback(props.formState);
+    console.log(inputValue.value);
 
-
-    if (inputItem.value?.uploadField.type == 'string') {
-
-      // 存放图片路径的字符串字段有值，则生成图片数组回显
-      if (props.formState[inputItem.value.uploadField.field?.url]) {
-        inputValue.value = [];
-        inputValue.value[0] = { name: props.formState[inputItem.value.uploadField.field?.name]??'', url: props.formState[inputItem.value.uploadField.field?.url]??''};
-        if (inputItem.value.uploadField.params) {
-          Object.keys(inputItem.value.uploadField.params).forEach(key => {
-            inputValue.value[0][key] = inputItem.value.uploadField.params[key];
-          })
-        }
-
-      } else {
-        inputValue.value = [];
-      }
-
-    } else  if (inputItem.value?.uploadField.type == 'list') {
-
-      // 存放图片路径的数组字段有值，则生成图片数组回显
-      if (props.formState[inputItem.value['name']]?.length > 0) {
-        inputValue.value = [];
-        inputValue.value = props.formState[inputItem.value['name']].map(item => {
-          const data = {name: item[inputItem.value.uploadField.field?.name]??'', url: item[inputItem.value.uploadField.field?.url]??''}
-
-          if (inputItem.value.uploadField.params) {
-            Object.keys(inputItem.value.uploadField.params).forEach(key => {
-              data[key] = inputItem.value.uploadField.params[key];
-            })
-          }
-          return data;
-        })
-      }
-    }
 
 
 
@@ -399,27 +367,18 @@ watch(() => inputValue.value, (data) => {
 const filterOption = (input: string, option: any, fieldNames: any) => {
   return option.name.toLowerCase().indexOf(input.toLowerCase()) >= 0;
 };
-function handleChange(ev) {
 
-  if (ev.file.status == 'done') {
-    console.log(ev);
-    const data = ev.file?.response?.data??ev.file.response.data;
-    console.log(data);
-    const fileList  = ev.fileList.map(item => {
-      if (item.uid == ev.file.uid) {
-        return isString(data) ? {name: data, url: data} : data ;
-      } else {
-        return item;
-      }
-    })
 
-    inputChange(fileList);
-  } else  if (ev.file.status == 'removed') {
 
-    inputChange(ev.fileList);
+const handleFileChange = (ev) => {
+  console.log(ev);
+  if (ev.file.status === 'done' || ev.file.status === 'removed') {
+    emit('change', inputItem.value, ev);
+    return;
+  } else {
+    return;
   }
 }
-
 
 onMounted(() => {
 
@@ -430,7 +389,10 @@ onMounted(() => {
 
 
 const inputChange = async (ev) => {
-  console.log(inputItem.value);
+  // upload  handleFileChange方法处理
+  if (inputItem.value.type == 'upload'  ) {
+    return;
+  }
   let data = ev;
   if (inputItem.value.type == 'checkbox') {
     data =  ev.join(',');
@@ -439,20 +401,10 @@ const inputChange = async (ev) => {
     }
 
   }
-  if (inputItem.value.type == 'upload') {
-
-    // 存放图片路径的字符串字段有值，则生成图片数组回显
-    if (inputItem.value.uploadField.params) {
-      Object.keys(inputItem.value.uploadField.params).forEach(key => {
-
-        data[key] = inputItem.value.uploadField.params[key];
-      })
-    }
-
-  }
 
 
-  emit('change', inputItem.value, data)
+  emit('change', inputItem.value, data);
+
 }
 
 
