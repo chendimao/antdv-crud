@@ -24,8 +24,10 @@ app.use(antd);
  app.use(
      antdCrud.install(app,
      {
+         tableConfig: {pageSizeField: 'size', pageField: 'page'},
          formConfig: {FooterCancelText: '退出234', FooterSubmitText: '保存234'},
-         searchConfig: {searchText: '搜索234', resetText: '重载234'}
+         searchConfig: {searchText: '搜索234', resetText: '重载234'},
+         inputConfig: {showSearch: true, allowClear: true}
      })
  );
 

@@ -93,12 +93,14 @@ const {proxy } = getCurrentInstance() as any;
           params: searchData.resetForm(),
           isMenu: true,
            menuWidth: 300,
+          isView: true,
+          isEdit: true,
           // editIcon: false,
           // viewIcon: false,
           size: 'mini',
-          stripe: false,
           isSortable: false, // 是否开启排序，这是总开关，这里开启后，如果column中设置sortable: false，则该字段也不会排序
           $attrs: {
+            stripe: false,
             sortConfig:  {defaultSort:  {field: 'medicalRecordNo', order: 'asc'} },
             treeConfig: { childrenField: 'thirdPhysicianList' },
             onCheckboxChange: checkboxChange,
@@ -106,7 +108,7 @@ const {proxy } = getCurrentInstance() as any;
           },
           pagination: {
             isPagination: true,
-
+            pageSizeField: 'size',
           },
         },
         search: {
@@ -119,7 +121,7 @@ const {proxy } = getCurrentInstance() as any;
           typeInfo: retireData.typeInfo,
           formData: retireData.formData,
           FooterCancelText: 'test',
-          width: '80%',
+          width: '50%',
           height: '350px',
           name: 'bmgl',
         },
@@ -141,4 +143,7 @@ const {proxy } = getCurrentInstance() as any;
   .ant-card-body {
     padding: 0 5px !important;
   }
+
+
+
 </style>

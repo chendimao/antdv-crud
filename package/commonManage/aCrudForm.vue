@@ -130,7 +130,7 @@
      // 自定义validator的 传入当前表单值以便动态校验
      item[1].rules ? validateList.value[item[0]] = item[1].rules.map(ruleItem => {
        if (ruleItem.validator) {
-        ruleItem.validator = ruleItem.validator.bind(proxy, aCardFormRef.value.formState);
+        ruleItem.validator = ruleItem.validator.bind(undefined,{ formState: aCardFormRef.value.formState, refs: itemRefs.value});
        }
        return ruleItem;
      }) : '';

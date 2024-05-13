@@ -2,8 +2,11 @@ import dayjs from "dayjs";
 import {h} from "vue";
 import {getOptionList, valueToName} from "../../../package/utils";
 import {sexList, stateList} from "./form";
+import {inputFormModel} from "../../../package/model";
+import {testTableOption} from "./fun";
+import { web_alterationApply_getByList } from "../../api";
 
-const table = [
+const table: inputFormModel[] = [
     // {
     //     text: '序号',
     //     type: 'seq',
@@ -48,11 +51,15 @@ const table = [
         $attrs: {sortable: false},
     },{
         text: '住院病例号',
-        type: 'text',
-        name: 'medicalRecordNo',
+        type: 'select',
+        name: 'id',
         width: '120',
+        option: [],
+        computedFun: [
+            {type: 'function',fun: testTableOption},
+            {type: 'option',api: web_alterationApply_getByList, params: {}, relationField: {name: 'professionalTitles', value: 'id'}},
+        ],
         style: '',
-        sortable: false,
         class: '',
     },{
         text: '申请会诊医师234',
@@ -83,7 +90,7 @@ const table = [
     },
 
 
-    // {text: '退休资料上传', type: 'upload', name: 'picList', value: [], uploadField: {type: 'string', field: {name: 'path', url: 'path'}}, url: '/basic-api/web/archivesManagement/uploadPic',maxCount: 1,  labelCol: {style: {width: '130px'}},  width: '120px', class: '',   },
+
     {
         text: '状态',
         type: 'h',

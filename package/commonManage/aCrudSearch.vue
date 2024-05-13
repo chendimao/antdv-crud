@@ -92,7 +92,8 @@ function setSearchProps(props, ref) {
     // 自定义validator的 传入当前表单值以便动态校验
     item.rules ? searchValidate.value[item.name] = item.rules.map(ruleItem => {
       if (ruleItem.validator) {
-        ruleItem.validator = ruleItem.validator.bind(proxy,  aCardSearchRef.value.params);
+        ruleItem.validator = ruleItem.validator.bind(undefined,{ formState: aCardSearchRef.value.params, refs: [searchFormRef]});
+
       }
       return ruleItem;
     }) : '';
@@ -118,6 +119,7 @@ function emitSearchParams() {
 
 function getResetParams() {
   aCardSearchRef.value.params = deepCopy(resetForm.value);
+  console.log(aCardSearchRef.value.params);
   return aCardSearchRef.value.params;
 }
 function emitResetParams() {

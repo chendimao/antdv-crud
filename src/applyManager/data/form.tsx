@@ -57,11 +57,11 @@ const base: inputFormModel[] = [
     text: '职称',
     type: 'text',
     name: 'name',
-    span: 8,
+    span: 24,
     labelCol: { style: { width: '100px' } },
     rules:[
-      { required: true, message: '请输入姓名', trigger: 'blur'},
-      { validator: testValidate, trigger: 'blur'}
+      { required: true, message: '请输入姓名'},
+      {  validator: testValidate, trigger: 'change'}
     ],
     computedFun: [
       {type: 'function', fun: showDate , immediate: true},
@@ -70,18 +70,28 @@ const base: inputFormModel[] = [
   },
   {
     text: '申请时间',
-    type: 'date',
+    type: 'text',
     name: 'time',
-    span: 8,
+    span: 24,
     style: '',
     class: '',
     rules:[
-      { required: true, message: '请输入姓名', trigger: 'blur'},
-      { validator: testValidate, trigger: 'blur'}
+      { required: true, message: '请输入姓名234234', trigger: 'blur'},
     ],
     labelCol: { style: { width: '130px' } },
   },
-
+  {text: '退休资料上传',
+    type: 'upload',
+    name: 'picList',
+    value: [],
+    uploadField: {
+      url: 'http://ywgl.tongchealth.com/basic-api/web/archivesManagement/uploadPic',
+    type: 'string',
+      field: {name: 'pathname', url: 'path'},
+      maxCount: 1,
+    },
+    labelCol: {style: {width: '130px'}},
+    width: '120px', class: '',   },
 ];
 
 const resetForm = () => ({

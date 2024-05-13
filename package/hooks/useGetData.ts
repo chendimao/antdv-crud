@@ -20,10 +20,8 @@ export const   useGetTable = async  (api, params, total = ref(), loading = ref()
             message.error('查询失败');
             return;
         }
-        console.log(res);
-
         if (res.data && isArray(res.data)) {
-            total.value = res.total;
+            total.value = res.total || res.data.length;
             data = res.data;
         } else if (res?.data?.content?.length > 0) {
             total.value = res.data.total;

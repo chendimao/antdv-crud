@@ -16,6 +16,7 @@
                   <a-input
                       :disabled="isDisabled  || item.disabled"
                       size="default"
+                      :allowClear="item.allowClear??$crudGlobalInputConfig?.allowClear"
                       v-model:value="inputValue"
                       v-bind="item.$attrs"
                       type="text" >
@@ -26,7 +27,7 @@
                   </a-input>
                 </template>
                 <template v-else-if="item.type == 'textarea'">
-                  <a-textarea      v-bind="item.$attrs" :disabled="isDisabled  || item.disabled"
+                  <a-textarea    :allowClear="item.allowClear??$crudGlobalInputConfig?.allowClear"  v-bind="item.$attrs" :disabled="isDisabled  || item.disabled"
                                 size="default"
 
                                 v-model:value="inputValue" :rows="item.rows" />
@@ -37,8 +38,8 @@
 
                       size="default"
                       v-model:value="inputValue"
-                      :allowClear="item.allowClear"
-                      :show-search="item.showSearch"
+                      :allowClear="item.allowClear??$crudGlobalInputConfig?.allowClear"
+                      :show-search="$crudGlobalInputConfig?.showSearch"
                       :disabled="isDisabled  || item.disabled"
                       :options="item.option"
                       :filter-option="filterOption"
@@ -55,8 +56,8 @@
 
                       size="default"
                       v-model:value="inputValue"
-                      :allowClear="item.allowClear"
-                      :show-search="item.showSearch ? {filter: filterOption} : false"
+                      :allowClear="item.allowClear??$crudGlobalInputConfig?.allowClear"
+                      :show-search="$crudGlobalInputConfig?.showSearch ? {filter: filterOption} : false"
                       :disabled="isDisabled  || item.disabled"
                       @change="changeResourceName"
                       :multiple="!!item.multiple"
@@ -90,25 +91,68 @@
 
                 </template>
                 <template v-else-if="item.type == 'datetime'">
-                  <a-date-picker      style="width: 100%;"  v-model:value="inputValue" valueFormat="YYYY-MM-DD HH:mm:ss" show-time format="YYYY-MM-DD HH:mm:ss" :disabled="isDisabled  || item.disabled" size="default"   v-bind="item.$attrs"/>
+                  <a-date-picker    
+                      style="width: 100%;" 
+                      v-model:value="inputValue"
+                      valueFormat="YYYY-MM-DD HH:mm:ss"
+                      show-time format="YYYY-MM-DD HH:mm:ss"
+                      :disabled="isDisabled  || item.disabled"
+                      size="default"
+                      :allowClear="item.allowClear??$crudGlobalInputConfig?.allowClear"
+                      v-bind="item.$attrs"/>
                 </template>
                 <template v-else-if="item.type == 'date'">
-                  <a-date-picker       style="width: 100%;"  v-model:value="inputValue" valueFormat="YYYY-MM-DD" format="YYYY-MM-DD" :disabled="isDisabled  || item.disabled" size="default"   v-bind="item.$attrs"/>
+                  <a-date-picker
+                      style="width: 100%;"
+                      v-model:value="inputValue"
+                      valueFormat="YYYY-MM-DD"
+                      format="YYYY-MM-DD"
+                      :disabled="isDisabled  || item.disabled"
+                      size="default"
+                      :allowClear="item.allowClear??$crudGlobalInputConfig?.allowClear"
+                      v-bind="item.$attrs"/>
                 </template>
                 <template v-else-if="item.type == 'year'">
-                  <a-date-picker        style="width: 100%;"  v-model:value="inputValue"  valueFormat="YYYY"   format="YYYY"   picker="year" :disabled="isDisabled  || item.disabled" size="default"   v-bind="item.$attrs"/>
+                  <a-date-picker
+                      style="width: 100%;"
+                      v-model:value="inputValue"
+                      valueFormat="YYYY"
+                      format="YYYY"
+                      picker="year"
+                      :disabled="isDisabled  || item.disabled"
+                      size="default"
+                      :allowClear="item.allowClear??$crudGlobalInputConfig?.allowClear"
+                      v-bind="item.$attrs"/>
                 </template>
                 <template v-else-if="item.type == 'month'">
-                  <a-date-picker        style="width: 100%;" v-model:value="inputValue"  valueFormat="MM"  format="MM"  picker="month" :disabled="isDisabled  || item.disabled" size="default"  v-bind="item.$attrs"/>
+                  <a-date-picker
+                      style="width: 100%;"
+                      v-model:value="inputValue"
+                      valueFormat="MM"
+                      format="MM"
+                      picker="month"
+                      :disabled="isDisabled  || item.disabled"
+                      size="default"
+                      :allowClear="item.allowClear??$crudGlobalInputConfig?.allowClear"
+                      v-bind="item.$attrs"
+                  />
                 </template>
                 <template v-else-if="item.type == 'daterange'">
-                  <a-range-picker   style="width: 100%;" :picker="item.picker" v-model:value="inputValue"   :disabled="isDisabled  || item.disabled" size="default"   v-bind="item.$attrs"/>
+                  <a-range-picker
+                      style="width: 100%;"
+                      :picker="item.picker"
+                      v-model:value="inputValue"
+                      :disabled="isDisabled  || item.disabled"
+                      size="default"
+                      :allowClear="item.allowClear??$crudGlobalInputConfig?.allowClear"
+                      v-bind="item.$attrs"
+                  />
                 </template>
                 <template v-else-if="item.type == 'upload' && isArray(inputValue)">
                   <a-upload
 
                       v-model:file-list="inputValue"
-                      :action="item.url"
+                      :action="item.uploadField.url"
                       :maxCount="item.uploadField.maxCount??100"
                       :disabled="isDisabled  || item.disabled"
                       list-type="picture-card"
@@ -124,6 +168,13 @@
 
                 <template v-else-if="item.type == 'switch'">
                   <a-switch      v-model:checked="inputValue"  :disabled="isDisabled  || item.disabled"  :unCheckedValue="item.unCheckedValue" :checkedValue="item.checkedValue" :checked-children="item.checkedChildren" :un-checked-children="item.unCheckedChildren" v-bind="item.$attrs"/>
+                </template>
+                <template v-else-if="item.type == 'radio'">
+                     <a-radio-group v-model:value="inputValue" :disabled="isDisabled  || item.disabled" v-bind="item.$attrs">
+                      <a-radio :value="radio.value" :style="item.vertical === true ? radioStyle : {}" v-for="radio in item.option">{{ radio.name }}</a-radio>
+
+                    </a-radio-group>
+
                 </template>
                 <template v-else-if="item.type == 'origin'">
                   {{inputValue}}
@@ -213,7 +264,11 @@ const table = ref();
 const tableRef = ref();
 const xTable = ref();
 
-
+const radioStyle = ref({
+  display: 'flex',
+  height: '30px',
+  lineHeight: '30px',
+});
 
 
 

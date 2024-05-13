@@ -5,19 +5,22 @@ export const testFun = (formState, data, type) => {
     return a;
 }
 
-export const testValidate = (form, val) => {
-
-    console.log( form, val);
-
-
+export const testValidate = async ( data) => {
+    const {formState, refs} = data;
+    //console.log(await refs[0].validateFields('time'));
     return new Promise((resolve, reject) => {
-        if (val) {
+        if (formState.name !== 'test') {
             resolve()
         } else {
-            reject('请选择申请时间')
+            reject('不能输入test')
         }
     })
 }
+
+export const testTableOption = (item, currentItem, data) => {
+    console.log(item, currentItem, data);
+}
+
 
 export const showDate = (formState, data, type) => {
 

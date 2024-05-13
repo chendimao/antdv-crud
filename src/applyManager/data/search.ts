@@ -30,7 +30,23 @@ const search = [
     class: '',
 
 
-  }, {text: '日期',
+  },
+  {text: '单位名称radio',
+    type: 'radio',
+    name: 'szksName3',
+    span: 5,
+    option: [
+      {name: '选项1', value: '1'},
+      {name: '选项2', value: '2'},
+      {name: '选项3', value: '3'},
+    ],
+    style: 'min-width: 260px;',
+    labelCol: {style: {width: '90px'}},
+    class: '',
+
+
+  },
+  {text: '日期',
     type: 'daterange',
     name: 'date',
     span: 8,
@@ -51,7 +67,7 @@ const search = [
 // 表单数据初始化
 const   resetForm = (() => (
 
-    { "limit":10,"page":1,"roleid":3,"date":"", name: '' }
+    { "limit":10,"page":1,"roleid":3,"date":"", name: '', szksName3: '' }
 ));
 
 const searchForm: Function = ((): Map =>

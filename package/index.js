@@ -17,6 +17,7 @@ const install = function(Vue, config = undefined) {
    Vue.config.globalProperties.$crudGlobalTableConfig = config?.tableConfig??{}; //table全局配置
    Vue.config.globalProperties.$crudGlobalSearchConfig = config?.searchConfig??{}; //search全局配置
    Vue.config.globalProperties.$crudGlobalFormConfig = config?.formConfig??{}; //form全局配置
+   Vue.config.globalProperties.$crudGlobalInputConfig = config?.inputConfig??{}; //input全局配置
     console.log(config);
   components.forEach(component => {
     Vue.component(component.name, component);

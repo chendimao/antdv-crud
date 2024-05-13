@@ -56,7 +56,8 @@ const { validate, validateInfos, clearValidate } = useForm(
 
 defineExpose({
   submit,
-  clear
+  clear,
+  validateFields
 })
 
 onMounted(() => {
@@ -104,7 +105,7 @@ function initFun() {
 
 function inputChange(inputItem, value) {
   const {type, uploadField, name, computedFun} = inputItem;
-
+  console.log(value);
   if (type == 'upload') {
     if (uploadField.type == 'string') {
 
@@ -144,6 +145,9 @@ async function submit() {
 
 async function clear() {
       clearValidate();
+}
+async function validateFields(field) {
+  return formRef.value.validateFields(field);
 }
 
 

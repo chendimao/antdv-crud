@@ -12,7 +12,7 @@
             <vxe-column v-else-if="item.type === 'expand'"    v-bind="item.$attrs"   :type="'expand'" ></vxe-column>
             <vxe-column  v-else   :sortable="tableTransferPropsRef.isSortable !== false && item.sortable !== false"   :field="item.name" :title="item.text" :width="item.width" v-bind="item.$attrs" >
               <template #header>
-                <span>{{item.fun ? item.fun(formState) : item.text}}</span>
+                <span>{{item.fun ? item.fun( tableTransferPropsRef.columns, tableData) : item.text}}</span>
               </template>
               <template #default="{ row }">
                 <span v-if="item.type == 'text'">{{ row[item.name] }}</span>
@@ -34,7 +34,7 @@
 
       <vxe-column field="a" title="操作" fixed="right" v-if="tableTransferPropsRef.isMenu"    :width="tableTransferPropsRef.menuWidth" >
         <template #default="{ row }">
-          <a-button type="link" v-if="tableTransferPropsRef.isView !== false" @click="handleFormShow('show', row)">
+          <a-button type="link" v-if="tableTransferPropsRef.isView" @click="handleFormShow('show', row)">
             <template #icon v-if="tableTransferPropsRef.viewIcon !== undefined">
               <component v-if="tableTransferPropsRef.viewIcon !== false && typeof tableTransferPropsRef.editIcon === 'function'" :is="tableTransferPropsRef.viewIcon"></component>
             </template>
@@ -42,7 +42,7 @@
              <EyeOutlined />
             </template>
             {{ tableTransferPropsRef?.viewText??'查看' }}</a-button>
-          <a-button type="link" v-if="tableTransferPropsRef.isEdit !== false" @click="handleFormShow('update', row)">
+          <a-button type="link" v-if="tableTransferPropsRef.isEdit" @click="handleFormShow('update', row)">
             <template #icon v-if="tableTransferPropsRef.editIcon !== undefined">
               <component v-if="tableTransferPropsRef.editIcon !== false && typeof tableTransferPropsRef.editIcon === 'function'" :is="tableTransferPropsRef.editIcon"></component>
             </template>
@@ -75,12 +75,13 @@
 <script setup lang="ts">
 import {useGetTable} from "../hooks/useGetData";
 import {render, h, ref, onMounted, defineProps, watch, getCurrentInstance} from "vue";
-import {deepCopy, valueToName} from "../utils";
+import {deepCopy, getOptionList, valueToName} from "../utils";
 import {message} from "ant-design-vue";
 import {
   EyeOutlined,
   EditOutlined
 } from '@ant-design/icons-vue';
+import {assertIsFunction, assertIsOption, computedFun, isComputedFunction} from "../model";
 const { proxy } = getCurrentInstance();
 const tableDefaultProps = ref({...{
     maxHeight: "600px",
@@ -135,18 +136,72 @@ const paginationTransferPropsRef = ref();
 
 watch(currentPage, (data) => {
   // 默认设置page
-  tableTransferPropsRef.value?.pagination?.isPagination !== false && tableTransferPropsRef.value?.pagination?.pageField ?
-      tableTransferPropsRef.value.params[tableTransferPropsRef.value?.pagination.pageField]  = data:
+  if (tableTransferPropsRef.value?.pagination?.isPagination !== false) {
+
+    if (tableTransferPropsRef.value?.pagination?.pageField) {
+      // 如果页面table配置传了pageField
+      tableTransferPropsRef.value.params[tableTransferPropsRef.value?.pagination.pageField]  = data
+    } else if (tablePropsRef.value.pageField) {
+       // 如果传了全局配置传了pageField
+      tableTransferPropsRef.value.params[tablePropsRef.value.pageField]  = data;
+    } else {
+      // 默认使用page字段
       tableTransferPropsRef.value.params.page  = data;
+    }
+  }
+
+  console.log(data, 141);
   getData();
 })
 watch(pageSize, (data) => {
   // 默认设置limit字段
-  tableTransferPropsRef.value?.pagination?.isPagination !== false && tableTransferPropsRef.value?.pagination?.pageSizeField ?
-      tableTransferPropsRef.value.params[tableTransferPropsRef.value?.pagination.pageSizeField]  = data:
+  if (tableTransferPropsRef.value?.pagination?.isPagination !== false) {
+
+    if (tableTransferPropsRef.value?.pagination?.pageSizeField) {
+      // 如果页面table配置传了pageSizeField
+      tableTransferPropsRef.value.params[tableTransferPropsRef.value?.pagination.pageSizeField]  = data
+    } else if (tablePropsRef.value.pageSizeField) {
+      // 如果传了全局配置传了pageSizeField
+      tableTransferPropsRef.value.params[tablePropsRef.value.pageSizeField]  = data;
+    } else {
+      // 默认使用limit字段
       tableTransferPropsRef.value.params.limit  = data;
+    }
+  }
+
+  // 如果更改了每页数量，重新设置当前页为1
+  currentPage.value = 1;
   getData();
 })
+
+
+function initFun() {
+  // 运行item初始化方法
+  tableTransferPropsRef.value.columns.forEach(column => {
+
+    if (column.computedFun) {
+      column.computedFun.forEach(async (item: computedFun<'function'> | computedFun<'option'>) => {
+        // 初始化运行函数
+        console.log(isComputedFunction(item));
+        if (isComputedFunction(item)) {
+          assertIsFunction(item);
+          item.fun( tableTransferPropsRef.value.columns, item, tableData);
+        } else  {
+          assertIsOption(item);
+
+            let params = item.params;
+            if(item.dynamicParams) {
+              params = {...item.dynamicParams(tableTransferPropsRef.value.columns,item, tableData)};
+            }
+          column.option = await getOptionList(item.api, item.params, item.relationField, item.childrenField);
+
+        }
+      })
+    }
+  })
+}
+
+
 
 // 初始化当前页和每页条数
 function initPage(params) {
@@ -174,7 +229,7 @@ function setTableProps(props, ref) {
   formRef.value = ref.formRef;
   searchRef.value = ref.searchRef;
 
-  console.log(tablePropsRef.value);
+  console.log(tablePropsRef.value, tableTransferPropsRef.value, 177);
 
   // 设置分页参数 由默认分页参数 和 传入的分页参数 组成
   paginationConfig.value = { ...tableDefaultPaginationConfig.value, ...tableTransferPropsRef.value?.pagination??{}};
@@ -182,7 +237,7 @@ function setTableProps(props, ref) {
   // 设置初始页和初始每页条数 默认设置page和limit字段
   resetParams.value = deepCopy(tableTransferPropsRef.value.params);
   initPage(deepCopy(tableTransferPropsRef.value.params));
-
+  initFun();
 
   // 判断初始化时是否需要请求数据
   if (tableTransferPropsRef.value.immediate !== false) {
@@ -216,6 +271,7 @@ function getTotalPagination() {
 // 设置最新参数
 function setTableParams(params) {
    tableTransferPropsRef.value.params = deepCopy({...tableTransferPropsRef.value.params, ...params});
+  initPage(tableTransferPropsRef.value.params);
 }
 
 
@@ -291,7 +347,9 @@ export default {
   .cellClassName {
     color: black;
   }
-
+ .ant-btn {
+  padding:  5px !important;
+}
 
 }
 
