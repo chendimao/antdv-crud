@@ -66,7 +66,7 @@ const aCardSearchRef = ref();
 const aCardSearchDefaultRef = ref(
     {searchText: '查询', resetText: '重置', showSearch: true}
 );
-const resetForm = ref();
+const resetForm = ref({});
 const searchValidate = ref({});
 async function submit() {
   console.log(searchFormRef.value);
@@ -84,15 +84,20 @@ function setSearchProps(props, ref) {
   tableRef.value = ref.tableRef;
   formRef.value = ref.formRef;
   searchValidate.value = {};
-  resetForm.value = deepCopy(aCardSearchRef.value.params);
+  aCardSearchRef.value.formData.forEach((item, key) => {
 
+    //  初始化默认数据
+    resetForm.value[key] = item?.value || '';
+  });
+  console.log(resetForm.value);
+  aCardSearchRef.value.params = deepCopy(resetForm.value);
   searchValidate.value = {};
   aCardSearchRef.value.formData.forEach((item) => {
 
     // 自定义validator的 传入当前表单值以便动态校验
     item.rules ? searchValidate.value[item.name] = item.rules.map(ruleItem => {
       if (ruleItem.validator) {
-        ruleItem.validator = ruleItem.validator.bind(undefined,{ formState: aCardSearchRef.value.params, refs: [searchFormRef]});
+        ruleItem.validator = ruleItem.validator.bind(undefined,{ formState: aCardSearchRef, refs: [searchFormRef]});
 
       }
       return ruleItem;
@@ -111,6 +116,9 @@ function setSearchProps(props, ref) {
 function getSearchParams() {
   return aCardSearchRef.value.params;
 }
+function setSearchParams(params) {
+  aCardSearchRef.value.params = deepCopy(params);
+}
 
 function emitSearchParams() {
   emits('search', aCardSearchRef.value.params);
@@ -118,13 +126,16 @@ function emitSearchParams() {
 
 
 function getResetParams() {
-  aCardSearchRef.value.params = deepCopy(resetForm.value);
-  console.log(aCardSearchRef.value.params);
-  return aCardSearchRef.value.params;
+  return deepCopy(resetForm.value);
+}
+
+function mergeResetParams(params) {
+  resetForm.value = deepCopy({...resetForm.value, ...params});
+ return resetForm.value;
+
 }
 function emitResetParams() {
-  aCardSearchRef.value.params = deepCopy(resetForm.value);
-  emits('search', aCardSearchRef.value.params);
+  emits('search', deepCopy(resetForm.value));
 }
 
 async function getData(type: 'reset' | 'search') {
@@ -136,6 +147,8 @@ async function getData(type: 'reset' | 'search') {
     const validateRes = await validateSearch();
 
     if(validateRes){
+      setSearchParams(typeList[type][0]());
+      console.log(aCardSearchRef.value.params);
       await tableRef.value._value.setTableParams(typeList[type][0]());
       return   tableRef.value._value.getData();
     } else {
@@ -155,6 +168,7 @@ const searchMethods = {
   validateSearch,
   getSearchParams,
   setSearchProps,
+  mergeResetParams,
   getResetParams
 }
 

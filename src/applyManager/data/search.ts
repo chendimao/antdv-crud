@@ -1,5 +1,6 @@
 import {h} from 'vue';
-import {testFun} from "./fun";
+import {testDate, testFun} from "./fun";
+import dayjs from "dayjs";
 // 查询表单
 const search = [
   {text: '单位名称',
@@ -8,6 +9,7 @@ const search = [
     span: 5,
     style: 'min-width: 260px;',
     labelCol: {style: {width: '90px'}},
+    value: '1',
     computedFun: [
       {type: 'function', fun: testFun, immediate: true}
     ],
@@ -19,6 +21,7 @@ const search = [
     type: 'select',
     name: 'szksName2',
     span: 5,
+    value: '2',
     $attrs: {showSearch: true},
     option: [
       {name: '选项1', value: '1'},
@@ -35,6 +38,7 @@ const search = [
     type: 'radio',
     name: 'szksName3',
     span: 5,
+    value: '3',
     option: [
       {name: '选项1', value: '1'},
       {name: '选项2', value: '2'},
@@ -50,36 +54,27 @@ const search = [
     type: 'daterange',
     name: 'date',
     span: 8,
+    value: ['2024-01', '2024-02'],
     picker: "month",
     labelCol: {style: {width: '90px'}},
     class: '',
-
+    computedFun: [
+      {type: 'function', fun: testDate}
+    ]
 
   },
+  {name: 'limitaaa', value: 10}
 ];
 
 
-
-
-
-
-
-// 表单数据初始化
-const   resetForm = (() => (
-
-    {"complainedDepartments":"","complaintName":"","complaintPhone":"","undelete":0,"limit":10,"page":1,"departmentCode":""}
-));
-
 const searchForm: Function = ((): Map =>
-
-  new Map(search.map(item => [item.name, item]))
-);
+        new Map(search.map(item => [item.name, item]))
+)
 
 
 // 封装页面统一数据
 export default {
-  searchForm,
-  resetForm
+  searchForm
 }
 
 

@@ -27,8 +27,8 @@ export interface tableFormModel{
 
 
 export interface inputFormModel {
-  text: string, // 字段显示名称
-  type: 'text' | 'textarea' | 'date' | 'select' | 'cascader' | 'null' | 'checkbox' | 'datetime' | 'time' | 'year' | 'month' | 'upload' | 'switch' | 'origin' | 'list' | 'diyStyle' | 'h' | 'seq',
+  type: 'text' | 'textarea' | 'date' | 'select' | 'cascader' | 'null' | 'checkbox' | 'datetime' | 'time' | 'year' | 'month' | 'upload' | 'switch' | 'origin' | 'list' | 'diyStyle' | 'h' | 'p' | 'seq'| 'slot',
+  text?: string, // 字段显示名称
   name?: string,  // 字段name
   span?: number,  // 显示比例
   style?: string,  // style样式
@@ -43,6 +43,7 @@ export interface inputFormModel {
   width?: string | number,
   multiple?: boolean, // type为select时 是否多选
   showSearch?:boolean, //  是否可搜索
+  searchField?: string, // 搜索字段
   unCheckedValue?: string,  // type为switch 禁用字段value
   checkedValue?: string,  // type为switch 启用字段value
   checkedChildren?: string,// type为switch 启用字段

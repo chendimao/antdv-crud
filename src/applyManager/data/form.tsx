@@ -30,20 +30,6 @@ export const stateList = [
 ];
 
 
-const getState = (row) => {
-  let label = stateList.find(item => item.value == row.state)?.name
-  if (row.state == 4) {
-    return { text: label, style: { color: 'green' } }
-  } else if (row.state == 5) {
-    return { text: label, style: { color: 'red' } }
-  } else if (row.state == 7) {
-    return { text: label, style: { color: 'green' } }
-  } else if (row.state == 8) {
-    return { text: label, style: { color: 'red' } }
-  } else {
-    return { text: label, style: {} };
-  }
-}
 // 列表显示的字段
 
 // 新增时显示字段
@@ -56,6 +42,7 @@ const base: inputFormModel[] = [
     type: 'text',
     name: 'describe',
     span: 24,
+    value: '',
     labelCol: { style: { width: '100px' } },
     rules:[
       { required: true, message: '请输入姓名'},
@@ -69,6 +56,7 @@ const base: inputFormModel[] = [
     type: 'text',
     name: 'department',
     span: 24,
+    value: '',
     style: '',
     class: '',
     rules:[
@@ -89,13 +77,12 @@ const base: inputFormModel[] = [
          } else  {
            formState.value.filePath = formState.value.filePath.filter(item => item.name != value.file.name);
          }
-        console.log(formState.value.filePath);
       },
       initCallback: (formState): { name: string, url: string}[] => {
         if (formState.filePath?.length > 0) {
-          return   formState.filePath;
+          return   [{name: formState.filePath, url: formState.filePath}];
         } else {
-          return [];
+          return [{name: 'test', url: 'test'}];
         }
 
       },
@@ -103,11 +90,16 @@ const base: inputFormModel[] = [
     },
     labelCol: {style: {width: '130px'}},
     width: '120px', class: '',   },
+  {
+    type: 'p',
+    name: 'limit',
+    value: 123
+  }
+
+
 ];
 
-const resetForm = () => ({
-"describe":"","complaintName":"","complaintPhone":"","departmentCode":"", filePath: [],
-});
+
 
 const baseForm: Function = ((): Map =>
         new Map(base.map(item => [item.name, item]))
@@ -124,5 +116,4 @@ export default {
   },
 
   formData: [{ formList: baseForm,  title: '' }],
-  resetForm,
 };

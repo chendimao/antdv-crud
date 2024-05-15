@@ -1,5 +1,5 @@
 import dayjs from "dayjs";
-import {h} from "vue";
+import {defineAsyncComponent, h, markRaw, render} from "vue";
 import {getOptionList, valueToName} from "../../../package/utils";
 import {sexList, stateList} from "./form";
 import {inputFormModel} from "../../../package/model";
@@ -88,6 +88,14 @@ const table: inputFormModel[] = [
         style: '',
         class: '',
     },
+    {
+        text: '性别slot',
+        type: 'slot',
+        name: 'sexSlot',
+        width: '80',
+        style: '',
+        class: '',
+    },
 
 
 
@@ -100,7 +108,18 @@ const table: inputFormModel[] = [
         class: '',
         h: (data) => {
             const colorArr = { 4: 'green', 5: 'red', 7: 'green', 8: 'red', }
-            return h('span', { style: { color: colorArr[data.state] ?? '' }, innerHTML:  'test' })
+            return h('span', { style: { color: colorArr[data.state] ?? '' }, innerHTML:  'test' ,
+                onClick: () => {
+                    console.log('click');
+                  const testDialog =  markRaw(defineAsyncComponent(() => import('../component/testDialog.vue'))) ;
+                     render(h(testDialog, {formState: data, visible: true,  ['onUpdate:visible']: (v) => {
+                       console.log(v, 96);
+                     }, ['onUpdate:formState']: (v) => {
+                       console.log(v, 97);
+                     }}), document.querySelector('body'));
+
+                }
+                })
 
 
             // return h(Switch, {

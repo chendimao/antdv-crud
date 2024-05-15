@@ -12,7 +12,7 @@
                      @register="registerSearch"
                      >
         <a-button
-            @click="handleAddShow('insert', retireData.resetForm())"
+            @click="handleAddShow('insert')"
             type="primary"
             style="float: left; magin-top: 10px"
             size="middle"
@@ -32,7 +32,10 @@
             @register="registerTable"
           >
             <template #default="{row}">
-              <a-button v-if="row.pid != 0" @click="handleAddShow('insert', row)">新建下级</a-button>
+              <a-button v-if="row.pid != 0" @click="handleAddShow('insert')">新建下级</a-button>
+            </template>
+            <template #sexSlot="{row}">
+                  <div>{{row.describe}}</div>
             </template>
           </a-crud-table>
         </div>
@@ -82,6 +85,8 @@ const {proxy } = getCurrentInstance() as any;
       getCurrentPagination,
       setCurrentPagination,
       handleFormShow,
+      mergeFormResetParams,
+      mergeSearchResetParams,
       getSearch,
       resetSearch,
       reset}
@@ -90,13 +95,13 @@ const {proxy } = getCurrentInstance() as any;
         table: {
           api: summaryPageList,
           columns: tableData.tableForm(),
-          params: searchData.resetForm(),
+          params: {limit: 10, page: 1},
           isMenu: true,
            menuWidth: 300,
           isView: true,
           isEdit: true,
           // editIcon: false,
-          // viewIcon: false,
+          // viewIcon: false,1
           size: 'mini',
           isSortable: false, // 是否开启排序，这是总开关，这里开启后，如果column中设置sortable: false，则该字段也不会排序
           $attrs: {
@@ -113,7 +118,6 @@ const {proxy } = getCurrentInstance() as any;
         },
         search: {
           formData: searchData.searchForm(),
-          params: searchData.resetForm(),
 
         },
         form: {
@@ -129,10 +133,10 @@ const {proxy } = getCurrentInstance() as any;
   );
 
 
- function handleAddShow(t, row) {
+ function handleAddShow(t) {
 
-
-   handleFormShow(t, {...retireData.resetForm(), pid: row.id});
+   mergeFormResetParams({ page: 1});
+   handleFormShow(t);
  }
   function checkboxChange(e) {
     console.log(e);

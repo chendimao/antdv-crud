@@ -2,6 +2,7 @@
   <div class="p-2 mr-0 overflow-hidden bg-white basic-table basic-table-form-container aCrudTable vxeTableData">
     <vxe-table ref="aCardTable"
                v-if="tableTransferPropsRef"
+                :loading="tableLoading"
                v-bind="tablePropsRef"
                :data="tableData">
 
@@ -23,9 +24,12 @@
                     <span v-else>{{ row[item.name] }}</span>
                   </span>
                 <span v-else-if="item.type == 'h'">
-              <div v-render="item.h(row, item, tableMethods)">
-              </div>
-          </span>
+                    <div v-render="item.h(row, item, tableMethods, this)">
+                    </div>
+                </span>
+                <span v-else-if="item.type == 'slot'">
+                    <slot :name="item.name" :row="row"></slot>
+                </span>
               </template>
             </vxe-column>
 
@@ -83,25 +87,7 @@ import {
 } from '@ant-design/icons-vue';
 import {assertIsFunction, assertIsOption, computedFun, isComputedFunction} from "../model";
 const { proxy } = getCurrentInstance();
-const tableDefaultProps = ref({...{
-    maxHeight: "600px",
-    align: "center",
-    loading: false,
-    columnConfig:{ isCurrent: true, isHover: true },
-    rowConfig: { isCurrent: true, isHover: true },
-    headerCellClassName: () => 'headerCellClassName',
-    cellClassName: () => 'cellClassName',
-    stripe: true,
-    size: 'mini',
-    loadingConfig:{ icon: 'vxe-icon-indicator roll', text: '正在拼命加载中...' },
-    class: "mytable-style" ,
-    data:"tableData",
-    menuWidth: 150,
-    isMenu: true,
-    immediate: true,
-    isPagination: true,
 
-  }, ...proxy.$crudGlobalTableConfig??{}})
 
 
  const emits = defineEmits([ 'register']);
@@ -119,7 +105,24 @@ const tableDefaultProps = ref({...{
 
  const formRef = ref();
 const searchRef = ref();
+const tableDefaultProps = ref({...{
+    maxHeight: "600px",
+    align: "center",
+    columnConfig:{ isCurrent: true, isHover: true },
+    rowConfig: { isCurrent: true, isHover: true },
+    headerCellClassName: () => 'headerCellClassName',
+    cellClassName: () => 'cellClassName',
+    stripe: true,
+    size: 'mini',
+    loadingConfig:{ icon: 'vxe-icon-indicator roll', text: '正在拼命加载中...' },
+    class: "mytable-style" ,
+    data:"tableData",
+    menuWidth: 150,
+    isMenu: true,
+    immediate: true,
+    isPagination: true,
 
+  }, ...proxy.$crudGlobalTableConfig??{}})
 
  const paginationConfig = ref();
 const tableDefaultPaginationConfig = ref({
@@ -228,15 +231,18 @@ function setTableProps(props, ref) {
 
   formRef.value = ref.formRef;
   searchRef.value = ref.searchRef;
+  // 初始化参数 如果没有传入params 则使用searchRef的参数
+  if (!tableTransferPropsRef.value.params) {
+    tableTransferPropsRef.value.params = searchRef.value._value.getResetParams() || {};
+  }
+  resetParams.value = deepCopy(tableTransferPropsRef.value.params);
 
-  console.log(tablePropsRef.value, tableTransferPropsRef.value, 177);
 
   // 设置分页参数 由默认分页参数 和 传入的分页参数 组成
   paginationConfig.value = { ...tableDefaultPaginationConfig.value, ...tableTransferPropsRef.value?.pagination??{}};
 
   // 设置初始页和初始每页条数 默认设置page和limit字段
-  resetParams.value = deepCopy(tableTransferPropsRef.value.params);
-  initPage(deepCopy(tableTransferPropsRef.value.params));
+  initPage(deepCopy(resetParams.value));
   initFun();
 
   // 判断初始化时是否需要请求数据

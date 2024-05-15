@@ -2,7 +2,7 @@
   <a-form class="aCardForm" :model="Data" labelWrap name="basic" ref="formRef" :rules="Validate" :label-col="labelCol" :wrapper-col="wrapperCol" autocomplete="off">
     <a-row :gutter="24">
       <template v-for="item in Data.values()">
-        <a-col :span="item.span" v-if="item.show??true">
+        <a-col :span="item.span" v-if="item.type && (item.show??true)">
           <a-form-item :label="item.text" :name="item.name" :label-col="item.labelCol" :wrapper-col="item.wrapperCol"
             v-bind="validateInfos[item.name]">
             <InputItem v-model:value="formState[item.name]"  :isDisabled="isDisabled" :form-state="formState"

@@ -57,7 +57,7 @@
                       size="default"
                       v-model:value="inputValue"
                       :allowClear="item.allowClear??$crudGlobalInputConfig?.allowClear"
-                      :show-search="$crudGlobalInputConfig?.showSearch ? {filter: filterOption} : false"
+                      :show-search="$crudGlobalInputConfig?.showSearch ? {filter: cascaderFilterOption} : false"
                       :disabled="isDisabled  || item.disabled"
                       @change="changeResourceName"
                       :multiple="!!item.multiple"
@@ -144,6 +144,8 @@
                       v-model:value="inputValue"
                       :disabled="isDisabled  || item.disabled"
                       size="default"
+                      :format="item?.format??item.picker == 'year' ? 'YYYY' :item.picker == 'month' || item.picker == 'quarter' ? 'YYYY-MM' : 'YYYY-MM-DD' "
+                      :valueFormat="item?.valueFormat??item.picker == 'year' ? 'YYYY' :item.picker == 'month' || item.picker == 'quarter' ? 'YYYY-MM' : 'YYYY-MM-DD' "
                       :allowClear="item.allowClear??$crudGlobalInputConfig?.allowClear"
                       v-bind="item.$attrs"
                   />
@@ -263,7 +265,7 @@ const inputItem = ref(props.item);
 const table = ref();
 const tableRef = ref();
 const xTable = ref();
-
+const timeout = ref();
 const radioStyle = ref({
   display: 'flex',
   height: '30px',
@@ -365,9 +367,21 @@ watch(() => inputValue.value, (data) => {
 
 
 const filterOption = (input: string, option: any, fieldNames: any) => {
+
   return option.name.toLowerCase().indexOf(input.toLowerCase()) >= 0;
 };
+const cascaderFilterOption = (inputValue, path) => {
 
+    return path.some(option => {
+      if (option.name) {
+        return option.name.toLowerCase().indexOf(inputValue.toLowerCase()) > -1
+      } else {
+        return false;
+      }
+
+    });
+
+};
 
 
 const handleFileChange = (ev) => {

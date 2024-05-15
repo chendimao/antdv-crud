@@ -112,8 +112,25 @@ export function useTable(props) {
     },
 
     // 设置表单状态
-    async  handleFormShow(type, formState) {
+    async  handleFormShow(type, formState = undefined) {
       return await getFormRef().handleFormShow(type, formState);
+    },
+
+    // 获取form resetForm
+    async getResetFormData() {
+      return await getFormRef().getResetFormData();
+    },
+    // 获取search resetForm
+    async getSearchResetForm() {
+      return await getSearchRef().getResetParams();
+    },
+    // 合并form resetForm
+    async mergeFormResetParams(params = {}) {
+      return await getFormRef().mergeResetFormData(params);
+    },
+    // 合并search resetForm
+    async mergeSearchResetParams(params = {}) {
+      return await getSearchRef().mergeResetParams(params);
     }
 
   }

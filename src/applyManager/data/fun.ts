@@ -4,12 +4,17 @@ export const testFun = (formState, data, type) => {
     console.log(formState.value, data.value.get('date'), type)
     return a;
 }
-
+export const testDate = (formState, data, type) =>{
+    console.log(formState, data, type);
+    formState.value.startDate = formState.value['date'][0];
+    formState.value.endDate = formState.value['date'][1];
+}
 export const testValidate = async ( data) => {
-    const {formState, refs} = data;
+    const {cardForm, refs} = data;
+    console.log(cardForm);
     //console.log(await refs[0].validateFields('time'));
     return new Promise((resolve, reject) => {
-        if (formState.name !== 'test') {
+        if (cardForm.value.formState.describe !== 'test') {
             resolve()
         } else {
             reject('不能输入test')

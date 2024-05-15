@@ -98,7 +98,7 @@
     }, ...proxy.$crudGlobalFormConfig??{}});
   // 外部传入props
   const formTransferPropsRef = ref();
-  const resetForm = ref();// 重置数据 修改时为当前行数据 新增时为resetForm数据
+  const resetForm = ref({});// 重置数据 修改时为当前行数据 新增时为resetForm数据
   const emits = defineEmits(['register', 'formCancel', 'formSubmit']);
 
   const loading = ref(false);
@@ -116,27 +116,40 @@
     //   //ref && ref.clear();
     // }
 
-    if (!aCardFormRef.value.visible) {
-      return;
-    }
+    // if (!aCardFormRef.value.visible) {
+    //   return;
+    // }
+
+
+
 
     let formList = [];
     validateList.value = {};
     aCardFormRef.value.formData.forEach((item) => {
       formList = [...item.formList()];
     });
-   formList.forEach((item) => {
-     console.log(item);
+
+    formList.forEach((item) => {
+      //  初始化默认数据
+      resetForm.value[item[0]] = item[1]?.value || '';
+    });
+    // 初始化数据
+    aCardFormRef.value.formState = deepCopy(resetForm.value);
+
+      formList.forEach((item) => {
      // 自定义validator的 传入当前表单值以便动态校验
      item[1].rules ? validateList.value[item[0]] = item[1].rules.map(ruleItem => {
        if (ruleItem.validator) {
-        ruleItem.validator = ruleItem.validator.bind(undefined,{ formState: aCardFormRef.value.formState, refs: itemRefs.value});
+        ruleItem.validator = ruleItem.validator.bind(undefined,{ cardForm: aCardFormRef, refs: itemRefs.value});
        }
        return ruleItem;
      }) : '';
+
+
+
+
    });
 
-    console.log(validateList.value);
   }
 
 
@@ -147,7 +160,7 @@
     formTransferPropsRef.value = props;
       aCardFormRef.value = {...aCardDefaultFormRef.value, ...props};
 
-   // initForm();
+    initForm();
   }
 
   function setItemRefs(el, item) {
@@ -163,14 +176,18 @@
   }
 
   function handleFormShow(t, formState) {
-    console.log(t, formState);
+    console.log(t, formState, resetForm.value);
 
     itemRefs.value = [];
     setFormVisible(true);
     aCardFormRef.value.type = t;
-    aCardFormRef.value.formState = deepCopy(formState);
-    resetForm.value = deepCopy(formState);
-    initForm();
+    if (t == 'insert') {
+      aCardFormRef.value.formState = deepCopy(resetForm.value);
+    } else {
+      aCardFormRef.value.formState = deepCopy(formState);
+    }
+
+
   }
 
 
@@ -245,6 +262,10 @@
   function getResetFormData() {
     return deepCopy(resetForm.value);
   }
+  function mergeResetFormData(params) {
+    resetForm.value = {...resetForm.value, ...params};
+    return resetForm.value;
+  }
 
   function setFormVisible(visible) {
     aCardFormRef.value.visible = visible;
@@ -256,6 +277,7 @@
     getFormState,
     handleFormShow,
     getResetFormData,
+    mergeResetFormData,
     getFormRefData,
     setFormVisible
   }
