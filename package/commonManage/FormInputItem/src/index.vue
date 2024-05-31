@@ -1,11 +1,11 @@
 <template>
-  <a-form class="aCardForm" :model="Data" labelWrap name="basic" ref="formRef" :rules="Validate" :label-col="labelCol" :wrapper-col="wrapperCol" autocomplete="off">
+  <a-form class="aCardFormItem" :model="Data" labelWrap name="basic" ref="formRef" :rules="Validate" :label-col="labelCol" :wrapper-col="wrapperCol" autocomplete="off">
     <a-row :gutter="24">
       <template v-for="item in Data.values()">
-        <a-col :span="item.span" v-if="item.type && (item.show??true)">
+        <a-col :span="item.span" v-if="item.type && (typeof item.show === 'function' ? item.show(formState, item, type)??true : item.show??true)">
           <a-form-item :label="item.text" :name="item.name" :label-col="item.labelCol" :wrapper-col="item.wrapperCol"
             v-bind="validateInfos[item.name]">
-            <InputItem v-model:value="formState[item.name]"  :isDisabled="isDisabled" :form-state="formState"
+            <InputItem v-model:value="formState[item.name]"  :isDisabled="isDisabled || (typeof item.disabled === 'function' ? item.disabled(formState, item, type)??false : item.disabled??false)" :form-state="formState"
               @change="inputChange" :item="item" />
 
           </a-form-item>
@@ -47,7 +47,7 @@ const labelCol = reactive(props.labelCol);
 const wrapperCol = reactive(props.wrapperCol);
 const formState = ref(props.formState);
 const useForm = Form.useForm;
-const { validate, validateInfos, clearValidate } = useForm(
+const { validate, validateInfos, clearValidate , resetFields} = useForm(
   formState,
   Validate,
 
@@ -127,7 +127,7 @@ async function submit() {
       Validate,)
   const res = await validate().catch(err => {
     console.log(err, 135);
-    return false;
+    return err.errorFields.length == 0;
   })
   //onst res2 = await formRef.value.validate();
   console.log(res, 138);
@@ -136,7 +136,8 @@ async function submit() {
 }
 
 async function clear() {
-      clearValidate();
+  console.log('clear');
+  resetFields();
 }
 async function validateFields(field) {
   return formRef.value.validateFields(field);
@@ -146,12 +147,13 @@ async function validateFields(field) {
 </script>
 
 <style lang="less"  >
- .aCardForm {
+ .aCardFormItem {
    .ant-form-item {
      margin: 10px 0px !important;
    }
- }
 
+
+ }
 
 
 </style>

@@ -42,7 +42,12 @@ const base: inputFormModel[] = [
     type: 'text',
     name: 'describe',
     span: 24,
+    show: true,
     value: '',
+    disabled: (data, form, type) => {
+      console.log(data, form, type);
+      return false;
+    },
     labelCol: { style: { width: '100px' } },
     rules:[
       { required: true, message: '请输入姓名'},

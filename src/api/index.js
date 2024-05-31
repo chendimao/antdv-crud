@@ -10,7 +10,7 @@ export const ywwjPageList = function (params) {
 
 // 定期总结
 export const summaryPageList = function (params) {
-    return http.post({url: '/disput/summaryPageList', params})
+    return http.post({url: '/web/subject/getSubjectList', params})
 }
 
 // Copy的代码作参考

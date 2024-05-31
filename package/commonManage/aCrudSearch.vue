@@ -84,10 +84,12 @@ function setSearchProps(props, ref) {
   tableRef.value = ref.tableRef;
   formRef.value = ref.formRef;
   searchValidate.value = {};
+  console.log(aCardSearchRef.value.formData);
   aCardSearchRef.value.formData.forEach((item, key) => {
 
     //  初始化默认数据
-    resetForm.value[key] = item?.value || '';
+
+    resetForm.value[key] = item?.value??'';
   });
   console.log(resetForm.value);
   aCardSearchRef.value.params = deepCopy(resetForm.value);
@@ -118,6 +120,7 @@ function getSearchParams() {
 }
 function setSearchParams(params) {
   aCardSearchRef.value.params = deepCopy(params);
+  return aCardSearchRef.value.params;
 }
 
 function emitSearchParams() {
@@ -134,21 +137,34 @@ function mergeResetParams(params) {
  return resetForm.value;
 
 }
+function mergeSearchParams(params) {
+  aCardSearchRef.value.params = deepCopy({...aCardSearchRef.value.params, ...params});
+ return aCardSearchRef.value.params;
+
+}
 function emitResetParams() {
   emits('search', deepCopy(resetForm.value));
 }
 
 async function getData(type: 'reset' | 'search') {
+
+  if (type == 'reset') {
+    searchFormRef.value.clear();
+  } else if (type == 'search') {
+    if (aCardSearchRef.value.dataCallback && !aCardSearchRef.value.dataCallback(aCardSearchRef.value.params)) {
+      return;
+    }
+  }
+
   const typeList = {reset: [getResetParams, emitResetParams], search: [getSearchParams, emitSearchParams]}
 
   // 如果使用了table组件，则直接调用table组件的getSearch方法
   if (tableRef.value._value && aCardSearchRef.value.isTable !== false) {
    // tableRef.value._value.getSearch( typeList[type][0]());
     const validateRes = await validateSearch();
-
+    console.log(validateRes);
     if(validateRes){
       setSearchParams(typeList[type][0]());
-      console.log(aCardSearchRef.value.params);
       await tableRef.value._value.setTableParams(typeList[type][0]());
       return   tableRef.value._value.getData();
     } else {
@@ -167,8 +183,10 @@ async function getData(type: 'reset' | 'search') {
 const searchMethods = {
   validateSearch,
   getSearchParams,
+  setSearchParams,
   setSearchProps,
   mergeResetParams,
+  mergeSearchParams,
   getResetParams
 }
 

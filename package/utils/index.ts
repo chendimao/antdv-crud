@@ -33,6 +33,61 @@ export function setObjToUrlParams(baseUrl: string, obj: any): string {
   return /\?$/.test(baseUrl) ? baseUrl + parameters : baseUrl.replace(/\/?$/, '?') + parameters;
 }
 
+
+
+export function formatDate(dateInput, format = 'yyyy-MM-dd') {
+
+  if (!dateInput) {
+    return;
+  }
+  let date;
+
+  // 如果 dateInput 是字符串，且格式为 YYYY-MM-DD HH:mm:ss
+  if (typeof dateInput === 'string') {
+    const dateTimeParts = dateInput.split(' ');
+    if (dateTimeParts.length === 2) {
+      const dateParts = dateTimeParts[0].split('-');
+      const timeParts = dateTimeParts[1].split(':');
+
+      if (dateParts.length === 3 && timeParts.length === 3) {
+        date = new Date(
+            parseInt(dateParts[0], 10),    // 年
+            parseInt(dateParts[1], 10) - 1, // 月，从0开始计数
+            parseInt(dateParts[2], 10),    // 日
+            parseInt(timeParts[0], 10),    // 时
+            parseInt(timeParts[1], 10),    // 分
+            parseInt(timeParts[2], 10)     // 秒
+        );
+      }
+    }
+  }
+
+  // 如果 dateInput 是 Date 对象或无效字符串，则直接转换
+  if (!date || isNaN(date.getTime())) {
+    date = new Date(dateInput);
+  }
+
+  // 检查 date 是否为有效的 Date 对象
+  if (isNaN(date.getTime())) {
+    throw new Error('Invalid date');
+  }
+
+  const map = {
+    'MM': ('0' + (date.getMonth() + 1)).slice(-2),
+    'dd': ('0' + date.getDate()).slice(-2),
+    'yyyy': date.getFullYear(),
+    'YYYY': date.getFullYear(),  // 添加对 YYYY 的支持
+    'HH': ('0' + date.getHours()).slice(-2),
+    'mm': ('0' + date.getMinutes()).slice(-2),
+    'ss': ('0' + date.getSeconds()).slice(-2)
+  };
+  return format.replace(/MM|dd|yyyy|YYYY|HH|mm|ss/gi, matched => map[matched]);
+}
+
+
+
+
+
 export function deepMerge<T = any>(src: any = {}, target: any = {}): T {
   let key: string;
   for (key in target) {

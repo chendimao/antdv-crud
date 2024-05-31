@@ -1,11 +1,11 @@
 
 
-interface ColModel {
+export interface ColModel {
   style?: object,
   class?: string,
   span?: number,
 }
-interface uploadFieldModel{
+export interface uploadFieldModel{
   url: string,
   params?: object,
   changeCallback: Function, // 上传更改回调
@@ -34,6 +34,8 @@ export interface inputFormModel {
   style?: string,  // style样式
   class?: string,  // class样式
   labelCol?: ColModel,  // label间距
+  format?: string, // 日期格式
+  offset?: number,
   wrapperCol?: ColModel,  // input间距
   allowClear?: boolean, // allowClear 是否可清除
   option?:  object[],  // type为select时 下拉列表
@@ -41,6 +43,7 @@ export interface inputFormModel {
   rules?:  object[],  // 校验规则
   value?: string | number | object | [],  // 默认值
   width?: string | number,
+  optionType?: 'button' | '', // type为radiot时 列表样式
   multiple?: boolean, // type为select时 是否多选
   showSearch?:boolean, //  是否可搜索
   searchField?: string, // 搜索字段
@@ -57,8 +60,8 @@ export interface inputFormModel {
   afterText?: string,
   $attrs?: object,// 表单原生属性
   picker?: 'week' | 'month' | 'year'
-  show?: boolean, // 是否显示
-  disabled?: boolean, // 是否禁用
+  show?: boolean | Function, // 是否显示
+  disabled?: boolean | Function, // 是否禁用
   rows?: number, // type为textarea时 行数
   placeholder?: string, // 占位符
   accept?: string, // type为upload时 接受上传的文件类型

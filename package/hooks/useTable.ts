@@ -37,11 +37,17 @@ export function useTable(props) {
 
   const methods = {
 
-    // 获取表格数据
+    // 发送请求获取表格数据并返回
     async getData() {
       return   await getTableRef().getData();
 
     },
+
+    // 获取当前表格数据
+     getTableData() {
+      return  getTableRef().getTableData();
+    },
+
 
     // 设置分页
     async setCurrentPagination(page, callback) {
@@ -124,6 +130,15 @@ export function useTable(props) {
     async getSearchResetForm() {
       return await getSearchRef().getResetParams();
     },
+
+    // 当前 search参数
+    async getSearchParams() {
+      return await getSearchRef().getSearchParams();
+    },
+    //设置search参数
+    async setSearchParams() {
+      return await getSearchRef().setSearchParams();
+    },
     // 合并form resetForm
     async mergeFormResetParams(params = {}) {
       return await getFormRef().mergeResetFormData(params);
@@ -131,6 +146,15 @@ export function useTable(props) {
     // 合并search resetForm
     async mergeSearchResetParams(params = {}) {
       return await getSearchRef().mergeResetParams(params);
+    },
+    // 合并search当前参数
+    async mergeSearchParams(params = {}) {
+      return await getSearchRef().mergeSearchParams(params);
+    },
+
+    // 动态设置table column
+    async setTableColumns(params = {}) {
+      return await getTableRef().setTableColumns(params);
     }
 
   }

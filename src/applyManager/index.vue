@@ -1,6 +1,6 @@
 <template>
   <!-- <PageWrapper :title="currentPage?.title ?? ''"> -->
-  <a-card>
+  <a-card style="width: 100%;">
     <template #title>
       <div>
         <!-- <a-space style=""> -->
@@ -23,6 +23,17 @@
           </template>
           新增</a-button
         >
+        <a-button
+            @click="handleTest"
+            type="primary"
+            style="float: left; magin-top: 10px"
+            size="middle"
+            class="!px-2"
+        >
+
+          test</a-button
+        >
+        {{formatDate('2024-10-10 20:20:20', 'yyyy-MM-dd')}}
       </a-crud-search>
     </template>
     <a-row>
@@ -34,6 +45,7 @@
             <template #default="{row}">
               <a-button v-if="row.pid != 0" @click="handleAddShow('insert')">新建下级</a-button>
             </template>
+
             <template #sexSlot="{row}">
                   <div>{{row.describe}}</div>
             </template>
@@ -64,6 +76,8 @@ const {proxy } = getCurrentInstance() as any;
 
   import tableData from "./data/table";
   import antdCrud from '../../package/index.js';
+  import {formatDate} from "../../package/utils";
+  import { jsPDF } from 'jspdf';
   const checkboxConfig = ref({
     checkAll: true,
     checkAllText: '全选',
@@ -74,6 +88,8 @@ const {proxy } = getCurrentInstance() as any;
   });
 
 
+  const test = ref(123);
+
   const [
     {
       registerTable,
@@ -81,33 +97,51 @@ const {proxy } = getCurrentInstance() as any;
       registerForm
     },
     {getData,
+        getTableData,
       getTotalPagination,
       getCurrentPagination,
       setCurrentPagination,
       handleFormShow,
       mergeFormResetParams,
+      mergeSearchParams,
       mergeSearchResetParams,
       getSearch,
+      getSearchParams,
+      setSearchParams,
       resetSearch,
       reset}
   ]= antdCrud.useCrudTable(
       {
+
         table: {
           api: summaryPageList,
           columns: tableData.tableForm(),
-          params: {limit: 10, page: 1},
           isMenu: true,
            menuWidth: 300,
           isView: true,
           isEdit: true,
+          isToolBox: true,
+          toolBox: {
+            exportConfig: {
+              // 默认选中类型
+              type: 'pdf',
+              // 自定义类型
+              types: ['pdf', 'csv', 'html', 'xml', 'txt']
+            },
+            print: true,
+            buttons: [{code: 1, name: '新增'}, {code: 3, name: '删除'}],
+            onButtonClick: handleTest
+          },
           // editIcon: false,
           // viewIcon: false,1
           size: 'mini',
           isSortable: false, // 是否开启排序，这是总开关，这里开启后，如果column中设置sortable: false，则该字段也不会排序
           $attrs: {
             stripe: false,
+            exportConfig: {},
             sortConfig:  {defaultSort:  {field: 'medicalRecordNo', order: 'asc'} },
             treeConfig: { childrenField: 'thirdPhysicianList' },
+            height: '200px',
             onCheckboxChange: checkboxChange,
         checkboxConfig: checkboxConfig
           },
@@ -118,30 +152,45 @@ const {proxy } = getCurrentInstance() as any;
         },
         search: {
           formData: searchData.searchForm(),
-
         },
         form: {
           title: retireData.title,
           typeInfo: retireData.typeInfo,
           formData: retireData.formData,
-          FooterCancelText: 'test',
-          width: '50%',
-          height: '350px',
+          dataCallback: handleDataCallback,
           name: 'bmgl',
         },
       }
   );
+const test2 = ref();
+onMounted(async () => {
+
+});
+
+
+function handleDataCallback(res) {
+  console.log(res);
+  }
 
 
  function handleAddShow(t) {
 
-   mergeFormResetParams({ page: 1});
+   mergeFormResetParams({ page: 234234});
    handleFormShow(t);
  }
   function checkboxChange(e) {
     console.log(e);
   }
 
+
+  function handleTest(e) {
+    var doc = new jsPDF();
+// 添加并设置字体
+    doc.addFont('/src/assets/fonts/HARMONYOS_SANS_SC_BOLD.ttf', 'SourceHanSans-Normal', 'normal');
+    doc.setFont('SourceHanSans-Normal');
+    doc.text('简体中文、繁體体中文、English、ジャパン、한국어', 20, 20);
+    doc.save('my.pdf');
+  }
 </script>
 <style scoped lang="less">
   .ant-card-body {

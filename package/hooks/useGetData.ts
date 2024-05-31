@@ -10,7 +10,6 @@ export const   useGetTable = async  (api, params, total = ref(), loading = ref()
         loading.value = false;
     });
     loading.value = false;
-    console.log(res);
 
     if (dataCallBack) {
         return dataCallBack(res, total);

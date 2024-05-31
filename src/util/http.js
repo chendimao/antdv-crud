@@ -4,9 +4,9 @@ import axios from 'axios' // 引入
 
 // 这一步的目的是判断出当前是开发环境还是生成环境，方法不止一种，达到目的就行
 if(process.env.NODE_ENV=='development'){
-  baseURL='http://ywgl.tongchealth.com/basic-api';
+  baseURL='http://zbzt.tongchealth.com/basic-api';
 }else{
-    baseURL='http://ywgl.tongchealth.com/basic-api';
+    baseURL='http://zbzt.tongchealth.com/basic-api';
 }
 
 const config = {

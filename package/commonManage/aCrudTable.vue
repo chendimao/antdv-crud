@@ -1,6 +1,21 @@
 <template>
   <div class="p-2 mr-0 overflow-hidden bg-white basic-table basic-table-form-container aCrudTable vxeTableData">
+
+    <vxe-toolbar
+        custom
+        print
+        export
+        v-if="tableTransferPropsRef.isToolBox??tablePropsRef.isToolBox"
+        ref="toolbarRef"
+        v-bind="tableTransferPropsRef.toolBox??tablePropsRef.toolBox"
+        :refresh="{query: getData}">
+      <slot name="buttons">
+
+      </slot>
+    </vxe-toolbar>
     <vxe-table ref="aCardTable"
+               :print-config="{}"
+               :custom-config="{mode: 'popup'}"
                v-if="tableTransferPropsRef"
                 :loading="tableLoading"
                v-bind="tablePropsRef"
@@ -25,6 +40,11 @@
                   </span>
                 <span v-else-if="item.type == 'h'">
                     <div v-render="item.h(row, item, tableMethods, this)">
+                    </div>
+                </span>
+                <span v-else-if="item.type == 'date'">
+                    <div>
+                      {{formatDate(row[item.name], item.format?? 'yyyy-MM-dd')}}
                     </div>
                 </span>
                 <span v-else-if="item.type == 'slot'">
@@ -79,7 +99,7 @@
 <script setup lang="ts">
 import {useGetTable} from "../hooks/useGetData";
 import {render, h, ref, onMounted, defineProps, watch, getCurrentInstance} from "vue";
-import {deepCopy, getOptionList, valueToName} from "../utils";
+import {deepCopy, formatDate, getOptionList, valueToName} from "../utils";
 import {message} from "ant-design-vue";
 import {
   EyeOutlined,
@@ -89,7 +109,6 @@ import {assertIsFunction, assertIsOption, computedFun, isComputedFunction} from 
 const { proxy } = getCurrentInstance();
 
 
-
  const emits = defineEmits([ 'register']);
 
 
@@ -97,6 +116,7 @@ const { proxy } = getCurrentInstance();
  const tableLoading = ref(false);
  const tableData = ref([]);
  const aCardTable = ref();
+ const toolbarRef = ref();
  const tablePropsRef = ref();
  const tableTransferPropsRef = ref();
  const currentPage = ref(1);
@@ -133,7 +153,12 @@ const tableDefaultPaginationConfig = ref({
 const paginationTransferPropsRef = ref();
  onMounted(() => {
  //  tableTransferPropsRef.immediate && getData();
-
+   // 将表格和工具栏进行关联
+   const $table = aCardTable.value
+   const $toolbar = toolbarRef.value
+   if ($table && $toolbar) {
+     $table.connect($toolbar)
+   }
 
  })
 
@@ -274,9 +299,15 @@ function getTotalPagination() {
   return tableTotal.value;
 }
 
+function setTableColumns(columns) {
+  tableTransferPropsRef.value.columns = columns;
+  initFun();
+}
+
+
 // 设置最新参数
 function setTableParams(params) {
-   tableTransferPropsRef.value.params = deepCopy({...tableTransferPropsRef.value.params, ...params});
+   tableTransferPropsRef.value.params = deepCopy(params);
   initPage(tableTransferPropsRef.value.params);
 }
 
@@ -304,7 +335,9 @@ function reset() {
  // 导出外部需要使用的方法
  const tableMethods = {
    getData,
+   getTableData,
    reset,
+   setTableColumns,
    setTableParams,
    setTableProps,
    setCurrentPagination,
@@ -314,7 +347,6 @@ function reset() {
 
 
 async function getData() {
-
    if (tableTransferPropsRef.value.mockData) {
      tableData.value = tableTransferPropsRef.value.mockData;
      return tableData.value;
@@ -323,14 +355,15 @@ async function getData() {
 
 
    if (tableTransferPropsRef.value.api) {
-     console.log(tableTransferPropsRef.value.params, 109);
+
        tableData.value = await useGetTable(tableTransferPropsRef.value.api,  tableTransferPropsRef.value.params, tableTotal, tableLoading, tableTransferPropsRef.value.dataCallback) || [];
      return tableData;
    }
  }
 
-
-
+ function getTableData() {
+   return tableData.value;
+ }
 
 
 emits('register', tableMethods);

@@ -14,7 +14,7 @@
                 <template v-if="item.type == 'text'">
 
                   <a-input
-                      :disabled="isDisabled  || item.disabled"
+                      :disabled="isDisabled"
                       size="default"
                       :allowClear="item.allowClear??$crudGlobalInputConfig?.allowClear"
                       v-model:value="inputValue"
@@ -26,8 +26,23 @@
 
                   </a-input>
                 </template>
+                <template v-if="item.type == 'number'">
+
+                  <a-input-number
+                      style="width: 100%;"
+                      :disabled="isDisabled"
+                      :allowClear="item.allowClear??$crudGlobalInputConfig?.allowClear"
+                      v-model:value="inputValue"
+                      v-bind="item.$attrs"
+                        >
+                  <template #addonAfter v-if="item.afterText">
+                      {{item.afterText}}
+                  </template>
+
+                  </a-input-number>
+                </template>
                 <template v-else-if="item.type == 'textarea'">
-                  <a-textarea    :allowClear="item.allowClear??$crudGlobalInputConfig?.allowClear"  v-bind="item.$attrs" :disabled="isDisabled  || item.disabled"
+                  <a-textarea    :allowClear="item.allowClear??$crudGlobalInputConfig?.allowClear"  v-bind="item.$attrs" :disabled="isDisabled"
                                 size="default"
 
                                 v-model:value="inputValue" :rows="item.rows" />
@@ -40,7 +55,7 @@
                       v-model:value="inputValue"
                       :allowClear="item.allowClear??$crudGlobalInputConfig?.allowClear"
                       :show-search="$crudGlobalInputConfig?.showSearch"
-                      :disabled="isDisabled  || item.disabled"
+                      :disabled="isDisabled"
                       :options="item.option"
                       :filter-option="filterOption"
                       v-bind="item.$attrs"
@@ -58,7 +73,7 @@
                       v-model:value="inputValue"
                       :allowClear="item.allowClear??$crudGlobalInputConfig?.allowClear"
                       :show-search="$crudGlobalInputConfig?.showSearch ? {filter: cascaderFilterOption} : false"
-                      :disabled="isDisabled  || item.disabled"
+                      :disabled="isDisabled"
                       @change="changeResourceName"
                       :multiple="!!item.multiple"
                       :options="item.option"
@@ -81,7 +96,7 @@
                       size="default"
                       mode="multiple"
                       v-model:value="inputValue"
-                      :disabled="isDisabled  || item.disabled"
+                      :disabled="isDisabled"
                       style="width: 100%;border: 0;height: 30px;border-bottom: 1px solid #ccc;"
                       v-bind="item.$attrs"
                   >
@@ -96,7 +111,7 @@
                       v-model:value="inputValue"
                       valueFormat="YYYY-MM-DD HH:mm:ss"
                       show-time format="YYYY-MM-DD HH:mm:ss"
-                      :disabled="isDisabled  || item.disabled"
+                      :disabled="isDisabled"
                       size="default"
                       :allowClear="item.allowClear??$crudGlobalInputConfig?.allowClear"
                       v-bind="item.$attrs"/>
@@ -107,7 +122,7 @@
                       v-model:value="inputValue"
                       valueFormat="YYYY-MM-DD"
                       format="YYYY-MM-DD"
-                      :disabled="isDisabled  || item.disabled"
+                      :disabled="isDisabled"
                       size="default"
                       :allowClear="item.allowClear??$crudGlobalInputConfig?.allowClear"
                       v-bind="item.$attrs"/>
@@ -119,7 +134,7 @@
                       valueFormat="YYYY"
                       format="YYYY"
                       picker="year"
-                      :disabled="isDisabled  || item.disabled"
+                      :disabled="isDisabled"
                       size="default"
                       :allowClear="item.allowClear??$crudGlobalInputConfig?.allowClear"
                       v-bind="item.$attrs"/>
@@ -131,7 +146,7 @@
                       valueFormat="MM"
                       format="MM"
                       picker="month"
-                      :disabled="isDisabled  || item.disabled"
+                      :disabled="isDisabled"
                       size="default"
                       :allowClear="item.allowClear??$crudGlobalInputConfig?.allowClear"
                       v-bind="item.$attrs"
@@ -142,7 +157,7 @@
                       style="width: 100%;"
                       :picker="item.picker"
                       v-model:value="inputValue"
-                      :disabled="isDisabled  || item.disabled"
+                      :disabled="isDisabled"
                       size="default"
                       :format="item?.format??item.picker == 'year' ? 'YYYY' :item.picker == 'month' || item.picker == 'quarter' ? 'YYYY-MM' : 'YYYY-MM-DD' "
                       :valueFormat="item?.valueFormat??item.picker == 'year' ? 'YYYY' :item.picker == 'month' || item.picker == 'quarter' ? 'YYYY-MM' : 'YYYY-MM-DD' "
@@ -156,7 +171,7 @@
                       v-model:file-list="inputValue"
                       :action="item.uploadField.url"
                       :maxCount="item.uploadField.maxCount??100"
-                      :disabled="isDisabled  || item.disabled"
+                      :disabled="isDisabled"
                       list-type="picture-card"
                       @change="handleFileChange"
                       v-bind="item.$attrs"
@@ -169,11 +184,13 @@
                 </template>
 
                 <template v-else-if="item.type == 'switch'">
-                  <a-switch      v-model:checked="inputValue"  :disabled="isDisabled  || item.disabled"  :unCheckedValue="item.unCheckedValue" :checkedValue="item.checkedValue" :checked-children="item.checkedChildren" :un-checked-children="item.unCheckedChildren" v-bind="item.$attrs"/>
+                  <a-switch      v-model:checked="inputValue"  :disabled="isDisabled"  :unCheckedValue="item.unCheckedValue" :checkedValue="item.checkedValue" :checked-children="item.checkedChildren" :un-checked-children="item.unCheckedChildren" v-bind="item.$attrs"/>
                 </template>
                 <template v-else-if="item.type == 'radio'">
-                     <a-radio-group v-model:value="inputValue" :disabled="isDisabled  || item.disabled" v-bind="item.$attrs">
-                      <a-radio :value="radio.value" :style="item.vertical === true ? radioStyle : {}" v-for="radio in item.option">{{ radio.name }}</a-radio>
+                     <a-radio-group v-model:value="inputValue" :disabled="isDisabled"   v-bind="item.$attrs">
+
+                      <a-radio-button v-if="item.optionType == 'button'" :value="radio.value"   v-for="radio in item.option">{{ radio.name }}</a-radio-button>
+                      <a-radio v-else :value="radio.value" :style="item.vertical === true ? radioStyle : {}" v-for="radio in item.option">{{ radio.name }}</a-radio>
 
                     </a-radio-group>
 
@@ -189,7 +206,7 @@
                       :data="inputValue"
                       ref="xTable"
                       :column-config="{resizable: true}"
-                      :edit-config="!item.disabled ? {trigger: 'click', mode: 'cell'} : {}"
+                      :edit-config="!isDisabled ? {trigger: 'click', mode: 'cell'} : {}"
                       v-bind="item.$attrs"
                   >
                     <vxe-column type="seq" width="60"></vxe-column>
