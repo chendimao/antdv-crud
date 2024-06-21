@@ -128,11 +128,12 @@ const searchRef = ref();
 const tableDefaultProps = ref({...{
     maxHeight: "600px",
     align: "center",
-    columnConfig:{ isCurrent: true, isHover: true },
+    columnConfig:{ isCurrent: true, isHover: true, resizable: true },
     rowConfig: { isCurrent: true, isHover: true },
     headerCellClassName: () => 'headerCellClassName',
     cellClassName: () => 'cellClassName',
     stripe: true,
+    border: true,
     size: 'mini',
     loadingConfig:{ icon: 'vxe-icon-indicator roll', text: '正在拼命加载中...' },
     class: "mytable-style" ,
@@ -388,6 +389,7 @@ export default {
   }
  .ant-btn {
   padding:  5px !important;
+   height: 22px !important;
 }
 
 }

@@ -21,8 +21,9 @@ export const web_archivesManagement_getManagement_details = function (params) {
 
 
 
-export const web_alterationApply_insertOrUpdate = function (params) {
-    return http.post( {url: '/web/alterationApply/insertOrUpdate', params})
+export const web_alterationApply_insertOrUpdate = function (params, headers) {
+    console.log(headers);
+    return http.post( {url: '/web/alterationApply/insertOrUpdate', params, headers})
 }
 
 export const web_archivesManagement_getByGb25 = function (params) {

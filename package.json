@@ -1,6 +1,6 @@
 {
   "name": "antdv-crud",
-  "version": "0.0.46",
+  "version": "0.0.50",
   "type": "module",
   "files": [
     "dist/*",
@@ -11,6 +11,9 @@
   "license": "MIT",
   "author": "chendimao <admin@chendimao.com>",
   "homepage": "https://github.com/chendimao/antdv-crud.git",
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org"
+  },
   "scripts": {
     "dev": "vite",
     "build": "vite build",

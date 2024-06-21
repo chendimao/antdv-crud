@@ -295,34 +295,46 @@
         }
         loading.value = true;
 
-        aCardFormRef.value.typeInfo[aCardFormRef.value.type]
-            .api(params ? { ...aCardFormRef.value.formState, ...params } : aCardFormRef.value.formState)
-            .then((res) => {
-              console.log(aCardFormRef.value.dataCallback);
-              if (aCardFormRef.value.dataCallback) {
-                return aCardFormRef.value.dataCallback(res);
-              }
+        let  res;
+
+        if (aCardFormRef.value.requestCallback) {
+         res = await aCardFormRef.value.requestCallback(
+              aCardFormRef.value.typeInfo[aCardFormRef.value.type].api,
+              params ? { ...aCardFormRef.value.formState, ...params } : aCardFormRef.value.formState
+          )
+        } else {
+          res = await aCardFormRef.value.typeInfo[aCardFormRef.value.type]
+              .api(params ? { ...aCardFormRef.value.formState, ...params } : aCardFormRef.value.formState).catch((err) => {
+                loading.value = false;
+                emits('formSubmit', err);
+              });
+
+        }
 
 
 
-              if (res.code == 0) {
-                message.success('保存成功');
-                setFormVisible(false);
-                if (tableRef.value && aCardFormRef.value.isTable !== false) {
-                  tableRef.value._value.getData();
-                } else {
-                  emits('formSubmit', res);
-                }
-              } else {
-                message.error(res.msg || '保存失败');
-                emits('formSubmit', res);
-              }
-              loading.value = false;
-            })
-            .catch((err) => {
-              loading.value = false;
-              emits('formSubmit', err);
-            });
+        if (aCardFormRef.value.dataCallback) {
+          return aCardFormRef.value.dataCallback(res);
+        }
+
+
+        if (res.code == 0) {
+          message.success('保存成功');
+          setFormVisible(false);
+          if (tableRef.value && aCardFormRef.value.isTable !== false) {
+            tableRef.value._value.getData();
+          } else {
+            emits('formSubmit', res);
+          }
+        } else {
+          message.error(res.msg || '保存失败');
+          emits('formSubmit', res);
+        }
+        loading.value = false;
+
+
+
+
       }
     }
 

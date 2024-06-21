@@ -42,7 +42,9 @@
           <a-crud-table
             @register="registerTable"
           >
+
             <template #default="{row}">
+              <a-button   @click="handleUpdateShow(row)">编辑</a-button>
               <a-button v-if="row.pid != 0" @click="handleAddShow('insert')">新建下级</a-button>
             </template>
 
@@ -89,7 +91,7 @@ const {proxy } = getCurrentInstance() as any;
 
 
   const test = ref(123);
-
+  const handleData = ref();
   const [
     {
       registerTable,
@@ -119,7 +121,7 @@ const {proxy } = getCurrentInstance() as any;
           isMenu: true,
            menuWidth: 300,
           isView: true,
-          isEdit: true,
+          isEdit: false,
           isToolBox: true,
           toolBox: {
             exportConfig: {
@@ -145,19 +147,18 @@ const {proxy } = getCurrentInstance() as any;
             onCheckboxChange: checkboxChange,
         checkboxConfig: checkboxConfig
           },
-          pagination: {
-            isPagination: true,
-            pageSizeField: 'size',
-          },
+
         },
         search: {
           formData: searchData.searchForm(),
+          showReset: false
         },
         form: {
           title: retireData.title,
           typeInfo: retireData.typeInfo,
           formData: retireData.formData,
           dataCallback: handleDataCallback,
+          requestCallback: handleRequestCallback,
           name: 'bmgl',
         },
       }
@@ -172,12 +173,22 @@ function handleDataCallback(res) {
   console.log(res);
   }
 
+  async function handleRequestCallback (api ,params) {
+    return await api(params, handleData.value);
+  }
 
  function handleAddShow(t) {
 
    mergeFormResetParams({ page: 234234});
    handleFormShow(t);
  }
+
+ function handleUpdateShow(row) {
+  handleData.value = row;
+   console.log(handleData.value);
+  handleFormShow('update', row);
+ }
+
   function checkboxChange(e) {
     console.log(e);
   }

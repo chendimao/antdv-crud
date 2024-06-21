@@ -42,7 +42,16 @@ app.use(antd);
 // app.use(antdCrud.install(app, {baseUrl: 'http://zbzt.tongchealth.com/basic-api/'}));
 
 antdCrud.config(app, {
-    tableConfig: {pageSizeField: 'size', pageField: 'page' },
+    tableConfig: {
+        pageSizeField: 'size',
+        pageField: 'page',
+        pagination: {
+            isPagination: true,
+            pageSizeField: 'size',
+            pageSizeOptions: ['10', '20', '30', '40', '50'],
+            showQuickJumper: true,
+            showSizeChanger: true,
+        } },
     formConfig: {FooterCancelText: '退出', FooterSubmitText: '确定', },
     searchConfig: {searchText: '搜索', resetText: '重载234'},
     inputConfig: {showSearch: true, allowClear: true}

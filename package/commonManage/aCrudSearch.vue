@@ -13,7 +13,7 @@
                   {{aCardSearchRef.searchText}}
               </a-button
               >
-              <a-button style="margin-left: 15px" @click="getData('reset')">
+              <a-button style="margin-left: 15px" v-if="aCardSearchRef.showReset !== false" @click="getData('reset')">
                   <template #icon>
                       <UndoOutlined />
                   </template>
