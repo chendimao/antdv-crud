@@ -59,7 +59,11 @@
 
   </a-card>
   <div>
-    <a-crud-form @register="registerForm"/>
+    <a-crud-form @register="registerForm">
+      <template #testSlot="{data}">
+         {{data}}
+      </template>
+    </a-crud-form>
   </div>
   <!-- </PageWrapper> -->
 </template>

@@ -68,6 +68,15 @@ const base: inputFormModel[] = [
       { required: true, message: '请输入姓名234234', trigger: 'blur'},
     ],
     labelCol: { style: { width: '130px' } },
+  }, {
+    text: 'test',
+    type: 'slot',
+    name: 'testSlot',
+    span: 24,
+    value: '',
+    style: '',
+    class: '',
+
   },
   {text: '退休资料上传',
     type: 'upload',

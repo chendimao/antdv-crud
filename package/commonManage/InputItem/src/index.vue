@@ -234,6 +234,10 @@
                   </div>
                 </template>
 
+                <template v-else-if="item.type == 'slot'">
+                   <slot :name="item.name"  :data="{formState, inputValue, item, isDisabled}"   ></slot>
+                </template>
+
                 <template v-else>
 
                 </template>

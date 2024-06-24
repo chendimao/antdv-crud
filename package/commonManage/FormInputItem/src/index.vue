@@ -6,7 +6,11 @@
           <a-form-item :label="item.text" :name="item.name" :label-col="item.labelCol" :wrapper-col="item.wrapperCol"
             v-bind="validateInfos[item.name]">
             <InputItem v-model:value="formState[item.name]"  :isDisabled="isDisabled || (typeof item.disabled === 'function' ? item.disabled(formState, item, type)??false : item.disabled??false)" :form-state="formState"
-              @change="inputChange" :item="item" />
+                       @change="inputChange" :item="item" >
+              <template v-for="(_, name) in $slots" #[name]="{data}">
+                <slot :name="name" :data="data"></slot>
+              </template>
+            </InputItem>
 
           </a-form-item>
         </a-col>

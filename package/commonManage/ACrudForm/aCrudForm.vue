@@ -33,7 +33,11 @@
                 :formValidate="validateList"
                 :labelCol="{ span: 8 }"
                 :wrapperCol="{ span: 16 }"
-            />
+            >
+              <template v-for="(_, name) in $slots" #[name]="{data}">
+                  <slot :name="name" :data="data"></slot>
+              </template>
+            </FormInputItem>
 
           </a-card>
         </div>
