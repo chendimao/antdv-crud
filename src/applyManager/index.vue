@@ -63,6 +63,9 @@
       <template #testSlot="{data}">
          {{data}}
       </template>
+      <template #default="{formState}">
+        <a-button @click="handleSave(formState)">保存</a-button>
+      </template>
     </a-crud-form>
   </div>
   <!-- </PageWrapper> -->
@@ -109,6 +112,7 @@ const {proxy } = getCurrentInstance() as any;
       setCurrentPagination,
       handleFormShow,
       mergeFormResetParams,
+      handleFormSubmit,
       mergeSearchParams,
       mergeSearchResetParams,
       getSearch,
@@ -185,6 +189,12 @@ function handleDataCallback(res) {
 
    mergeFormResetParams({ page: 234234});
    handleFormShow(t);
+ }
+
+ function handleSave(formState) {
+   console.log(formState);
+   formState.abccdefg = 'tset';
+   handleFormSubmit();
  }
 
  function handleUpdateShow(row) {

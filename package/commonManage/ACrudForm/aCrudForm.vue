@@ -359,6 +359,10 @@
     resetForm.value = {...resetForm.value, ...params};
     return resetForm.value;
   }
+  function mergeFormData(params) {
+    aCardFormRef.value.formState = {...aCardFormRef.value.formState, ...params};
+    return aCardFormRef.value.formState;
+  }
 
   function setFormVisible(visible) {
     aCardFormRef.value.visible = visible;
@@ -370,6 +374,9 @@
     getFormState,
     handleFormShow,
     getResetFormData,
+    mergeFormData,
+    handleFormSubmit,
+    handleFormCancel,
     mergeResetFormData,
     getFormRefData,
     setFormVisible

@@ -143,6 +143,18 @@ export function useTable(props) {
     async mergeFormResetParams(params = {}) {
       return await getFormRef().mergeResetFormData(params);
     },
+    // 合并form 参数
+    async mergeFormData(params = {}) {
+      return await getFormRef().mergeFormData(params);
+    },
+    // 保存 form
+    async handleFormSubmit(params = {}) {
+      return await getFormRef().handleFormSubmit();
+    },
+    // 退出 form
+    async handleFormCancel(params = {}) {
+      return await getFormRef().handleFormCancel();
+    },
     // 合并search resetForm
     async mergeSearchResetParams(params = {}) {
       return await getSearchRef().mergeResetParams(params);
