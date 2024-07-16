@@ -66,6 +66,22 @@
 <!--                    <a-select-option v-for="data in item.option" :value="data.value">{{ data.name }}</a-select-option>-->
                   </a-select>
                 </template>
+                <template v-else-if="item.type == 'treeSelect'">
+
+                  <a-tree-select
+
+                      v-model:value="inputValue"
+                      :allowClear="item.allowClear??$crudGlobalInputConfig?.allowClear"
+                      :show-search="$crudGlobalInputConfig?.showSearch"
+                      :disabled="isDisabled"
+                      :tree-data="item.option"
+                      v-bind="item.$attrs"
+                      style="width: 100%;border: 0;"
+                  >
+
+<!--                    <a-select-option v-for="data in item.option" :value="data.value">{{ data.name }}</a-select-option>-->
+                  </a-tree-select>
+                </template>
                 <template v-else-if="item.type == 'cascader'">
                   <a-cascader
 

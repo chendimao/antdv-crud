@@ -133,7 +133,7 @@ const tableDefaultProps = ref({...{
     headerCellClassName: () => 'headerCellClassName',
     cellClassName: () => 'cellClassName',
     stripe: true,
-    border: true,
+    border: 'default',
     size: 'mini',
     loadingConfig:{ icon: 'vxe-icon-indicator roll', text: '正在拼命加载中...' },
     class: "mytable-style" ,

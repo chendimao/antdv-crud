@@ -16,12 +16,12 @@
 **npm**
 
 ```bash{4}
- npm i antdv-crud-vue3 -D
+ npm i antdv-crud -D
 ``` 
 **yarn**
 
 ```bash{4}
- yarn add antdv-crud-vue3 -D
+ yarn add antdv-crud -D
 ``` 
 
 ## 注册全局组件
@@ -209,4 +209,4 @@ export default {
 
 ## 更多
 
-具体查看github 地址： [antdv-crud-vue3](https://github.com/chendimao/antdv-crud).
+具体查看github 地址： [antdv-crud](https://github.com/chendimao/antdv-crud).

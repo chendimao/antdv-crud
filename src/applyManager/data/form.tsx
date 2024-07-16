@@ -12,6 +12,45 @@ const searchForm = [
   // {text: '电话', name: 'phone', type: 'text' },
   // {text: '', type: 'default', name: 'category', value: 1}
 ];
+
+const treeOption = [
+  {
+    title: 'Node1',
+    value: '0-0',
+    key: '0-0',
+    children: [
+      {
+        title: 'Child Node1',
+        value: '0-0-0',
+        key: '0-0-0',
+      },
+    ],
+  },
+  {
+    title: 'Node2',
+    value: '0-1',
+    key: '0-1',
+    children: [
+      {
+        title: 'Child Node3',
+        value: '0-1-0',
+        key: '0-1-0',
+        disabled: true,
+      },
+      {
+        title: 'Child Node4',
+        value: '0-1-1',
+        key: '0-1-1',
+      },
+      {
+        title: 'Child Node5',
+        value: '0-1-2',
+        key: '0-1-2',
+      },
+    ],
+  },
+];
+
 export const sexList = [
   { name: '男', value: '男' },
   { name: '女', value: '女' },
@@ -67,6 +106,23 @@ const base: inputFormModel[] = [
     rules:[
       { required: true, message: '请输入姓名234234', trigger: 'blur'},
     ],
+    labelCol: { style: { width: '130px' } },
+  },
+  {
+    text: 'tree select',
+    type: 'treeSelect',
+    name: 'treetest',
+    span: 24,
+    value: '',
+    style: '',
+    class: '',
+     option: treeOption,
+   $attrs: {
+     onChange: (ev) => {
+       console.log(ev, 122);
+     },
+     treeNodeFilterProp: 'title'
+   },
     labelCol: { style: { width: '130px' } },
   }, {
     text: 'test',
