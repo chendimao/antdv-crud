@@ -19,8 +19,6 @@
       <slot></slot>
 
 
-
-
     </a-row>
 
   </a-form>
@@ -107,8 +105,10 @@ function initFun() {
 }
 
 
-function inputChange(inputItem, value) {
+function inputChange(inputItem, value, otherData) {
+// otherdata dict数据
   const {type, uploadField, name, computedFun} = inputItem;
+  console.log(name, value, otherData);
 
   if (type == 'upload') {
     uploadField.changeCallback(formState, inputItem, value );
@@ -120,7 +120,7 @@ function inputChange(inputItem, value) {
     for (const item of computedFun) {
       if (item.type == 'function' && !item.immediate) {
         // formState 所有表单值 Data 所有表单字段  inputItem 当前更改的表单字段 value 当前更改的表单值 type 当前表单是新增 insert 还是 修改 update
-        item.fun(formState, Data, inputItem, value, props.type);
+        item.fun(formState, Data, inputItem, value, props.type, otherData);
       }
     }
   }

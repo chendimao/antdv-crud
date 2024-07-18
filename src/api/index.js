@@ -32,3 +32,6 @@ export const web_archivesManagement_getByGb25 = function (params) {
 export const web_archivesManagement_getByGb147 = function (params) {
     return http.post( {url: '/web/archivesManagement/getByGb147', params})
 }
+export const GetDiagnosis = function (params) {
+    return http.post( {url: '/web/systemManagement/GetDiagnosis', params})
+}

@@ -1131,6 +1131,14 @@
   dependencies:
     vue-demi ">=0.14.7"
 
+"@vxe-ui/core@^1.0.12":
+  version "1.0.12"
+  resolved "https://registry.npmmirror.com/@vxe-ui/core/-/core-1.0.12.tgz#d40e8c7435978c588a528cb1618b7cc2fdbbb767"
+  integrity sha512-s79mQw6uYSbTVGBWbxrisHwJV1b770vZMT9XpY3khcFQhXNo25+PS3FLrNCSsBBJR0ZkBLOXDER/ft9DIqgFTw==
+  dependencies:
+    dom-zindex "^1.0.4"
+    xe-utils "^3.5.28"
+
 algoliasearch@^4.19.1:
   version "4.23.3"
   resolved "https://registry.yarnpkg.com/algoliasearch/-/algoliasearch-4.23.3.tgz#e09011d0a3b0651444916a3e6bbcba064ec44b60"
@@ -1371,10 +1379,10 @@ dom-scroll-into-view@^2.0.0:
   resolved "https://registry.yarnpkg.com/dom-scroll-into-view/-/dom-scroll-into-view-2.0.1.tgz#0decc8522801fd8d3f1c6ba355a74d382c5f989b"
   integrity sha512-bvVTQe1lfaUr1oFzZX80ce9KLDlZ3iU+XGNE/bz9HnGdklTieqsbmsLHe+rT2XWqopvL0PckkYqN7ksmm5pe3w==
 
-dom-zindex@^1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/dom-zindex/-/dom-zindex-1.0.2.tgz#2fb836c006d8d09af5663f84d50221a917592058"
-  integrity sha512-QceDZxPlvzhpg6e8szxNiKPUt5Y9SfFTe3nZy8og3JoPQPlAlzBzHa/lhDkhgeG3cjbKyQcuoic+wymF0o0d1Q==
+dom-zindex@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.npmmirror.com/dom-zindex/-/dom-zindex-1.0.4.tgz#c5a21153dc85962c8d4831ea42db898cc536eb26"
+  integrity sha512-PNk7u71TJ1C9Lwjjp5nNuQcVWuECFMmr9kZAwi2UbgWUM7jXdTCe4O4x5bhLUa07jpcZUVA5Du3ho7/FXzS9Ng==
 
 dompurify@^2.2.0:
   version "2.5.4"
@@ -2026,18 +2034,24 @@ vue@^3.4.25:
     "@vue/server-renderer" "3.4.26"
     "@vue/shared" "3.4.26"
 
+vxe-pc-ui@^4.0.70:
+  version "4.0.71"
+  resolved "https://registry.npmmirror.com/vxe-pc-ui/-/vxe-pc-ui-4.0.71.tgz#fa44b1b205fe700c64c685e71eefd9b2cf9fd56b"
+  integrity sha512-Bj+X7p+MMMeKvasFQGYSc1OXMcTLE+AHGFrXtlh7KjoZRt7o6FJ2MxKGuMWgGXLKZ3/QLme6NnfANas14leiiw==
+  dependencies:
+    "@vxe-ui/core" "^1.0.12"
+
 vxe-table-plugin-export-pdf@^4.0.2:
   version "4.0.2"
   resolved "https://registry.yarnpkg.com/vxe-table-plugin-export-pdf/-/vxe-table-plugin-export-pdf-4.0.2.tgz#8d21e83cbde84578d4bf651b86f287835be681dc"
   integrity sha512-OWQb5grn4evuzs8Zy7hKt3Xl9hGlY2eKAB1ERNP3OPFLTBACF05kQIY+EOY81A16omA2vuZtjMnLXbCH7jH/BA==
 
-vxe-table@^4.6.14:
-  version "4.6.14"
-  resolved "https://registry.yarnpkg.com/vxe-table/-/vxe-table-4.6.14.tgz#12b1c7b6ca9f6244092b2621450ce9841d8fa5e0"
-  integrity sha512-HrRYwTnItgsqH9sZPWYOYA5vnb4lk41/4gcFw3/5GdQq5vCYRK2l3dLVJMUYVysNEq7XDWUCQZGXjLrK3gCjyg==
+vxe-table@^4.7.53:
+  version "4.7.53"
+  resolved "https://registry.npmmirror.com/vxe-table/-/vxe-table-4.7.53.tgz#730def5841cd20ed345247083d88ff486010b3c6"
+  integrity sha512-WJAaD4LI0igexBGPHrGS1aZn+NCFY+HPbe7x4hlKHM/gUleKlyVv2pEXu/HA2Jo+IRMmj4s6WevgX3VvrY1k7g==
   dependencies:
-    dom-zindex "^1.0.2"
-    xe-utils "^3.5.26"
+    vxe-pc-ui "^4.0.70"
 
 warning@^4.0.0:
   version "4.0.3"
@@ -2046,10 +2060,10 @@ warning@^4.0.0:
   dependencies:
     loose-envify "^1.0.0"
 
-xe-utils@^3.5.26:
-  version "3.5.26"
-  resolved "https://registry.yarnpkg.com/xe-utils/-/xe-utils-3.5.26.tgz#8b3255cc74c5d251e06cfb7a665ac3ed0931a9f3"
-  integrity sha512-u9R7RqWDumamToEelrCv2nVA2PBJSPPUubvmiMcuHeFxwbYeBsouoi/opejmr7AdPlSj92FifF7IKFzFrczU7w==
+xe-utils@^3.5.28:
+  version "3.5.28"
+  resolved "https://registry.npmmirror.com/xe-utils/-/xe-utils-3.5.28.tgz#f6fa54f43ca2ec8f13c35f4b5691e5b32f365bb9"
+  integrity sha512-oeLLJ0b54QdOSSgYQ9TiKW/xAGrc9r0weCA/5UfyGdm3n3js4cNOuuf9Tml7UwgBQpl4uWMbMwUZKLh2yqPF3A==
 
 yallist@^3.0.2:
   version "3.1.1"

@@ -2,12 +2,7 @@
   <!-- <PageWrapper :title="currentPage?.title ?? ''"> -->
   <a-card style="width: 100%;">
     <template #title>
-      <div>
-        <!-- <a-space style=""> -->
-        <!-- <a-button @click="handleShow('insert')" type="primary"  >模板下载</a-button> -->
 
-        <!-- </a-space> -->
-      </div>
       <a-crud-search ref="searchRef"
                      @register="registerSearch"
                      >
@@ -26,18 +21,29 @@
         <a-button
             @click="handleTest"
             type="primary"
-            style="float: left; magin-top: 10px"
+            style="float: left; margin : 10px"
             size="middle"
             class="!px-2"
         >
 
-          test</a-button
+          test pdf</a-button
         >
-        {{formatDate('2024-10-10 20:20:20', 'yyyy-MM-dd')}}
+        <a-button
+            @click="handleGetData"
+            type="primary"
+            style="float: left; margin : 10px"
+            size="middle"
+            class="!px-2"
+        >
+
+          test getdata</a-button
+        >
+
       </a-crud-search>
     </template>
     <a-row>
       <a-col :span="24">
+        <a-crud-dict @change="changeDict" :api="GetDiagnosis" :params='{"page":1,"rows":30,"limit":30,"code":1}' searchField="dmmc" />
         <div class="mr-0 overflow-hidden bg-white vben-basic-table vben-basic-table-form-container">
           <a-crud-table
             @register="registerTable"
@@ -48,8 +54,8 @@
               <a-button v-if="row.pid != 0" @click="handleAddShow('insert')">新建下级</a-button>
             </template>
 
-            <template #sexSlot="{row}">
-                  <div>{{row.describe}}</div>
+            <template #testSlot="{row}">
+                  <div>{{row}}</div>
             </template>
           </a-crud-table>
         </div>
@@ -60,12 +66,11 @@
   </a-card>
   <div>
     <a-crud-form @register="registerForm">
-      <template #testSlot="{data}">
-         {{data}}
-      </template>
+
       <template #default="{formState}">
         <a-button @click="handleSave(formState)">保存</a-button>
       </template>
+
     </a-crud-form>
   </div>
   <!-- </PageWrapper> -->
@@ -79,7 +84,7 @@
     PlusOutlined,
 
   } from '@ant-design/icons-vue';
-  import { web_archivesManagement_getManagement_details, web_alterationApply_getByList, summaryPageList } from '../api/';
+  import { web_archivesManagement_getManagement_details, web_alterationApply_getByList, summaryPageList, GetDiagnosis } from '../api/';
 
 const {proxy } = getCurrentInstance() as any;
 
@@ -159,7 +164,7 @@ const {proxy } = getCurrentInstance() as any;
         },
         search: {
           formData: searchData.searchForm(),
-          showReset: false
+
         },
         form: {
           title: retireData.title,
@@ -203,6 +208,10 @@ function handleDataCallback(res) {
   handleFormShow('update', row);
  }
 
+ function changeDict(ev, data) {
+   console.log(ev, data);
+ }
+
   function checkboxChange(e) {
     console.log(e);
   }
@@ -216,6 +225,13 @@ function handleDataCallback(res) {
     doc.text('简体中文、繁體体中文、English、ジャパン、한국어', 20, 20);
     doc.save('my.pdf');
   }
+
+  async function handleGetData() {
+    const params = await getSearchParams();
+    getSearch({...params, test234: 23424});
+    //getData();
+  }
+
 </script>
 <style scoped lang="less">
   .ant-card-body {

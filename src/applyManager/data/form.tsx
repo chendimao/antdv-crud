@@ -1,6 +1,6 @@
 // 用户管理
 import {h} from 'vue';
-import { web_alterationApply_insertOrUpdate, web_alterationApply_getByList, web_archivesManagement_getManagement_details } from '../../api/index';
+import { web_alterationApply_insertOrUpdate,GetDiagnosis, web_alterationApply_getByList, web_archivesManagement_getManagement_details } from '../../api/index';
 import http from '../../util/http';
 import {getOptionList, valueToName} from "../../../package/utils";
 import {web_archivesManagement_getByGb25, web_archivesManagement_getByGb147} from '../../api/index';
@@ -125,9 +125,36 @@ const base: inputFormModel[] = [
    },
     labelCol: { style: { width: '130px' } },
   }, {
+    text: '字典选择',
+    type: 'dict',
+    name: 'dict',
+    api: GetDiagnosis,
+    params: {"page":1,"rows":30,"limit":30,"code":1},
+    span: 24,
+    value: '',
+    style: '',
+    class: '',
+    searchField: 'dmmc',
+    computedFun: [
+      {type: 'function', fun: (formState, Data, inputItem, value, type, otherData ) => {
+  console.log(formState.value,  otherData.row.dm);
+  formState.value.dm = otherData.row.dm;
+}},
+    ],
+    labelCol: { style: { width: '130px' } },
+  }, {
     text: 'test',
     type: 'slot',
     name: 'testSlot',
+    span: 24,
+    value: '',
+    style: '',
+    class: '',
+
+  },{
+    text: 'test2',
+    type: 'slot',
+    name: 'testSlot2',
     span: 24,
     value: '',
     style: '',

@@ -83,7 +83,7 @@
       </vxe-column>
     </vxe-table>
 
-    <div style="text-align: right;padding: 10px;"   v-if="tableTransferPropsRef?.pagination?.isPagination !== false">
+    <div style="text-align: right;padding: 10px;"   v-if="tableTransferPropsRef?.pagination?.isPagination !== false  ">
       <a-pagination
           v-model:current="currentPage"
           :total="tableTotal"
@@ -167,19 +167,18 @@ watch(currentPage, (data) => {
   // 默认设置page
   if (tableTransferPropsRef.value?.pagination?.isPagination !== false) {
 
-    if (tableTransferPropsRef.value?.pagination?.pageField) {
+    if (tableTransferPropsRef.value?.pagination?.pageField in tableTransferPropsRef.value.params && tableTransferPropsRef.value?.pagination?.pageField) {
       // 如果页面table配置传了pageField
       tableTransferPropsRef.value.params[tableTransferPropsRef.value?.pagination.pageField]  = data
-    } else if (tablePropsRef.value.pageField) {
+    } else if (tablePropsRef.value?.pagination?.pageField in tableTransferPropsRef.value.params && tablePropsRef.value.pageField) {
        // 如果传了全局配置传了pageField
       tableTransferPropsRef.value.params[tablePropsRef.value.pageField]  = data;
     } else {
       // 默认使用page字段
-      tableTransferPropsRef.value.params.page  = data;
+      'page' in tableTransferPropsRef.value.params && tableTransferPropsRef.value.params.page ?   tableTransferPropsRef.value.params.page = data :  tableTransferPropsRef.value.params.page = undefined;
     }
   }
 
-  console.log(data, 141);
   getData();
 })
 watch(pageSize, (data) => {
@@ -196,11 +195,12 @@ watch(pageSize, (data) => {
       // 默认使用limit字段
       tableTransferPropsRef.value.params.limit  = data;
     }
+    // 如果更改了每页数量，重新设置当前页为1
+    currentPage.value = 1;
+    getData();
   }
 
-  // 如果更改了每页数量，重新设置当前页为1
-  currentPage.value = 1;
-  getData();
+
 })
 
 
@@ -238,13 +238,12 @@ function initPage(params) {
    if (tableTransferPropsRef.value?.pagination?.isPagination === false) {
      return;
    }
-
-  currentPage.value = tableTransferPropsRef.value?.pagination?.pageField ?
+  currentPage.value = tableTransferPropsRef.value?.pagination?.pageField in params && tableTransferPropsRef.value?.pagination?.pageField ?
        params[tableTransferPropsRef.value?.pagination.pageField] :
-      params.page;
-  pageSize.value = tableTransferPropsRef.value?.pagination?.pageSizeField ?
+      'page' in params && params.page ? params.page : undefined;
+  pageSize.value =  tableTransferPropsRef.value?.pagination?.pageSizeField in params && tableTransferPropsRef.value?.pagination?.pageSizeField ?
       params[tableTransferPropsRef.value?.pagination.pageSizeField] :
-       params.limit;
+      'limit' in params && params.page ? params.limit : undefined;
 }
 
 

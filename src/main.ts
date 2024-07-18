@@ -5,6 +5,11 @@ import App from './App.vue'
  //import antdCrud from '../dist/antdv-crud.es.js';
 import VXETable from "vxe-table";
 import 'vxe-table/lib/style.css';
+
+// ...可选 UI
+import VxeUI from 'vxe-pc-ui'
+import 'vxe-pc-ui/lib/style.css'
+
 import antd from 'ant-design-vue';
 import VXETablePluginExportPDF from 'vxe-table-plugin-export-pdf';
 import { jsPDF } from 'jspdf';
@@ -18,7 +23,7 @@ VXETablePluginExportPDF.config({
 })
 // 安装vxe-table
 const  useTable = (app) => {
-    app.use(VXETable)
+    app.use(VxeUI).use(VXETable)
     // 给 vue 实例挂载内部对象，例如：
     // app.config.globalProperties.$XModal = VXETable.modal
     // app.config.globalProperties.$XPrint = VXETable.print

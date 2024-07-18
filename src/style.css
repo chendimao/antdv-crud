@@ -76,3 +76,16 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+.headerCellClassName {
+  background-color: #F5F6F8 !important;
+  color: #333333;
+  font-size: 12px;
+}
+.cellClassName {
+  color: black;
+  font-size: 12px;
+}
+.unitClassName {
+  padding: 1px 0 !important;
+}

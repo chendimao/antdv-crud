@@ -253,6 +253,9 @@
                 <template v-else-if="item.type == 'slot'">
                    <slot :name="item.name"  :data="{formState, inputValue, item, isDisabled}"   ></slot>
                 </template>
+                <template v-else-if="item.type == 'dict'">
+                  <a-crud-dict :api="item.api" :params="item.params" v-model="inputValue" @change="handleDictChange"/>
+                </template>
 
                 <template v-else>
 
@@ -437,13 +440,30 @@ onMounted(() => {
 })
 
 
+const handleDictChange = (value, data) => {
+  console.log(value, data, 'dictchange')
+    emit('change', inputItem.value, value,  data);
+    return;
+
+}
 
 
 const inputChange = async (ev) => {
+  console.log(ev, inputItem.value, inputValue, 446);
   // upload  handleFileChange方法处理
-  if (inputItem.value.type == 'upload'  ) {
+  if (inputItem.value.type == 'upload') {
     return;
   }
+
+  // dict  handleDictChange方法处理
+  if (inputItem.value.type == 'dict') {
+    return;
+  }
+
+
+
+
+
   let data = ev;
   if (inputItem.value.type == 'checkbox') {
     data =  ev.join(',');
@@ -452,6 +472,8 @@ const inputChange = async (ev) => {
     }
 
   }
+
+
 
 
   emit('change', inputItem.value, data);

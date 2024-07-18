@@ -35,7 +35,7 @@
                 :wrapperCol="{ span: 16 }"
             >
               <template v-for="(_, name) in $slots" #[name]="{data}">
-                  <slot :name="name" :data="data"></slot>
+                  <slot v-if="name != 'default'" :name="name" :data="data"></slot>
               </template>
             </FormInputItem>
 
