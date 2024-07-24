@@ -17,6 +17,7 @@
               size="mini"
               ref="xTable1"
               height="300"
+              style="min-width: 500px;"
               :data="tableData"
               :keyboard-config="{isArrow: true}"
               @cell-dblclick="handleSubmit"
@@ -24,9 +25,8 @@
               :sort-config="{trigger: 'cell'}">
             <vxe-column type="seq" width="50"></vxe-column>
 
-            <vxe-column field="dmmc" title="名称"     ></vxe-column>
-            <vxe-column field="dm" title="代码" width="100"  ></vxe-column>
-            <vxe-column field="icd10" title="icd10"    width="120" ></vxe-column>
+            <vxe-column v-for="item in tableField" :field="item.field" :title="item.title" :width="item.width"     ></vxe-column>
+
 
           </vxe-table>
         <div style="text-align: right;padding: 10px;"   >
@@ -58,6 +58,7 @@ const props = defineProps({
    sizeField: {type: String, default: 'limit'},
   searchField: {type: String, default: 'name'},
   callbackFun: {},
+  tableField: {type: Array, default: () => [{field: 'dmmc', title: '名称', width: 100}, {field: 'dm', title: '代码', width: 100}, {field: 'icd10', title: 'icd10', width: 120}]},
 });
 
 const emits = defineEmits(['change', 'update:modelValue']);
@@ -91,18 +92,19 @@ const focusEvent = () => {
   const $pulldown = pulldownRef.value
   if ($pulldown) {
     $pulldown.showPanel();
-    getData();
+    if (tableData.value.length === 0) {
+      getData();
+    }
   }
 }
 watch( searchName, (data) => {
   console.log(data);
+  emits('update:modelValue', data);
   // 如果面板显示，则说明为输入状态
   if (pulldownRef.value.isPanelVisible()) {
-    emits('update:modelValue', data);
     getData();
   } else {
     // 否则就是双击选择状态
-
     emits('change', data, currentData.value);
 
   }
@@ -122,8 +124,8 @@ function getData() {
       props.callbackFun(res, tableData, tableTotal);
     } else {
       if (res.code == 0) {
-        tableData.value = res.data.content;
-        tableTotal.value = res.data.total;
+        tableData.value = res.data.content || res.data;
+        tableTotal.value = res.data.total || res.data?.length;
       } else {
         tableData.value =  [];
         tableTotal.value = 0;

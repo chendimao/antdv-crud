@@ -167,6 +167,10 @@ export function useTable(props) {
     // 动态设置table column
     async setTableColumns(params = {}) {
       return await getTableRef().setTableColumns(params);
+    },
+    // 动态设置formdata
+    async setFormData(params = []) {
+      return await getFormRef().setFormData(params);
     }
 
   }

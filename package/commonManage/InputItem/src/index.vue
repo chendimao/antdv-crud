@@ -58,6 +58,7 @@
                       :disabled="isDisabled"
                       :options="item.option"
                       :filter-option="filterOption"
+                      @change="handleSelectChange"
                       v-bind="item.$attrs"
                       style="width: 100%;border: 0;"
                       :fieldNames="{label: 'name', value: 'value'}"
@@ -75,6 +76,7 @@
                       :show-search="$crudGlobalInputConfig?.showSearch"
                       :disabled="isDisabled"
                       :tree-data="item.option"
+                      @change="handleTreeSelectChange"
                       v-bind="item.$attrs"
                       style="width: 100%;border: 0;"
                   >
@@ -446,18 +448,30 @@ const handleDictChange = (value, data) => {
     return;
 
 }
+const handleTreeSelectChange = (value, label, extra) => {
+  console.log(value, label, extra.triggerNode.props, 'tree change')
+    emit('change', inputItem.value, value, extra.triggerNode.props);
+    return;
+
+}
+
+const handleSelectChange = (value, label) => {
+  console.log(value, label, 'select change')
+    emit('change', inputItem.value, value, label);
+    return;
+
+}
 
 
 const inputChange = async (ev) => {
   console.log(ev, inputItem.value, inputValue, 446);
-  // upload  handleFileChange方法处理
-  if (inputItem.value.type == 'upload') {
-    return;
-  }
 
-  // dict  handleDictChange方法处理
-  if (inputItem.value.type == 'dict') {
-    return;
+  // dict  handleDictChange 方法处理
+  // upload  handleFileChange 方法处理
+  // select handleSelectChange 处理
+  // treeSelect handleTreeSelectChange 处理
+  if (['upload', 'dict', 'select', 'treeSelect'].includes(inputItem.value.type)) {
+    return
   }
 
 

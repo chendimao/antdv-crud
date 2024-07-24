@@ -242,6 +242,12 @@
     initForm();
   }
 
+
+  function setFormData(columns) {
+    aCardFormRef.value.formData = columns;
+    initForm();
+  }
+
   function setItemRefs(el, item) {
     console.log(el);
     el && itemRefs.value.push(el);
@@ -275,7 +281,9 @@
     if (aCardFormRef.value.type == 'show') {
       setFormVisible(false);
       return;
-    } else {
+    }
+    else
+    {
       let flag = true;
       for (const ref of itemRefs.value) {
        //  console.log( 176, ref.submit()); // 提交两次
@@ -305,16 +313,21 @@
          res = await aCardFormRef.value.requestCallback(
               aCardFormRef.value.typeInfo[aCardFormRef.value.type].api,
               params ? { ...aCardFormRef.value.formState, ...params } : aCardFormRef.value.formState
-          )
+          ).catch((err) => {
+            loading.value = false;
+            console.log(err);
+            emits('formSubmit', err);
+          });
         } else {
           res = await aCardFormRef.value.typeInfo[aCardFormRef.value.type]
               .api(params ? { ...aCardFormRef.value.formState, ...params } : aCardFormRef.value.formState).catch((err) => {
                 loading.value = false;
+                console.log(err);
                 emits('formSubmit', err);
               });
 
         }
-
+        console.log(res, 324);
 
 
         if (aCardFormRef.value.dataCallback) {
@@ -379,6 +392,7 @@
     handleFormCancel,
     mergeResetFormData,
     getFormRefData,
+    setFormData,
     setFormVisible
   }
 

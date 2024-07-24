@@ -18,11 +18,13 @@ const treeOption = [
     title: 'Node1',
     value: '0-0',
     key: '0-0',
+    pic: 'pic test',
     children: [
       {
         title: 'Child Node1',
         value: '0-0-0',
         key: '0-0-0',
+        pic: 'pic test2',
       },
     ],
   },
@@ -30,11 +32,13 @@ const treeOption = [
     title: 'Node2',
     value: '0-1',
     key: '0-1',
+    pic: 'pic test3',
     children: [
       {
         title: 'Child Node3',
         value: '0-1-0',
         key: '0-1-0',
+        pic: 'pic test4',
         disabled: true,
       },
       {
@@ -57,9 +61,9 @@ export const sexList = [
 ];
 
 export const stateList = [
-  { name: '待提交', value: '0' },
-  { name: '科室主任待审核', value: '1' },
-  { name: '科室主任已通过/医务处待审核', value: '3' },
+  { name: '待提交', value: '0' , type: 'type0'},
+  { name: '科室主任待审核', value: '1' , type: 'type1'},
+  { name: '科室主任已通过/医务处待审核', value: '3' , type: 'type3'},
   { name: '科室主任未通过', value: '2' },
   { name: '医务处未通过', value: '5' },
   { name: '医务处已通过', value: '4' },
@@ -118,11 +122,28 @@ const base: inputFormModel[] = [
     class: '',
      option: treeOption,
    $attrs: {
-     onChange: (ev) => {
-       console.log(ev, 122);
-     },
      treeNodeFilterProp: 'title'
    },
+    computedFun: [
+      {type: 'function', fun: (formState, Data, inputItem, value, type, otherData ) => {
+          console.log(otherData);
+        }}
+    ],
+    labelCol: { style: { width: '130px' } },
+  }, {
+    text: '  select',
+    type: 'select',
+    name: 'select',
+    span: 24,
+    value: '',
+    style: '',
+    class: '',
+     option: stateList,
+    computedFun: [
+      {type: 'function', fun: (formState, Data, inputItem, value, type, otherData ) => {
+          console.log(otherData);
+        }}
+    ],
     labelCol: { style: { width: '130px' } },
   }, {
     text: '字典选择',
@@ -137,7 +158,36 @@ const base: inputFormModel[] = [
     searchField: 'dmmc',
     computedFun: [
       {type: 'function', fun: (formState, Data, inputItem, value, type, otherData ) => {
-  console.log(formState.value,  otherData.row.dm);
+    if (Data.value.has('test3')) {
+      Data.value.set('test3', {
+        text: otherData.row.dmmc,
+        type: 'text',
+        name: 'test3',
+        span: 24,
+        value: '',
+        labelCol: { style: { width: '130px' } },
+        style: '',
+        class: '',
+
+      });
+      formState.value['test3'] = '';
+    } else {
+      const arrayData = Array.from(Data.value);
+      let targetIndex = arrayData.findIndex(([key, value]) => key === 'dict');
+      arrayData.splice(targetIndex + 1, 0, ['test3', {
+        text: otherData.row.dmmc,
+        type: 'text',
+        name: 'test3',
+        span: 24,
+        value: '',
+        style: '',
+        class: '',
+
+      }]);
+      Data.value = new Map(arrayData);
+    }
+
+          console.log(Data.value);
   formState.value.dm = otherData.row.dm;
 }},
     ],

@@ -43,7 +43,7 @@
     </template>
     <a-row>
       <a-col :span="24">
-        <a-crud-dict @change="changeDict" :api="GetDiagnosis" :params='{"page":1,"rows":30,"limit":30,"code":1}' searchField="dmmc" />
+        <a-crud-dict style="width:200px;" @change="changeDict" :api="GetDiagnosis" :params='{"page":1,"rows":30,"limit":30,"code":1}' searchField="dmmc" />
         <div class="mr-0 overflow-hidden bg-white vben-basic-table vben-basic-table-form-container">
           <a-crud-table
             @register="registerTable"
