@@ -136,6 +136,7 @@ const {proxy } = getCurrentInstance() as any;
           isView: true,
           isEdit: false,
           isToolBox: true,
+          immediate: false,
           toolBox: {
             exportConfig: {
               // 默认选中类型
@@ -226,9 +227,11 @@ function handleDataCallback(res) {
     doc.save('my.pdf');
   }
 
-  async function handleGetData() {
-    const params = await getSearchParams();
-    getSearch({...params, test234: 23424});
+ async function handleGetData() {
+  //  await mergeSearchParams({test: '1234123123'});
+   await mergeSearchResetParams({test234: 23424});
+   const params = await getSearchParams();
+     getSearch({...params, test234: 23424});
     //getData();
   }
 

@@ -149,7 +149,7 @@ export function useTable(props) {
     },
     // 保存 form
     async handleFormSubmit(params = {}) {
-      return await getFormRef().handleFormSubmit();
+      return await getFormRef().handleFormSubmit(params);
     },
     // 退出 form
     async handleFormCancel(params = {}) {
