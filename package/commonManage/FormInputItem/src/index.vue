@@ -3,9 +3,12 @@
     <a-row :gutter="24">
       <template v-for="item in Data.values()">
         <a-col :span="item.span" v-if="item.type && (typeof item.show === 'function' ? item.show(formState, item, type)??true : item.show??true)">
-          <a-form-item :label="item.text" :name="item.name" :label-col="item.labelCol" :wrapper-col="item.wrapperCol"
-            v-bind="validateInfos[item.name]">
-            <InputItem v-model:value="formState[item.name]"  :isDisabled="isDisabled || (typeof item.disabled === 'function' ? item.disabled(formState, item, type)??false : item.disabled??false)" :form-state="formState"
+          <a-form-item  v-bind="validateInfos[item.name]" :label="item.text" :name="item.name" :label-col="item.labelCol" :wrapper-col="item.wrapperCol??{style: {width: '100%'}}"
+           >
+            <InputItem v-model:value="formState[item.name]"
+                       :isDisabled=" (typeof item.disabled === 'function' ? item.disabled(formState, item, type)??isDisabled : item.disabled??isDisabled)"
+                       :form-state="formState"
+                       :validateFun="validate"
                        @change="inputChange" :item="item" >
               <template v-for="(_, name) in $slots" #[name]="{data}">
                 <slot :name="name" :data="data"></slot>

@@ -6,18 +6,7 @@
       <a-crud-search ref="searchRef"
                      @register="registerSearch"
                      >
-        <a-button
-            @click="handleAddShow('insert')"
-            type="primary"
-            style="float: left; magin-top: 10px"
-            size="middle"
-            class="!px-2"
-        >
-          <template #icon>
-            <PlusOutlined />
-          </template>
-          新增</a-button
-        >
+
         <a-button
             @click="handleTest"
             type="primary"
@@ -38,6 +27,16 @@
 
           test getdata</a-button
         >
+        <a-button
+            @click="handleTestBtn"
+            type="primary"
+            style="float: left; margin : 10px"
+            size="middle"
+            class="!px-2"
+        >
+
+          test ref</a-button
+        >
 
       </a-crud-search>
     </template>
@@ -46,9 +45,23 @@
         <a-crud-dict style="width:200px;" @change="changeDict" :api="GetDiagnosis" :params='{"page":1,"rows":30,"limit":30,"code":1}' searchField="dmmc" />
         <div class="mr-0 overflow-hidden bg-white vben-basic-table vben-basic-table-form-container">
           <a-crud-table
-            @register="registerTable"
+            @register="registerTable2"
+            ref="crudTableRef"
           >
-
+            <template #buttons>
+              <a-button
+                  @click="handleAddShow('insert')"
+                  type="primary"
+                  style="float: left; magin-top: 10px"
+                  size="middle"
+                  class="!px-2"
+              >
+                <template #icon>
+                  <PlusOutlined />
+                </template>
+                新增</a-button
+              >
+            </template>
             <template #default="{row}">
               <a-button   @click="handleUpdateShow(row)">编辑</a-button>
               <a-button v-if="row.pid != 0" @click="handleAddShow('insert')">新建下级</a-button>
@@ -67,9 +80,13 @@
   <div>
     <a-crud-form @register="registerForm">
 
-      <template #default="{formState}">
-        <a-button @click="handleSave(formState)">保存</a-button>
+      <template #testSlot="{data}">
+        {{data}}
       </template>
+
+<!--      <template #default="{formState}">-->
+<!--        <a-button @click="handleSave(formState)">保存</a-button>-->
+<!--      </template>-->
 
     </a-crud-form>
   </div>
@@ -101,16 +118,17 @@ const {proxy } = getCurrentInstance() as any;
     }
   });
 
-
+const crudTableRef = ref();
   const test = ref(123);
   const handleData = ref();
   const [
     {
-      registerTable,
+      registerTable: registerTable2 ,
       registerSearch,
       registerForm
     },
     {getData,
+      getTableRef,
         getTableData,
       getTotalPagination,
       getCurrentPagination,
@@ -119,6 +137,7 @@ const {proxy } = getCurrentInstance() as any;
       mergeFormResetParams,
       handleFormSubmit,
       mergeSearchParams,
+      mergeTableProps,
       mergeSearchResetParams,
       getSearch,
       getSearchParams,
@@ -135,18 +154,8 @@ const {proxy } = getCurrentInstance() as any;
            menuWidth: 300,
           isView: true,
           isEdit: false,
-          isToolBox: true,
-          immediate: false,
-          toolBox: {
-            exportConfig: {
-              // 默认选中类型
-              type: 'pdf',
-              // 自定义类型
-              types: ['pdf', 'csv', 'html', 'xml', 'txt']
-            },
-            print: true,
-            buttons: [{code: 1, name: '新增'}, {code: 3, name: '删除'}],
-            onButtonClick: handleTest
+          beforeCallback: (props) => {
+            props.params.userId = 'sfadfas';
           },
           // editIcon: false,
           // viewIcon: false,1
@@ -161,7 +170,11 @@ const {proxy } = getCurrentInstance() as any;
             onCheckboxChange: checkboxChange,
         checkboxConfig: checkboxConfig
           },
-
+          toolBox: {
+            showType: 'button',
+            showExport: false,
+            showPrint: false
+          },
         },
         search: {
           formData: searchData.searchForm(),
@@ -200,8 +213,14 @@ function handleDataCallback(res) {
  function handleSave(formState) {
    console.log(formState);
    formState.abccdefg = 'tset';
-   handleFormSubmit();
+   handleFormSubmit({eee: 1});
  }
+
+ function beforeCallback(props) {
+   console.log(props);
+   props.params.userId = new Date();
+ }
+
 
  function handleUpdateShow(row) {
   handleData.value = row;
@@ -227,7 +246,14 @@ function handleDataCallback(res) {
     doc.save('my.pdf');
   }
 
+  function handleTestBtn(e) {
+    console.log(e, crudTableRef.value.getTableRef().openExport());
+
+  }
+
+
  async function handleGetData() {
+await mergeTableProps({api: web_alterationApply_getByList});
   //  await mergeSearchParams({test: '1234123123'});
    await mergeSearchResetParams({test234: 23424});
    const params = await getSearchParams();

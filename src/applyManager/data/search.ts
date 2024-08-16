@@ -1,6 +1,6 @@
 import {h} from 'vue';
 import {testDate, testFun} from "./fun";
-import dayjs from "dayjs";
+
 // 查询表单
 const search = [
   // {text: '科室名称', type: 'select', name: 'applyKs', allowClear: true, span: 5, computedFun: [{type: 'option',  api: 'getByGb25', relationField: ['name/dmmc', 'value/dm'] , request: 'get'}],option:[],  style: 'min-width: 260px;', labelCol: {style: {width: '90px'}}, class: '',     },
@@ -11,7 +11,6 @@ const search = [
     name: 'subjectName',
     option: [{name: 'a1', value: 1}, {name: 'a2', value: 2}, {name: 'a3', value: 3}],
     span: 6,
-    show: false,
     style: 'width: 660px',
     labelCol: { style: { width: '90px' } },
     wrapperCol: { style: { width: '200px' } },
@@ -20,7 +19,6 @@ const search = [
   {
     text: '主题名称2',
     type: 'radio',
-    show: false,
     name: 'subjectName2',
     span: 10,
     option: [
@@ -30,6 +28,20 @@ const search = [
 
     ],
     value: 0,
+    $attrs: {buttonStyle:"solid"},
+    optionType: 'button',
+    style: 'width: 560px;',
+    labelCol: { style: { width: '90px' } },
+    wrapperCol: { style: { width: '200px' } },
+    class: '',
+  },
+  {
+    text: '主题名称3',
+    type: 'daterange',
+    name: 'subjectName3',
+    span: 10,
+
+    value: [],
     $attrs: {buttonStyle:"solid"},
     optionType: 'button',
     style: 'width: 560px;',

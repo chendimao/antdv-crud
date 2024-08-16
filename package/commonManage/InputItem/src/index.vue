@@ -19,6 +19,7 @@
                       :allowClear="item.allowClear??$crudGlobalInputConfig?.allowClear"
                       v-model:value="inputValue"
                       v-bind="item.$attrs"
+                      @blur="validateFun(item.name, { trigger: 'blur' }).catch(() => {})"
                       type="text" >
                   <template #addonAfter v-if="item.afterText">
                       {{item.afterText}}
@@ -33,6 +34,7 @@
                       :disabled="isDisabled"
                       :allowClear="item.allowClear??$crudGlobalInputConfig?.allowClear"
                       v-model:value="inputValue"
+                      @blur="validateFun(item.name, { trigger: 'blur' }).catch(() => {})"
                       v-bind="item.$attrs"
                         >
                   <template #addonAfter v-if="item.afterText">
@@ -44,7 +46,7 @@
                 <template v-else-if="item.type == 'textarea'">
                   <a-textarea    :allowClear="item.allowClear??$crudGlobalInputConfig?.allowClear"  v-bind="item.$attrs" :disabled="isDisabled"
                                 size="default"
-
+                                 @blur="validateFun(item.name, { trigger: 'blur' }).catch(() => {})"
                                 v-model:value="inputValue" :rows="item.rows" />
                 </template>
                 <template v-else-if="item.type == 'select'">
@@ -59,6 +61,7 @@
                       :options="item.option"
                       :filter-option="filterOption"
                       @change="handleSelectChange"
+                      @blur="validateFun(item.name, { trigger: 'blur' }).catch(() => {})"
                       v-bind="item.$attrs"
                       style="width: 100%;border: 0;"
                       :fieldNames="{label: 'name', value: 'value'}"
@@ -77,6 +80,7 @@
                       :disabled="isDisabled"
                       :tree-data="item.option"
                       @change="handleTreeSelectChange"
+                      @blur="validateFun(item.name, { trigger: 'blur' }).catch(() => {})"
                       v-bind="item.$attrs"
                       style="width: 100%;border: 0;"
                   >
@@ -95,6 +99,7 @@
                       @change="changeResourceName"
                       :multiple="!!item.multiple"
                       :options="item.option"
+                      @blur="validateFun(item.name, { trigger: 'blur' }).catch(() => {})"
                       style="width: 100%;border: 0;"
                       :fieldNames="{label: 'name', value: 'value'}"
                       v-bind="item.$attrs"
@@ -115,6 +120,7 @@
                       mode="multiple"
                       v-model:value="inputValue"
                       :disabled="isDisabled"
+                      @blur="validateFun(item.name, { trigger: 'blur' }).catch(() => {})"
                       style="width: 100%;border: 0;height: 30px;border-bottom: 1px solid #ccc;"
                       v-bind="item.$attrs"
                   >
@@ -131,6 +137,7 @@
                       show-time format="YYYY-MM-DD HH:mm:ss"
                       :disabled="isDisabled"
                       size="default"
+                      @blur="validateFun(item.name, { trigger: 'blur' }).catch(() => {})"
                       :allowClear="item.allowClear??$crudGlobalInputConfig?.allowClear"
                       v-bind="item.$attrs"/>
                 </template>
@@ -142,6 +149,7 @@
                       format="YYYY-MM-DD"
                       :disabled="isDisabled"
                       size="default"
+                      @blur="validateFun(item.name, { trigger: 'blur' }).catch(() => {})"
                       :allowClear="item.allowClear??$crudGlobalInputConfig?.allowClear"
                       v-bind="item.$attrs"/>
                 </template>
@@ -154,6 +162,7 @@
                       picker="year"
                       :disabled="isDisabled"
                       size="default"
+                      @blur="validateFun(item.name, { trigger: 'blur' }).catch(() => {})"
                       :allowClear="item.allowClear??$crudGlobalInputConfig?.allowClear"
                       v-bind="item.$attrs"/>
                 </template>
@@ -166,6 +175,7 @@
                       picker="month"
                       :disabled="isDisabled"
                       size="default"
+                      @blur="validateFun(item.name, { trigger: 'blur' }).catch(() => {})"
                       :allowClear="item.allowClear??$crudGlobalInputConfig?.allowClear"
                       v-bind="item.$attrs"
                   />
@@ -177,6 +187,7 @@
                       v-model:value="inputValue"
                       :disabled="isDisabled"
                       size="default"
+                      @blur="validateFun(item.name, { trigger: 'blur' }).catch(() => {})"
                       :format="item?.format??item.picker == 'year' ? 'YYYY' :item.picker == 'month' || item.picker == 'quarter' ? 'YYYY-MM' : 'YYYY-MM-DD' "
                       :valueFormat="item?.valueFormat??item.picker == 'year' ? 'YYYY' :item.picker == 'month' || item.picker == 'quarter' ? 'YYYY-MM' : 'YYYY-MM-DD' "
                       :allowClear="item.allowClear??$crudGlobalInputConfig?.allowClear"
@@ -297,6 +308,7 @@ const { proxy } = getCurrentInstance();
 
 const props = defineProps({
   value: {},
+  validateFun: {},
   item: {type: Object as () => (inputFormModel)},
   formState: {type: Object},
   isDisabled: {type: Boolean, default: false }

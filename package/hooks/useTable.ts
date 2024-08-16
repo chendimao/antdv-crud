@@ -37,6 +37,8 @@ export function useTable(props) {
 
   const methods = {
 
+
+
     // 发送请求获取表格数据并返回
     async getData() {
       return   await getTableRef().getData();
@@ -167,6 +169,10 @@ export function useTable(props) {
     // 动态设置table column
     async setTableColumns(params = {}) {
       return await getTableRef().setTableColumns(params);
+    },
+    // 合并table props
+    async mergeTableProps(props = {}) {
+      return await getTableRef().mergeTableProps(props);
     },
     // 动态设置formdata
     async setFormData(params = []) {

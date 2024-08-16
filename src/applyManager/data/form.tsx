@@ -4,7 +4,6 @@ import { web_alterationApply_insertOrUpdate,GetDiagnosis, web_alterationApply_ge
 import http from '../../util/http';
 import {getOptionList, valueToName} from "../../../package/utils";
 import {web_archivesManagement_getByGb25, web_archivesManagement_getByGb147} from '../../api/index';
-import dayjs from 'dayjs';
 import {showDate, testValidate} from "./fun";
 import {inputFormModel} from "../../../package/model";
 const searchForm = [
@@ -84,17 +83,18 @@ const base: inputFormModel[] = [
     text: '职称',
     type: 'text',
     name: 'describe',
-    span: 24,
+    span: 12,
     show: true,
     value: '',
     disabled: (data, form, type) => {
       console.log(data, form, type);
       return false;
     },
-    labelCol: { style: { width: '100px' } },
+    labelCol: { style: { width: '300px' } },
+    wrapperCol: {  },
     rules:[
       { required: true, message: '请输入姓名'},
-      {  validator: testValidate, trigger: 'change'}
+      {  validator: testValidate, trigger: 'blur'}
     ],
 
     class: '',
@@ -103,7 +103,7 @@ const base: inputFormModel[] = [
     text: '申请时间',
     type: 'text',
     name: 'department',
-    span: 24,
+    span: 12,
     value: '',
     style: '',
     class: '',
@@ -200,6 +200,7 @@ const base: inputFormModel[] = [
     value: '',
     style: '',
     class: '',
+    labelCol: { style: { width: '130px' } },
 
   },{
     text: 'test2',
@@ -255,10 +256,10 @@ const baseForm: Function = ((): Map =>
 
 // 封装页面统一数据
 export default {
-  title: '退休申请管理',
   typeInfo: {
     insert: { api: web_alterationApply_insertOrUpdate, title: '新增退休申请' },
     update: { api: web_alterationApply_insertOrUpdate, title: '编辑退休申请' },
+    check: { api: web_alterationApply_insertOrUpdate, title: '审核退休申请' },
     show: { title: '查看退休申请' },
   },
 

@@ -56,7 +56,13 @@ antdCrud.config(app, {
             pageSizeOptions: ['10', '20', '30', '40', '50'],
             showQuickJumper: true,
             showSizeChanger: true,
-        } },
+        },
+        isToolBox: true,
+        toolBox: {
+            showType: 'button',
+            showExport: false,
+        },
+        },
     formConfig: {FooterCancelText: '退出', FooterSubmitText: '确定', },
     searchConfig: {searchText: '搜索', resetText: '重载234'},
     inputConfig: {showSearch: true, allowClear: true}

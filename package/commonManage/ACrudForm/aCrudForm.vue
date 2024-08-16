@@ -98,8 +98,7 @@
                 :formData="item.formList()"
                 :type="aCardFormRef.type"
                 :formValidate="validateList"
-                :labelCol="{ span: 8 }"
-                :wrapperCol="{ span: 16 }"
+
             />
 
           </a-card>
@@ -219,6 +218,7 @@
      // 自定义validator的 传入当前表单值以便动态校验
      item[1].rules ? validateList.value[item[0]] = item[1].rules.map(ruleItem => {
        if (ruleItem.validator) {
+         console.log(aCardFormRef.value);
         ruleItem.validator = ruleItem.validator.bind(undefined,{ cardForm: aCardFormRef, refs: itemRefs.value});
        }
        return ruleItem;

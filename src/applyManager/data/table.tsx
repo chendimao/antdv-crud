@@ -1,4 +1,4 @@
-import dayjs from "dayjs";
+
 import {defineAsyncComponent, h, markRaw, render} from "vue";
 import {getOptionList, valueToName} from "../../../package/utils";
 import {sexList, stateList} from "./form";

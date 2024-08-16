@@ -1,21 +1,62 @@
 <template>
-  <div class="p-2 mr-0 overflow-hidden bg-white basic-table basic-table-form-container aCrudTable vxeTableData">
+  <div class=" pb-2 mr-0 overflow-hidden bg-white basic-table basic-table-form-container aCrudTable vxeTableData">
 
-    <vxe-toolbar
-        custom
-        print
-        export
-        v-if="tableTransferPropsRef.isToolBox??tablePropsRef.isToolBox"
-        ref="toolbarRef"
-        v-bind="tableTransferPropsRef.toolBox??tablePropsRef.toolBox"
-        :refresh="{query: getData}">
-      <slot name="buttons">
+    <template v-if="tableTransferPropsRef.isToolBox??tablePropsRef.isToolBox">
+      <vxe-toolbar
+          custom
+          print
+          export
+          v-if="tableTransferPropsRef?.toolBox?.showType !== 'button' && tablePropsRef?.toolBox?.showType !== 'button'"
+          ref="toolbarRef"
+          v-bind="tableTransferPropsRef?.toolBox??tablePropsRef.toolBox"
+          :refresh="{query: getData}">
+        <slot name="buttons"  >
 
-      </slot>
-    </vxe-toolbar>
+        </slot>
+      </vxe-toolbar>
+      <div  v-else
+            ref="toolbarRef"  style="width: 100%;display: flex;justify-content: space-between;padding:0 0 5px  0;">
+        <a-row style="width: 100%;">
+          <a-col :span="12">
+            <a-space >
+              <slot name="buttons"  >
+
+              </slot>
+            </a-space>
+          </a-col>
+
+          <a-col :span="12" style="text-align: right;">
+            <a-space >
+              <a-input placeholder="请输入搜索内容" v-if="tableTransferPropsRef?.toolBox?.showSearch === true || tablePropsRef?.toolBox?.showSearch === true" v-model:value="filterName" @keyup="searchEvent"/>
+              <a-button  v-if="tableTransferPropsRef?.toolBox?.showExport !== false && tablePropsRef?.toolBox?.showExport !== false" @click="openExport">
+                <DownloadOutlined />
+                导出
+              </a-button>
+              <a-button v-if="tableTransferPropsRef?.toolBox?.showPrint !== false && tablePropsRef?.toolBox?.showPrint !== false"  @click="openPrint">
+                <PrinterOutlined />
+                打印
+              </a-button>
+              <a-button v-if="tableTransferPropsRef?.toolBox?.showRefresh !== false && tablePropsRef?.toolBox?.showRefresh !== false"  @click="getData">
+                <ReloadOutlined />
+                刷新
+              </a-button>
+              <a-button  v-if="tableTransferPropsRef?.toolBox?.showSetting !== false && tablePropsRef?.toolBox?.showSetting !== false"  @click="openCustom">
+                <SettingOutlined />
+                设置
+              </a-button>
+            </a-space>
+          </a-col>
+        </a-row>
+      </div>
+    </template>
+
     <vxe-table ref="aCardTable"
-               :print-config="{}"
+               custom
+               print
+               export
                :custom-config="{mode: 'popup'}"
+               :print-config="{}"
+               :export-config="{}"
                v-if="tableTransferPropsRef"
                 :loading="tableLoading"
                v-bind="tablePropsRef"
@@ -83,7 +124,7 @@
       </vxe-column>
     </vxe-table>
 
-    <div style="text-align: right;padding: 10px;"   v-if="tableTransferPropsRef?.pagination?.isPagination !== false  ">
+    <div style="text-align: right;padding: 10px 0px;"   v-if="tableTransferPropsRef?.pagination?.isPagination !== false  ">
       <a-pagination
           v-model:current="currentPage"
           :total="tableTotal"
@@ -103,11 +144,10 @@ import {deepCopy, formatDate, getOptionList, valueToName} from "../utils";
 import {message} from "ant-design-vue";
 import {
   EyeOutlined,
-  EditOutlined
+  EditOutlined, DownloadOutlined, PrinterOutlined, ReloadOutlined, SettingOutlined
 } from '@ant-design/icons-vue';
 import {assertIsFunction, assertIsOption, computedFun, isComputedFunction} from "../model";
 const { proxy } = getCurrentInstance();
-
 
  const emits = defineEmits([ 'register']);
 
@@ -122,6 +162,7 @@ const { proxy } = getCurrentInstance();
  const currentPage = ref(1);
  const pageSize = ref(10);
  const resetParams = ref();
+ const filterName = ref();
 
  const formRef = ref();
 const searchRef = ref();
@@ -155,13 +196,18 @@ const paginationTransferPropsRef = ref();
  onMounted(() => {
  //  tableTransferPropsRef.immediate && getData();
    // 将表格和工具栏进行关联
-   const $table = aCardTable.value
-   const $toolbar = toolbarRef.value
-   if ($table && $toolbar) {
-     $table.connect($toolbar)
-   }
+    if ((tableTransferPropsRef.value.isToolBox || tablePropsRef.value.isToolBox) && tableTransferPropsRef.value?.toolBox?.showType !== 'button' && tablePropsRef.value?.toolBox?.showType !== 'button') {
+      const $table = aCardTable.value
+      const $toolbar = toolbarRef.value
+      if ($table && $toolbar) {
+        $table.connect($toolbar)
+      }
+    }
+
 
  })
+
+
 
 watch(currentPage, (data) => {
   // 默认设置page
@@ -280,6 +326,10 @@ function setPaginationProps(props) {
   paginationConfig.value = { ...paginationConfig.value, ...props};
 }
 
+function getTableRef() {
+    return aCardTable.value;
+}
+
 
 // 设置当前分页
 function setCurrentPagination(current) {
@@ -297,6 +347,11 @@ function getCurrentPagination() {
 function getTotalPagination() {
   console.log(tableTotal.value);
   return tableTotal.value;
+}
+
+
+function mergeTableProps(props) {
+  tableTransferPropsRef.value = {...tableTransferPropsRef.value, ...props};
 }
 
 function setTableColumns(columns) {
@@ -332,6 +387,36 @@ function reset() {
    formRef.value._value.handleFormShow(t, row);
  }
 
+ function openExport() {
+  aCardTable.value.openExport();
+ }
+
+ function openPrint() {
+  aCardTable.value.openPrint();
+ }
+ function openCustom() {
+  aCardTable.value.openCustom();
+ }
+
+const searchEvent = () => {
+  const filterVal = String(filterName.value).trim().toLowerCase()
+  if (filterVal) {
+    const filterRE = new RegExp(filterVal, 'gi')
+
+    const searchProps = Array.from(tableTransferPropsRef.value.columns.keys());
+    const rest = tableData.value.filter(item => searchProps.some(key => String(item[key]).toLowerCase().indexOf(filterVal) > -1))
+    tableData.value = rest.map(row => {
+      const item = Object.assign({}, row)
+      searchProps.forEach(key => {
+        item[key] = String(item[key]).replace(filterRE, match => `<span class="keyword-lighten">${match}</span>`)
+      })
+      return item
+    })
+  } else {
+    tableData.value = tableData.value
+  }
+}
+
  // 导出外部需要使用的方法
  const tableMethods = {
    getData,
@@ -340,6 +425,7 @@ function reset() {
    setTableColumns,
    setTableParams,
    setTableProps,
+   mergeTableProps,
    setCurrentPagination,
    getCurrentPagination,
    getTotalPagination,
@@ -351,6 +437,10 @@ async function getData() {
      tableData.value = tableTransferPropsRef.value.mockData;
      return tableData.value;
    }
+
+  if (tableTransferPropsRef.value.beforeCallback) {
+    tableTransferPropsRef.value.beforeCallback(tableTransferPropsRef.value);
+  }
 
 
 
@@ -365,7 +455,7 @@ async function getData() {
    return tableData.value;
  }
 
-
+defineExpose({getTableRef})
 emits('register', tableMethods);
 
 
@@ -386,10 +476,7 @@ export default {
   .cellClassName {
     color: black;
   }
- .ant-btn {
-  padding:  5px !important;
-   height: 22px !important;
-}
+
 
 }
 

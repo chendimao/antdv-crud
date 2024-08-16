@@ -27,7 +27,7 @@ export interface tableFormModel{
 
 
 export interface inputFormModel {
-  type: 'text' | 'textarea' | 'date' |  | 'dict' | 'select' | 'treeSelect' | 'cascader' | 'null' | 'checkbox' | 'datetime' | 'time' | 'year' | 'month' | 'upload' | 'switch' | 'origin' | 'list' | 'diyStyle' | 'h' | 'p' | 'seq'| 'slot',
+  type: 'text' | 'textarea' | 'date' |   'dict' | 'select' | 'treeSelect' | 'cascader' | 'null' | 'checkbox' | 'datetime' | 'time' | 'year' | 'month' | 'upload' | 'switch' | 'origin' | 'list' | 'diyStyle' | 'h' | 'p' | 'seq'| 'slot',
   text?: string, // 字段显示名称
   name?: string,  // 字段name
   span?: number,  // 显示比例
