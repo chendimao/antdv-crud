@@ -8,7 +8,7 @@ import zhCN from 'ant-design-vue/es/locale/zh_CN';
 <template>
   <ConfigProvider :locale="zhCN">
 
-    <Home />
+   <router-view></router-view>
 
   </ConfigProvider>
 

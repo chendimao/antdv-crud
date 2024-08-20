@@ -192,6 +192,13 @@ export const getOptionList = async (api, params, relationField, childrenField = 
       returnValue['name'] = item[relationField.name];
       returnValue['value'] = item[relationField.value];
 
+      for (const relationFieldKey in relationField) {
+        if (relationFieldKey !== 'name' && relationFieldKey !== 'value') {
+          returnValue[relationFieldKey] = item[relationField[relationFieldKey]];
+        }
+      }
+
+
       if (childrenField && item[childrenField['field']]) {
         returnValue[childrenField['field']] = item[childrenField['field']]?.map(child => {
           return {

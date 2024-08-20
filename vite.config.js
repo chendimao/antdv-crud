@@ -10,7 +10,7 @@ function pathResolve(dir) {
 export default defineConfig({
   plugins: [vue(), vueJsx()],
   esbuild: {
-    // drop: process.env.NODE_ENV !=='development' ? ["console", "debugger"] : [],
+     drop: process.env.NODE_ENV !=='development' ? ["console", "debugger"] : [],
   },
   build: {
     rollupOptions: {

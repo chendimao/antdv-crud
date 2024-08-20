@@ -4,13 +4,9 @@ import { web_alterationApply_insertOrUpdate,GetDiagnosis, web_alterationApply_ge
 import http from '../../util/http';
 import {getOptionList, valueToName} from "../../../package/utils";
 import {web_archivesManagement_getByGb25, web_archivesManagement_getByGb147} from '../../api/index';
-import {showDate, testSlot, testValidate} from "./fun";
+import {showDate, testValidate} from "./fun";
 import {inputFormModel} from "../../../package/model";
-const searchForm = [
-  { text: '单位名称', name: 'unitName', type: 'text' },
-  // {text: '电话', name: 'phone', type: 'text' },
-  // {text: '', type: 'default', name: 'category', value: 1}
-];
+
 
 const treeOption = [
   {
@@ -80,7 +76,7 @@ const base: inputFormModel[] = [
 
 
   {
-    text: '职称',
+    text: '职称234',
     type: 'text',
     name: 'describe',
     span: 12,
@@ -93,7 +89,7 @@ const base: inputFormModel[] = [
     labelCol: { style: { width: '300px' } },
     wrapperCol: {  },
     rules:[
-      { required: true, message: '请输入姓名'},
+      { required: true, message: '请输入职称234'},
       {  validator: testValidate, trigger: 'blur'}
     ],
 
@@ -143,10 +139,6 @@ const base: inputFormModel[] = [
       {type: 'function', fun: (formState, Data, inputItem, value, type, otherData ) => {
           console.log(otherData);
         }}
-    ],
-    rules:[
-      { required: true, message: '请输入select'},
-      {  validator: testSlot, trigger: 'blur'}
     ],
     labelCol: { style: { width: '130px' } },
   }, {
@@ -205,20 +197,21 @@ const base: inputFormModel[] = [
     style: '',
     class: '',
     labelCol: { style: { width: '130px' } },
-    rules:[
-      { required: true, message: '请输入slot'},
-      {  validator: testSlot, trigger: 'blur'}
-    ],
+
+  },{
+    text: 'test2',
+    type: 'slot',
+    name: 'testSlot2',
+    span: 24,
+    value: '',
+    style: '',
+    class: '',
+
   },
   {text: '退休资料上传',
     type: 'upload',
     name: 'filePath',
     value: [],
-    $attrs: {
-    beforeUpload: (file) => {
-      console.log(file);
-    }
-    },
     uploadField: {
       url: 'http://ywgl.tongchealth.com/basic-api/web/archivesManagement/uploadPic',
       changeCallback: (formState, item, value) => {

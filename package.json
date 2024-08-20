@@ -1,6 +1,6 @@
 {
   "name": "antdv-crud",
-  "version": "0.0.68",
+  "version": "0.0.69",
   "type": "module",
   "files": [
     "dist/*",
@@ -28,7 +28,7 @@
     "@ant-design/icons-vue": "^7.0.1",
     "@vitejs/plugin-vue": "^2.3.1",
     "@vitejs/plugin-vue-jsx": "^3.1.0",
-    "ant-design-vue": "3.1.1",
+    "ant-design-vue": "3.2.20",
     "axios": "^1.6.8",
     "dayjs": "^1.11.10",
     "jspdf": "^2.5.1",
@@ -36,6 +36,7 @@
     "vite": ">=2.9.1",
     "vitepress": "^1.1.4",
     "vue": "^3.2.31",
+    "vue-router": "^4.4.3",
     "vue-tsc": "^2.0.19",
     "vxe-table": "^4.7.53",
     "vxe-table-plugin-export-pdf": "^4.0.2"

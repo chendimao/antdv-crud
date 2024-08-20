@@ -6,6 +6,8 @@ import App from './App.vue'
 import VXETable from "vxe-table";
 import 'vxe-table/lib/style.css';
 
+import router from './router/index';
+
 // ...可选 UI
 import VxeUI from 'vxe-pc-ui'
 import 'vxe-pc-ui/lib/style.css'
@@ -70,4 +72,5 @@ antdCrud.config(app, {
  app.use(antdCrud);
 
 app.use(useTable);
+app.use(router);
 app.mount('#app');

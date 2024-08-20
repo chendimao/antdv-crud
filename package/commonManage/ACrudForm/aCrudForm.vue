@@ -141,13 +141,13 @@
 </template>
 
 <script lang="ts" setup>
-  import {
-    computed,
-    getCurrentInstance,
-    ref,
-    toRaw,
-    watch,
-  } from 'vue';
+import {
+  computed,
+  getCurrentInstance,
+  ref,
+  toRaw, unref,
+  watch,
+} from 'vue';
   import { Form, message } from 'ant-design-vue';
   import FormInputItem from '../FormInputItem/';
   import {deepCopy} from "../../utils";
@@ -189,7 +189,7 @@
 
 
   function initForm() {
-
+    console.log('initForm');
     // for (const ref of itemRefs.value) {
     //   //ref && ref.clear();
     // }
@@ -199,13 +199,12 @@
     // }
 
 
-
-
     let formList = [];
     validateList.value = {};
     aCardFormRef.value.formData.forEach((item) => {
       formList = [...item.formList()];
     });
+    ;
 
     formList.forEach((item) => {
       //  初始化默认数据
@@ -214,13 +213,18 @@
     // 初始化数据
     aCardFormRef.value.formState = deepCopy(resetForm.value);
 
+    console.log(aCardFormRef.value, formList);
+
       formList.forEach((item) => {
      // 自定义validator的 传入当前表单值以便动态校验
      item[1].rules ? validateList.value[item[0]] = item[1].rules.map(ruleItem => {
        if (ruleItem.validator) {
-         console.log(aCardFormRef.value);
-        ruleItem.validator = ruleItem.validator.bind(undefined,{ cardForm: aCardFormRef, refs: itemRefs.value});
+         //console.log(aCardFormRef.value,ruleItem.validator, typeof ruleItem.validator);
+         ruleItem.cardForm = aCardFormRef;
+         ruleItem.refs = itemRefs.value;
+        //ruleItem.validator = ruleItem.validator.bind(undefined,{...this, cardForm: aCardFormRef, refs: itemRefs.value});
        }
+       console.log(ruleItem);
        return ruleItem;
      }) : '';
 
@@ -233,6 +237,7 @@
 
 
   function setFormProps(props, ref) {
+    aCardFormRef.value = null;
     itemRefs.value = [];
     tableRef.value = ref.tableRef;
     searchRef.value = ref.searchRef;

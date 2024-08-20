@@ -7,7 +7,6 @@
                      @register="registerSearch"
                      >
 
-        <router-link to="/home1">to page2</router-link>
         <a-button
             @click="handleTest"
             type="primary"
@@ -17,6 +16,11 @@
         >
 
           test pdf</a-button
+        >
+        <router-link
+            to="/home"
+
+        >to page1</router-link
         >
         <a-button
             @click="handleGetData"
@@ -41,6 +45,7 @@
 
       </a-crud-search>
     </template>
+    <div></div>
     <a-row>
       <a-col :span="24">
         <a-crud-dict style="width:200px;" @change="changeDict" :api="GetDiagnosis" :params='{"page":1,"rows":30,"limit":30,"code":1}' searchField="dmmc" />
@@ -68,7 +73,9 @@
               <a-button v-if="row.pid != 0" @click="handleAddShow('insert')">新建下级</a-button>
             </template>
 
-
+            <template #testSlot="{row}">
+                  <div>{{row}}</div>
+            </template>
           </a-crud-table>
         </div>
       </a-col>
@@ -80,8 +87,9 @@
     <a-crud-form @register="registerForm">
 
       <template #testSlot="{data}">
-        <a-input v-model:value="data.formState.testSlot"  @blur="data.validateFun(data.item.name, { trigger: 'blur' }).catch(() => {})"/>
+        {{data}}
       </template>
+
 <!--      <template #default="{formState}">-->
 <!--        <a-button @click="handleSave(formState)">保存</a-button>-->
 <!--      </template>-->

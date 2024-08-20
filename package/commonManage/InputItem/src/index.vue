@@ -264,7 +264,7 @@
                 </template>
 
                 <template v-else-if="item.type == 'slot'">
-                   <slot :name="item.name"  :data="{formState, inputValue, item, isDisabled}"   ></slot>
+                   <slot :name="item.name"  :data="{formState, inputValue, item, isDisabled, validateFun}"  ></slot>
                 </template>
                 <template v-else-if="item.type == 'dict'">
                   <a-crud-dict :api="item.api" :params="item.params" v-model="inputValue" @change="handleDictChange"/>

@@ -10,23 +10,14 @@ export const testDate = (formState, data, type) =>{
     formState.value.endDate = formState.value['date'][1];
 }
 export const testValidate = async ( data) => {
-    const {cardForm} = data;
-    console.log(cardForm);
+    const {cardForm} = data.validatorData;
+    console.log(data.validatorData.cardForm);
+    //console.log(await refs[0].validateFields('time'));
     return new Promise((resolve, reject) => {
         if (cardForm.formState.describe !== 'test') {
             resolve()
         } else {
             reject('不能输入test')
-        }
-    })
-}
-export const testSlot = ({cardForm}) => {
-    console.log(cardForm, 23);
-    return new Promise((resolve, reject) => {
-        if (cardForm.formState.describe == '1') {
-            resolve()
-        } else {
-            reject('输入1')
         }
     })
 }

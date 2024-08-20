@@ -6,12 +6,12 @@
           <a-form-item  v-bind="validateInfos[item.name]" :label="item.text" :name="item.name" :label-col="item.labelCol" :wrapper-col="item.wrapperCol??{style: {width: '100%'}}"
            >
             <InputItem v-model:value="formState[item.name]"
-                       :isDisabled=" (typeof item.disabled === 'function' ? item.disabled(formState, item, type)??isDisabled : item.disabled??isDisabled)"
+                       :isDisabled=" (type == 'show' || (typeof item?.disabled === 'function' ? item?.disabled(formState, item, type)??isDisabled : item?.disabled??isDisabled))"
                        :form-state="formState"
                        :validateFun="validate"
                        @change="inputChange" :item="item" >
               <template v-for="(_, name) in $slots" #[name]="{data}">
-                <slot :name="name" :data="data"></slot>
+                <slot :name="name" :data="data"    ></slot>
               </template>
             </InputItem>
 
