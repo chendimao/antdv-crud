@@ -5,7 +5,7 @@ import applyManager2 from '../applyManager2/index.vue';
 export const myRoutes = [
 
   {
-    path: '/home',
+    path: '/',
     name: 'home',
     title: '',
     component: applyManager

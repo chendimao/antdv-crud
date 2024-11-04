@@ -23,11 +23,9 @@ export const testValidate = async ( data) => {
 export const testSlot = ({cardForm}) => {
     console.log(cardForm, 23);
     return new Promise((resolve, reject) => {
-        if (cardForm.formState.describe == '1') {
+
             resolve()
-        } else {
-            reject('输入1')
-        }
+
     })
 }
 

@@ -8,6 +8,7 @@ export const   useGetTable = async  (api, params, total = ref(), loading = ref()
     loading.value = true;
     const res = await api(params).catch((err) => {
         loading.value = false;
+        return [];
     });
     loading.value = false;
 
@@ -17,7 +18,7 @@ export const   useGetTable = async  (api, params, total = ref(), loading = ref()
 
         if (res.code != 0) {
             message.error('查询失败');
-            return;
+            return [];
         }
         if (res.data && isArray(res.data)) {
             total.value = res.total || res.data.length;

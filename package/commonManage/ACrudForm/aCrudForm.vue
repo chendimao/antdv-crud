@@ -57,9 +57,9 @@
         <div :style="{ textAlign: aCardFormRef.footerPosition }">
 
 
-          <slot :formState="aCardFormRef.formState">
+          <slot :formState="aCardFormRef.formState" :loading="loading" :type="aCardFormRef.type">
             <!--          show 默认不显示确认取消按钮，除非手动配置显示-->
-          <aCrudFormFooter :aCardFormRef="aCardFormRef" @handleFormSubmit="handleFormSubmit" @handleFormCancel="handleFormCancel"/>
+          <aCrudFormFooter :loading="loading" :aCardFormRef="aCardFormRef" @handleFormSubmit="handleFormSubmit" @handleFormCancel="handleFormCancel"/>
 
 
 

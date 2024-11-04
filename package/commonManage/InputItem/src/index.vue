@@ -461,8 +461,9 @@ const handleDictChange = (value, data) => {
 
 }
 const handleTreeSelectChange = (value, label, extra) => {
-  console.log(value, label, extra.triggerNode.props, 'tree change')
-    emit('change', inputItem.value, value, extra.triggerNode.props);
+  console.log(value, label,  extra, 'tree change')
+
+    emit('change', inputItem.value, value,  extra.triggerNode?extra.triggerNode.props:extra);
     return;
 
 }

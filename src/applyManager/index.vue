@@ -5,6 +5,7 @@
 
       <a-crud-search ref="searchRef"
                      @register="registerSearch"
+                     @search="emitSearch"
                      >
 
         <router-link to="/home1">to page2</router-link>
@@ -38,6 +39,18 @@
 
           test ref</a-button
         >
+
+        <a-button
+            @click="handleSearch"
+            type="primary"
+            style="float: left; margin : 10px"
+            size="middle"
+            class="!px-2"
+        >
+
+          test搜索</a-button
+        >
+
 
       </a-crud-search>
     </template>
@@ -82,9 +95,9 @@
       <template #testSlot="{data}">
         <a-input v-model:value="data.formState.testSlot"  @blur="data.validateFun(data.item.name, { trigger: 'blur' }).catch(() => {})"/>
       </template>
-<!--      <template #default="{formState}">-->
-<!--        <a-button @click="handleSave(formState)">保存</a-button>-->
-<!--      </template>-->
+      <template #default="{formState, loading}">
+        <a-button @click="handleSave(formState)">保存</a-button>
+      </template>
 
     </a-crud-form>
   </div>
@@ -151,6 +164,7 @@ const crudTableRef = ref();
           isMenu: true,
            menuWidth: 300,
           isView: true,
+
           isEdit: false,
           beforeCallback: (props) => {
             props.params.userId = 'sfadfas';
@@ -176,7 +190,7 @@ const crudTableRef = ref();
         },
         search: {
           formData: searchData.searchForm(),
-
+          isTable: false,
         },
         form: {
           title: retireData.title,
@@ -202,9 +216,10 @@ function handleDataCallback(res) {
     return await api(params, handleData.value);
   }
 
- function handleAddShow(t) {
+   function handleAddShow(t) {
 
    mergeFormResetParams({ page: 234234});
+
    handleFormShow(t);
  }
 
@@ -235,6 +250,16 @@ function handleDataCallback(res) {
   }
 
 
+  function emitSearch(parms) {
+    // 查询图表接口
+
+    // 查询table列表
+    getSearch(parms);
+  }
+
+
+
+
   function handleTest(e) {
     var doc = new jsPDF();
 // 添加并设置字体
@@ -246,6 +271,13 @@ function handleDataCallback(res) {
 
   function handleTestBtn(e) {
     console.log(e, crudTableRef.value.getTableRef().openExport());
+
+  }
+
+
+  async function handleSearch(e) {
+        const params = await getSearchParams();
+        getSearch({...params, test: 34})
 
   }
 
