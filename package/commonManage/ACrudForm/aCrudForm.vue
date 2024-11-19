@@ -1,6 +1,7 @@
 <!--新增修改查看统一页面-->
 <template>
   <div v-if="aCardFormRef.visible" >
+
     <a-modal
         class="aCardForm"
         v-if="aCardFormRef.modalType == 'modal'"
@@ -16,7 +17,7 @@
 
           :style="{ maxHeight: 'calc(100vh - 210px)', height: aCardFormRef.height ? aCardFormRef.height : 'calc(100vh - 210px)' }"
           style="overflow: auto"
-      >
+      >{{aCardFormRef.modalType}}
         <div class="mb-2 form-card" v-if="aCardFormRef.formData?.length > 0">
           <a-card v-for="item in aCardFormRef.formData" :bordered="false">
             <template #title v-if="item.title">
@@ -136,6 +137,54 @@
 
     </a-drawer>
 
+
+    <div v-if="aCardFormRef.modalType == 'form'">
+
+      <div
+
+          :style="{ maxHeight: 'calc(100vh - 210px)', height: aCardFormRef.height ? aCardFormRef.height : 'calc(100vh - 210px)' }"
+          style="overflow: auto"
+      >
+        <div class="mb-2 form-card" v-if="aCardFormRef.formData?.length > 0">
+          <a-card v-for="item in aCardFormRef.formData" :bordered="false">
+            <template #title v-if="item.title">
+              <div >{{ item.title }}</div>
+
+            </template>
+            <FormInputItem
+                :ref="(el) => setItemRefs(el, item)"
+                :visible="aCardFormRef.visible"
+                v-model:formState="aCardFormRef.formState"
+                :is-disabled="isTableDisabled"
+                :formData="item.formList()"
+                :type="aCardFormRef.type"
+                :formValidate="validateList"
+                :labelCol="{ span: 8 }"
+                :wrapperCol="{ span: 16 }"
+            >
+              <template v-for="(_, name) in $slots" #[name]="{data}">
+                <slot v-if="name != 'default'" :name="name" :data="data"></slot>
+              </template>
+            </FormInputItem>
+
+          </a-card>
+        </div>
+
+        <a-card v-if="aCardFormRef.detailComponent">
+          <component
+              :is="aCardFormRef.detailComponent"
+              :ref="aCardFormRef.name"
+              :is-disabled="isTableDisabled"
+              :visible="aCardFormRef.visible"
+              :type="aCardFormRef.type"
+              v-model:tData="aCardFormRef.formState"
+          ></component>
+        </a-card>
+      </div>
+
+    </div>
+
+
   </div>
 
 </template>
@@ -145,6 +194,7 @@ import {
   computed,
   getCurrentInstance,
   ref,
+  defineExpose,
   toRaw, unref,
   watch,
 } from 'vue';
@@ -402,6 +452,8 @@ import {
   }
 
 
+
+  defineExpose({formMethods, aCardFormRef})
 
   emits('register', formMethods);
 </script>

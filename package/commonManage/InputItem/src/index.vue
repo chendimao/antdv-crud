@@ -415,7 +415,10 @@ watch(() => props.value, async (data) => {
 }, {immediate: true})
 
 watch(() => inputValue.value, (data) => {
-  console.log(data);
+
+  if (proxy.$crudGlobalInputConfig?.isTrim === true) {
+    inputValue.value = data?.trim()??data;
+  }
   inputChange(data);
 })
 
@@ -492,6 +495,8 @@ const inputChange = async (ev) => {
 
 
   let data = ev;
+
+
   if (inputItem.value.type == 'checkbox') {
     data =  ev.join(',');
     if (data &&  !data[0]  ) {

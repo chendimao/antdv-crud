@@ -50,6 +50,16 @@
 
           test搜索</a-button
         >
+        <a-button
+            @click="handleForm"
+            type="primary"
+            style="float: left; margin : 10px"
+            size="middle"
+            class="!px-2"
+        >
+
+          test form</a-button
+        >
 
 
       </a-crud-search>
@@ -90,7 +100,7 @@
 
   </a-card>
   <div>
-    <a-crud-form @register="registerForm">
+    <a-crud-form @register="registerForm" ref="cardFormRef">
 
       <template #testSlot="{data}">
         <a-input v-model:value="data.formState.testSlot"  @blur="data.validateFun(data.item.name, { trigger: 'blur' }).catch(() => {})"/>
@@ -128,6 +138,9 @@ const {proxy } = getCurrentInstance() as any;
       return false;
     }
   });
+
+  const cardFormRef = ref();
+
 
 const crudTableRef = ref();
   const test = ref(123);
@@ -199,6 +212,9 @@ const crudTableRef = ref();
           dataCallback: handleDataCallback,
           requestCallback: handleRequestCallback,
           name: 'bmgl',
+          modalType: 'form',
+          width: '500px',
+          height: '400px'
         },
       }
   );
@@ -252,7 +268,7 @@ function handleDataCallback(res) {
 
   function emitSearch(parms) {
     // 查询图表接口
-
+    console.log('search');
     // 查询table列表
     getSearch(parms);
   }
@@ -278,6 +294,12 @@ function handleDataCallback(res) {
   async function handleSearch(e) {
         const params = await getSearchParams();
         getSearch({...params, test: 34})
+
+  }
+
+  async function handleForm(e) {
+    console.log(cardFormRef.value)
+    cardFormRef.value.formMethods.handleFormSubmit();
 
   }
 

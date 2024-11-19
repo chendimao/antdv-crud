@@ -42,7 +42,7 @@
 </template>
 
 <script lang="ts" setup>
-import {getCurrentInstance, onMounted, ref, useSlots, defineProps,watch} from "vue";
+import {getCurrentInstance, onMounted, ref, useSlots, defineProps,watch, defineExpose} from "vue";
 import FormInputItem from './FormInputItem/';
 import {PlusOutlined, SearchOutlined, UndoOutlined} from "@ant-design/icons-vue";
 import {deepCopy} from "../utils";
@@ -51,9 +51,6 @@ const { proxy } = getCurrentInstance();
 const emits = defineEmits([ 'search','reset',  'register']);
 
 
-defineExpose({
-  submit
-})
 
 const mySlot = ref();
 
@@ -143,7 +140,7 @@ function mergeSearchParams(params) {
 
 }
 function emitResetParams() {
-  emits('search', deepCopy(resetForm.value));
+  emits('reset', deepCopy(resetForm.value));
 }
 
 async function getData(type: 'reset' | 'search') {
@@ -190,7 +187,7 @@ const searchMethods = {
   getResetParams
 }
 
-
+defineExpose({searchMethods, aCardSearchRef, submit})
 
 emits('register', searchMethods);
 

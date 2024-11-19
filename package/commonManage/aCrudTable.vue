@@ -139,7 +139,7 @@
 
 <script setup lang="ts">
 import {useGetTable} from "../hooks/useGetData";
-import {render, h, ref, onMounted, defineProps, watch, getCurrentInstance} from "vue";
+import {render, h, ref, onMounted, defineProps, watch, getCurrentInstance, defineExpose} from "vue";
 import {deepCopy, formatDate, getOptionList, valueToName} from "../utils";
 import {message} from "ant-design-vue";
 import {
@@ -455,7 +455,7 @@ async function getData() {
    return tableData.value;
  }
 
-defineExpose({getTableRef})
+defineExpose({getTableRef, tableMethods, aCardTable})
 emits('register', tableMethods);
 
 
