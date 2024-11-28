@@ -70,6 +70,7 @@
         <div class="mr-0 overflow-hidden bg-white vben-basic-table vben-basic-table-form-container">
           <a-crud-table
             @register="registerTable2"
+            :table-props="tableProps"
             ref="crudTableRef"
           >
             <template #buttons>
@@ -145,6 +146,58 @@ const {proxy } = getCurrentInstance() as any;
 const crudTableRef = ref();
   const test = ref(123);
   const handleData = ref();
+
+  const tableProps = ref({
+    api: summaryPageList,
+    columns: tableData.tableForm(),
+    isMenu: true,
+    menuWidth: 300,
+    isView: true,
+
+    isEdit: false,
+    beforeCallback: (props) => {
+      props.params.userId = 'sfadfas';
+    },
+    // editIcon: false,
+    // viewIcon: false,1
+    size: 'mini',
+    isSortable: false, // 是否开启排序，这是总开关，这里开启后，如果column中设置sortable: false，则该字段也不会排序
+    $attrs: {
+      stripe: false,
+      exportConfig: {},
+      sortConfig:  {defaultSort:  {field: 'medicalRecordNo', order: 'asc'} },
+      treeConfig: { childrenField: 'thirdPhysicianList' },
+      height: '200px',
+      onCheckboxChange: checkboxChange,
+      checkboxConfig: checkboxConfig
+    },
+    toolBox: {
+      showType: 'button',
+      showExport: false,
+      showPrint: false
+    },
+  });
+  const crudProps = ref({
+
+    table: tableProps.value,
+    search: {
+      formData: searchData.searchForm(),
+      isTable: false,
+    },
+    form: {
+      title: retireData.title,
+      typeInfo: retireData.typeInfo,
+      formData: retireData.formData,
+      dataCallback: handleDataCallback,
+      requestCallback: handleRequestCallback,
+      name: 'bmgl',
+      modalType: 'form',
+      width: '500px',
+      height: '400px'
+    },
+  });
+
+
   const [
     {
       registerTable: registerTable2 ,
@@ -169,54 +222,7 @@ const crudTableRef = ref();
       resetSearch,
       reset}
   ]= antdCrud.useCrudTable(
-      {
-
-        table: {
-          api: summaryPageList,
-          columns: tableData.tableForm(),
-          isMenu: true,
-           menuWidth: 300,
-          isView: true,
-
-          isEdit: false,
-          beforeCallback: (props) => {
-            props.params.userId = 'sfadfas';
-          },
-          // editIcon: false,
-          // viewIcon: false,1
-          size: 'mini',
-          isSortable: false, // 是否开启排序，这是总开关，这里开启后，如果column中设置sortable: false，则该字段也不会排序
-          $attrs: {
-            stripe: false,
-            exportConfig: {},
-            sortConfig:  {defaultSort:  {field: 'medicalRecordNo', order: 'asc'} },
-            treeConfig: { childrenField: 'thirdPhysicianList' },
-            height: '200px',
-            onCheckboxChange: checkboxChange,
-        checkboxConfig: checkboxConfig
-          },
-          toolBox: {
-            showType: 'button',
-            showExport: false,
-            showPrint: false
-          },
-        },
-        search: {
-          formData: searchData.searchForm(),
-          isTable: false,
-        },
-        form: {
-          title: retireData.title,
-          typeInfo: retireData.typeInfo,
-          formData: retireData.formData,
-          dataCallback: handleDataCallback,
-          requestCallback: handleRequestCallback,
-          name: 'bmgl',
-          modalType: 'form',
-          width: '500px',
-          height: '400px'
-        },
-      }
+      crudProps.value
   );
 const test2 = ref();
 onMounted(async () => {
@@ -298,6 +304,7 @@ function handleDataCallback(res) {
   }
 
   async function handleForm(e) {
+    tableProps.value.test = 'test';
     console.log(cardFormRef.value)
     cardFormRef.value.formMethods.handleFormSubmit();
 

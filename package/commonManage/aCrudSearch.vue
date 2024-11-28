@@ -48,8 +48,11 @@ import {PlusOutlined, SearchOutlined, UndoOutlined} from "@ant-design/icons-vue"
 import {deepCopy} from "../utils";
 const { proxy } = getCurrentInstance();
 
-const emits = defineEmits([ 'search','reset',  'register']);
 
+const emits = defineEmits([ 'search','reset',  'register']);
+const props = defineProps({
+  searchProps: {}
+})
 
 
 const mySlot = ref();
@@ -103,14 +106,20 @@ function setSearchProps(props, ref) {
     }) : '';
   });
 
-
+  watch(() => props.searchProps, (data) => {
+    aCardSearchRef.value = {...aCardSearchRef.value, ...data};
+    console.log(data, aCardSearchRef, 256);
+  }, {deep: true })
   const slots = useSlots();
   if (slots && slots.default) {
     mySlot.value = slots.default()[0]?.props;
   }
 
 }
-
+watch(() => props.searchProps, (data) => {
+  aCardSearchRef.value = {...aCardSearchRef.value, ...data};
+  console.log(data, aCardSearchRef, 121);
+}, {deep: true })
 
 function getSearchParams() {
   return aCardSearchRef.value.params;

@@ -17,7 +17,7 @@
 
           :style="{ maxHeight: 'calc(100vh - 210px)', height: aCardFormRef.height ? aCardFormRef.height : 'calc(100vh - 210px)' }"
           style="overflow: auto"
-      >{{aCardFormRef.modalType}}
+      >
         <div class="mb-2 form-card" v-if="aCardFormRef.formData?.length > 0">
           <a-card v-for="item in aCardFormRef.formData" :bordered="false">
             <template #title v-if="item.title">
@@ -206,6 +206,7 @@ import {
   const { proxy } = getCurrentInstance();
 
   const searchRef = ref();
+
   const tableRef = ref();
   // props集合
   const aCardFormRef = ref();
@@ -228,6 +229,9 @@ import {
   const formTransferPropsRef = ref();
   const resetForm = ref({});// 重置数据 修改时为当前行数据 新增时为resetForm数据
   const emits = defineEmits(['register', 'formCancel', 'formSubmit']);
+  const props = defineProps({
+    formProps: {},
+  });
 
   const loading = ref(false);
   let itemRefs = ref([]);
@@ -235,6 +239,9 @@ import {
   const isTableDisabled = computed(() => {
     return aCardFormRef.value.type == 'show' || aCardFormRef.value.type == 'check';
   });
+
+
+
 
 
 
@@ -411,7 +418,10 @@ import {
     }
 
   }
-
+watch(() => props.formProps, (data) => {
+  formTransferPropsRef.value = {...formTransferPropsRef.value, ...data};
+  console.log(data, formTransferPropsRef, 425);
+}, {deep: true })
   function getFormState() {
     return aCardFormRef.value.formState;
   }

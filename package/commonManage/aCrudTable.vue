@@ -150,7 +150,9 @@ import {assertIsFunction, assertIsOption, computedFun, isComputedFunction} from 
 const { proxy } = getCurrentInstance();
 
  const emits = defineEmits([ 'register']);
-
+ const props = defineProps({
+   tableProps: {},
+ })
 
  const tableTotal = ref(0);
  const tableLoading = ref(false);
@@ -249,6 +251,13 @@ watch(pageSize, (data) => {
 
 })
 
+watch(() => props.tableProps, (data) => {
+  tableTransferPropsRef.value = {...tableTransferPropsRef.value, ...data};
+  console.log(data, tableTransferPropsRef, 256);
+}, {deep: true })
+
+
+
 
 function initFun() {
   // 运行item初始化方法
@@ -303,8 +312,9 @@ function setTableProps(props, ref) {
   formRef.value = ref.formRef;
   searchRef.value = ref.searchRef;
   // 初始化参数 如果没有传入params 则使用searchRef的参数
+  console.log(searchRef.value._value, 306);
   if (!tableTransferPropsRef.value.params) {
-    tableTransferPropsRef.value.params = searchRef.value._value.getResetParams() || {};
+    tableTransferPropsRef.value.params = searchRef?.value?._value?.getResetParams() || {};
   }
   resetParams.value = deepCopy(tableTransferPropsRef.value.params);
 
@@ -331,6 +341,9 @@ function getTableRef() {
 }
 
 
+
+
+
 // 设置当前分页
 function setCurrentPagination(current) {
    if (current * pageSize.value > tableTotal.value) {
@@ -352,6 +365,8 @@ function getTotalPagination() {
 
 function mergeTableProps(props) {
   tableTransferPropsRef.value = {...tableTransferPropsRef.value, ...props};
+  console.log(tableTransferPropsRef.value, 365);
+  return tableTransferPropsRef;
 }
 
 function setTableColumns(columns) {

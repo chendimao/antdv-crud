@@ -417,7 +417,7 @@ watch(() => props.value, async (data) => {
 watch(() => inputValue.value, (data) => {
 
   if (proxy.$crudGlobalInputConfig?.isTrim === true) {
-    inputValue.value = data?.trim()??data;
+    inputValue.value = data?.trim ? data.trim() : data ;
   }
   inputChange(data);
 })
