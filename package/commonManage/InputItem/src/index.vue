@@ -335,11 +335,11 @@ watch(() => props.item, async (data) => {
   if (inputItem.value.computedFun?.length > 0) {
     for (const item of inputItem.value.computedFun) {
       if (item.type == 'option') {
-        let params = item.params;
+        let params = item.params??{};
         if(item.dynamicParams) {
-          params = {...item.dynamicParams(props.formState)};
+          params = {...params, ...item.dynamicParams(props.formState)};
         }
-        inputItem.value.option = await getOptionList(item.api, item.params, item.relationField, item.childrenField);
+        inputItem.value.option = await getOptionList(item.api, params, item.relationField, item.childrenField);
       } else if (item.type == 'function') {
 
       }

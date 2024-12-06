@@ -277,7 +277,7 @@ function initFun() {
             if(item.dynamicParams) {
               params = {...item.dynamicParams(tableTransferPropsRef.value.columns,item, tableData)};
             }
-          column.option = await getOptionList(item.api, item.params, item.relationField, item.childrenField);
+          column.option = await getOptionList(item.api, params, item.relationField, item.childrenField);
 
         }
       })
@@ -324,7 +324,6 @@ function setTableProps(props, ref) {
 
   // 设置初始页和初始每页条数 默认设置page和limit字段
   initPage(deepCopy(resetParams.value));
-  initFun();
 
   // 判断初始化时是否需要请求数据
   if (tableTransferPropsRef.value.immediate !== false) {
@@ -448,6 +447,7 @@ const searchEvent = () => {
 
 
 async function getData() {
+  initFun();
    if (tableTransferPropsRef.value.mockData) {
      tableData.value = tableTransferPropsRef.value.mockData;
      return tableData.value;
