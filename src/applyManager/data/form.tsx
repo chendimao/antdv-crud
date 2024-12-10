@@ -161,7 +161,7 @@ const base: inputFormModel[] = [
     style: '',
     class: '',
     valueField: ['dm', 'icd10'],
-    tableField: [{type: 'seq', title: '序号', width: 100}, {field: 'dmmc', title: '名称', width: 100}, {field: 'dm', title: '代码', width: 100}],
+    tableField: [ {field: 'dmmc', title: '名称', width: 100}, {field: 'dm', title: '代码', width: 100}],
     computedFun: [
       {
         type: 'function', fun: (formState, Data, inputItem, value, type, otherData ) => {
