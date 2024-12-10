@@ -1,7 +1,7 @@
 <template>
   <vxe-pulldown ref="pulldownRef"  style="width: 100%;"  popup-class-name="dropdown-table" transfer>
     <template #default>
-      <a-input v-model:value="searchName"  allow-clear   @keyup="getData" @focus="focusEvent" v-bind="dictProps"></a-input>
+      <a-input v-model:value="searchName"  allow-clear    @focus="focusEvent" v-bind="dictProps"></a-input>
     </template>
 
     <template #dropdown>
@@ -17,21 +17,22 @@
               size="mini"
               ref="xTable1"
               height="300"
-              style="min-width: 500px;"
+              :column-config="{resizable: true}"
+              :scroll-y="{enabled: true, gt: 0}"
               :data="tableData"
               :keyboard-config="{isArrow: true}"
               @cell-dblclick="handleSubmit"
               @cell-click="handleRowClick"
               :sort-config="{trigger: 'cell'}">
-            <vxe-column type="seq" width="50"></vxe-column>
 
-            <vxe-column v-for="item in tableField" :field="item.field" :title="item.title" :width="item.width"     ></vxe-column>
+            <vxe-column v-for="item in tableField" :type="item?.type??''" :field="item.field" :title="item.title" :width="item.width"     ></vxe-column>
 
 
           </vxe-table>
-        <div style="text-align: right;padding: 10px;"   >
+        <div style="text-align: right;padding: 10px;"  v-if="showPage"  >
           <a-pagination
               size="small"   :show-size-changer="false" show-quick-jumper
+
               v-model:current="currentPage"
               :total="tableTotal"
               :defaultPageSize="pageSize"
@@ -54,9 +55,11 @@ const props = defineProps({
   modelValue: {type: String, default: ''},
   api: {required: true, type: Function},
   params: {required: true, type: Object},
+  showPage: {type: Boolean, default: true},
    pageField: {type: String, default: 'page'},
    sizeField: {type: String, default: 'limit'},
-  searchField: {type: String, default: 'name'},
+  name: {type: String, default: 'dmmc'},
+  valueField: {type: Array, default: ['dm']},
   callbackFun: {},
   tableField: {type: Array, default: () => [{field: 'dmmc', title: '名称', width: 100}, {field: 'dm', title: '代码', width: 100}, {field: 'icd10', title: 'icd10', width: 120}]},
 });
@@ -92,9 +95,7 @@ const focusEvent = () => {
   const $pulldown = pulldownRef.value
   if ($pulldown) {
     $pulldown.showPanel();
-    if (tableData.value.length === 0) {
       getData();
-    }
   }
 }
 watch( searchName, (data) => {
@@ -102,6 +103,7 @@ watch( searchName, (data) => {
   emits('update:modelValue', data);
   // 如果面板显示，则说明为输入状态
   if (pulldownRef.value.isPanelVisible()) {
+    currentPage.value = 1;
     getData();
   } else {
     // 否则就是双击选择状态
@@ -116,8 +118,8 @@ function getData() {
   props.api({...props.params,
     [props.pageField]: currentPage.value,
     [props.sizeField]: pageSize.value,
-    [props.searchField]: searchName.value }).then(res => {
-    console.log(res);
+    [props.name]: searchName.value }).then(res => {
+
     loading.value = false;
 
     if (props.callbackFun) {
@@ -151,7 +153,7 @@ const pageChangeEvent = (ev) => {
 
 function handleSubmit(ev) {
   pulldownRef.value.togglePanel();
-  searchName.value = ev.row.dmmc;
+  searchName.value = ev.row[props.name];
   currentData.value = ev;
 
 }
@@ -182,6 +184,10 @@ width: 100%;
 
   .dropdown-table-footer {
     border-top: 1px solid #e8eaec;
+  }
+
+  .dropdown-table-body {
+    width: auto !important;
   }
 }
 

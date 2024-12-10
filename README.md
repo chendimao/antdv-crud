@@ -202,11 +202,23 @@ export default {
 };
 
 
-```
+***search效果图***
+![search image](../public/img/search.png)
+
+***table效果图***
+![search image](../public/img/table.png)
+
+***form效果图***
+![search image](../public/img/form.png)
+
+ 
 
 
 
 
 ## 更多
 
-具体查看github 地址： [antdv-crud](https://github.com/chendimao/antdv-crud).
+github ： [antdv-crud](https://github.com/chendimao/antdv-crud)
+官网 ： [antdv-crud](https://github.com/chendimao/antdv-crud)
+
+。有问题联系qq：122803265

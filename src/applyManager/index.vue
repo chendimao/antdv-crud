@@ -191,9 +191,8 @@ const crudTableRef = ref();
       dataCallback: handleDataCallback,
       requestCallback: handleRequestCallback,
       name: 'bmgl',
-      modalType: 'form',
-      width: '500px',
-      height: '400px'
+      width: '100%',
+      height: '100%'
     },
   });
 

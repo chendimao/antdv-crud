@@ -31,6 +31,7 @@
 import {reactive, defineProps, ref, watch, getCurrentInstance, onMounted} from "vue";
 import InputItem from  '../../InputItem';
 import { Form } from "ant-design-vue";
+import {isArray} from "../../../utils/is";
 
 const { proxy } = getCurrentInstance();
 const formRef = ref();
@@ -115,6 +116,13 @@ function inputChange(inputItem, value, otherData) {
 
   if (type == 'upload') {
     uploadField.changeCallback(formState, inputItem, value );
+  } else  if (type == 'dict') {
+    if (isArray(inputItem.valueField)) {
+      inputItem.valueField.forEach(valueKey => {
+        formState.value[valueKey] = otherData.row[valueKey];
+      })
+    }
+    formState.value[inputItem.name] = value;
   } else {
     formState.value[name] = value;
   }

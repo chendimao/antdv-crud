@@ -149,54 +149,29 @@ const base: inputFormModel[] = [
       {  validator: testSlot, trigger: 'blur'}
     ],
     labelCol: { style: { width: '130px' } },
-  }, {
+  },
+  {
     text: '字典选择',
     type: 'dict',
-    name: 'dict',
+    name: 'dmmc',
     api: GetDiagnosis,
     params: {"page":1,"rows":30,"limit":30,"code":1},
     span: 24,
     value: '',
     style: '',
     class: '',
-    searchField: 'dmmc',
+    valueField: ['dm', 'icd10'],
+    tableField: [{type: 'seq', title: '序号', width: 100}, {field: 'dmmc', title: '名称', width: 100}, {field: 'dm', title: '代码', width: 100}],
     computedFun: [
-      {type: 'function', fun: (formState, Data, inputItem, value, type, otherData ) => {
-    if (Data.value.has('test3')) {
-      Data.value.set('test3', {
-        text: otherData.row.dmmc,
-        type: 'text',
-        name: 'test3',
-        span: 24,
-        value: '',
-        labelCol: { style: { width: '130px' } },
-        style: '',
-        class: '',
-
-      });
-      formState.value['test3'] = '';
-    } else {
-      const arrayData = Array.from(Data.value);
-      let targetIndex = arrayData.findIndex(([key, value]) => key === 'dict');
-      arrayData.splice(targetIndex + 1, 0, ['test3', {
-        text: otherData.row.dmmc,
-        type: 'text',
-        name: 'test3',
-        span: 24,
-        value: '',
-        style: '',
-        class: '',
-
-      }]);
-      Data.value = new Map(arrayData);
-    }
-
-          console.log(Data.value);
-  formState.value.dm = otherData.row.dm;
-}},
+      {
+        type: 'function', fun: (formState, Data, inputItem, value, type, otherData ) => {
+          formState.value.dm = otherData.row.dm;
+        }
+      },
     ],
     labelCol: { style: { width: '130px' } },
-  }, {
+  },
+  {
     text: 'test',
     type: 'slot',
     name: 'testSlot',

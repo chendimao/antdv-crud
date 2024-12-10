@@ -267,7 +267,18 @@
                    <slot :name="item.name"  :data="{formState, inputValue, item, isDisabled, validateFun}"  ></slot>
                 </template>
                 <template v-else-if="item.type == 'dict'">
-                  <a-crud-dict :api="item.api" :params="item.params" v-model="inputValue" @change="handleDictChange"/>
+                  <a-crud-dict :api="item.api"
+                               :params="item.params"
+                               :sizeField="item.sizeField"
+                               :tableField="item.tableField"
+                               :callbackFun="item.callbackFun"
+                               :pageField="item.pageField"
+                               :name="item.name"
+                               :valueField="item.valueField"
+                               :showPage="item.showPage"
+                               :searchField="item.searchField"
+                               v-model="inputValue"
+                               @change="handleDictChange"/>
                 </template>
 
                 <template v-else>
@@ -459,6 +470,7 @@ onMounted(() => {
 
 const handleDictChange = (value, data) => {
   console.log(value, data, 'dictchange')
+
     emit('change', inputItem.value, value,  data);
     return;
 

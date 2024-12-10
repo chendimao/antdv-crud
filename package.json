@@ -15,7 +15,7 @@
     "registry": "https://registry.npmjs.org"
   },
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host",
     "build": "vite build",
     "preview": "vite preview",
     "dts": "vue-tsc --declaration --emitDeclarationOnly ",
