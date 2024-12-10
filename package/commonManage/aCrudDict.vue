@@ -59,7 +59,6 @@ const props = defineProps({
    pageField: {type: String, default: 'page'},
    sizeField: {type: String, default: 'limit'},
   name: {type: String, default: 'dmmc'},
-  valueField: {type: Array, default: ['dm']},
   callbackFun: {},
   tableField: {type: Array, default: () => [{field: 'dmmc', title: '名称', width: 100}, {field: 'dm', title: '代码', width: 100}, {field: 'icd10', title: 'icd10', width: 120}]},
 });

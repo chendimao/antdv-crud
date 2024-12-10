@@ -160,16 +160,14 @@ const base: inputFormModel[] = [
     value: '',
     style: '',
     class: '',
-    valueField: ['dm', 'icd10'],
+    valueField: {dm: 'dm1'},
     tableField: [ {field: 'dmmc', title: '名称', width: 100}, {field: 'dm', title: '代码', width: 100}],
-    computedFun: [
-      {
-        type: 'function', fun: (formState, Data, inputItem, value, type, otherData ) => {
-          formState.value.dm = otherData.row.dm;
-        }
-      },
-    ],
     labelCol: { style: { width: '130px' } },
+    computedFun: [
+      {type: 'function', fun: (formState, Data, inputItem, value, type, otherData ) => {
+          console.log(otherData);
+        }}
+    ],
   },
   {
     text: 'test',

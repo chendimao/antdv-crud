@@ -274,7 +274,6 @@
                                :callbackFun="item.callbackFun"
                                :pageField="item.pageField"
                                :name="item.name"
-                               :valueField="item.valueField"
                                :showPage="item.showPage"
                                :searchField="item.searchField"
                                v-model="inputValue"
