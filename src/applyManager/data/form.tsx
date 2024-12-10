@@ -160,7 +160,7 @@ const base: inputFormModel[] = [
     value: '',
     style: '',
     class: '',
-    valueField: {dm: 'dm1'},
+    valueField: {dmmc: 'dmmc', dm: 'dm1'},
     tableField: [ {field: 'dmmc', title: '名称', width: 100}, {field: 'dm', title: '代码', width: 100}],
     labelCol: { style: { width: '130px' } },
     computedFun: [

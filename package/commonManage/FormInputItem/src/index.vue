@@ -117,18 +117,20 @@ function inputChange(inputItem, value, otherData) {
   if (type == 'upload') {
     uploadField.changeCallback(formState, inputItem, value );
   } else  if (type == 'dict') {
-    if (isString(inputItem.valueField)) {
+    if (otherData?.row) {
+      if (isString(inputItem.valueField)) {
         formState.value[inputItem.valueField] = otherData.row[inputItem.valueField];
-    } else if (isArray(inputItem.valueField)) {
-      inputItem.valueField.forEach(valueKey => {
-        formState.value[valueKey] = otherData.row[valueKey];
-      })
-    } else if (isObject(inputItem.valueField)) {
-      Object.keys(inputItem.valueField).forEach(valueKey => {
-        formState.value[inputItem.valueField[valueKey]] = otherData.row[valueKey];
-      })
+      } else if (isArray(inputItem.valueField)) {
+        inputItem.valueField.forEach(valueKey => {
+          formState.value[valueKey] = otherData.row[valueKey];
+        })
+      } else if (isObject(inputItem.valueField)) {
+        Object.keys(inputItem.valueField).forEach(valueKey => {
+          formState.value[inputItem.valueField[valueKey]] = otherData.row[valueKey];
+        })
+      }
     }
-    formState.value[inputItem.name] = value;
+
   } else {
     formState.value[name] = value;
   }

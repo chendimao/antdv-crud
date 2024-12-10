@@ -275,7 +275,6 @@
                                :pageField="item.pageField"
                                :name="item.name"
                                :showPage="item.showPage"
-                               :searchField="item.searchField"
                                v-model="inputValue"
                                @change="handleDictChange"/>
                 </template>
@@ -313,6 +312,7 @@ import {PlusOutlined} from "@ant-design/icons-vue";
 import {getOptionList, setObjToUrlParams, valueToName} from "../../../utils";
 import {Api} from "../../../hooks/crud/api";
 import {inputFormModel} from "../../../model";
+import ACrudDict from "../../aCrudDict.vue";
 
 const { proxy } = getCurrentInstance();
 

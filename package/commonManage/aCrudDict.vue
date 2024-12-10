@@ -137,13 +137,6 @@ function getData() {
   });
 }
 
-const cellClickEvent = ({ row }) => {
-  const $pulldown = pulldownRef.value
-  if ($pulldown) {
-    searchName.value = row.name
-    $pulldown.hidePanel()
-  }
-}
 const pageChangeEvent = (ev) => {
   console.log(ev);
   currentPage.value = ev;
