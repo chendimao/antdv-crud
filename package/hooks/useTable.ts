@@ -177,6 +177,10 @@ export function useTable(props) {
     // 动态设置formdata
     async setFormData(params = []) {
       return await getFormRef().setFormData(params);
+    },
+    // 动态设置 search formdata
+    async setSearchFormData(params = []) {
+      return await getSearchRef().setSearchFormData(params);
     }
 
   }

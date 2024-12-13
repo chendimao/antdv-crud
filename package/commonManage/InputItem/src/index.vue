@@ -275,6 +275,7 @@
                                :pageField="item.pageField"
                                :name="item.name"
                                :showPage="item.showPage"
+                               :searchField="item.searchField"
                                v-model="inputValue"
                                @change="handleDictChange"/>
                 </template>
