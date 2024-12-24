@@ -30,6 +30,7 @@
               :data="tableData"
               :row-config="{isCurrent: true}"
               :edit-config="{}"
+              :loading="loading"
               :keyboard-config="{isArrow: true}"
               @cell-dblclick="handleSubmit"
               :sort-config="{trigger: 'cell'}">
@@ -79,6 +80,7 @@ const props = defineProps({
    pageField: {type: String, default: 'page'},
    sizeField: {type: String, default: 'limit'},
   name: {type: String, default: 'dmmc'},
+  debounceTime: {type: String, default: '200'},
   searchField: {type: String, default: 'dmmc'},
 
   callbackFun: {},
@@ -120,7 +122,7 @@ const focusEvent = () => {
   const $pulldown = pulldownRef.value
   if ($pulldown) {
     $pulldown.showPanel();
-    if (tableData.value.length === 0) {
+    if (tableData.value.length === 0 && searchName.value?.length > 0) {
       getData();
     }
   }
@@ -129,6 +131,7 @@ watch(() => props.modelValue, (data) => {
   searchName.value = data;
 })
 watch( searchName, (data) => {
+  console.log(data);
   emits('update:modelValue', data);
   // 如果面板显示，则说明为输入状态
   if (pulldownRef.value.isPanelVisible()) {
@@ -142,7 +145,10 @@ watch( searchName, (data) => {
 
 })
 
-function getData() {
+const  getData = debounce(() => {
+
+
+
   loading.value = true;
   props.api({...props.params,
     [props.pageField]: currentPage.value,
@@ -172,7 +178,7 @@ function getData() {
 
 
   });
-}
+}, props.debounceTime);
 
 const pageChangeEvent = (ev) => {
   currentPage.value = ev;
@@ -187,7 +193,7 @@ function handleSubmit(ev) {
     historyData.value.push(searchName.value);
     historyData.value = historyData.value.splice(-3);
   }
-  emits('change',  searchName.value, currentData.value);
+  emits('change',  searchName.value, currentData.value, tableData);
 
 }
 
@@ -214,6 +220,16 @@ function handleKeydownEnterSelect(ev) {
 
 }
 
+function debounce(func, wait) {
+  let timeout;
+  return function (...args) {
+    const context = this;
+    clearTimeout(timeout);
+    timeout = setTimeout(() => {
+      func.apply(context, args);
+    }, wait);
+  };
+}
 
 </script>
 <script lang="ts">

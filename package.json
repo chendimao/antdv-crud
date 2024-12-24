@@ -1,6 +1,6 @@
 {
   "name": "antdv-crud",
-  "version": "0.0.93",
+  "version": "0.0.95",
   "type": "module",
   "files": [
     "dist/*",

@@ -200,16 +200,14 @@ export default {
     tableForm,
     resetForm
 };
+```
 
+***search table效果图***
+![search image](/docs/public/img/img.png)
 
-***search效果图***
-![search image](../public/img/search.png)
-
-***table效果图***
-![search image](../public/img/table.png)
-
+ 
 ***form效果图***
-![search image](../public/img/form.png)
+![search image](/docs/public/img/img_1.png)
 
  
 
