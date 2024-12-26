@@ -115,8 +115,8 @@ export function useTable(props) {
       return await getFormRef().getFormRefData();
     },
     // 设置表单显示
-    async  setFormVisible() {
-      return await getFormRef().setFormVisible();
+    async  setFormVisible(visible = false) {
+      return await getFormRef().setFormVisible(visible);
     },
 
     // 设置表单状态
@@ -138,8 +138,8 @@ export function useTable(props) {
       return await getSearchRef().getSearchParams();
     },
     //设置search参数
-    async setSearchParams() {
-      return await getSearchRef().setSearchParams();
+    async setSearchParams(params = {}) {
+      return await getSearchRef().setSearchParams(params);
     },
     // 合并form resetForm
     async mergeFormResetParams(params = {}) {

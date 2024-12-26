@@ -3,9 +3,8 @@
     <template #default>
       <a-input v-model:value="searchName"
                autocomplete="off"
-               @keydown.down="handleKeydownDownSelect"
-               @keydown.up="handleKeydownUpSelect"
-               @keydown.enter="handleKeydownEnterSelect"
+               @keydown="handleKeydown"
+                @blur="blurEvent"
                allow-clear
                @focus="focusEvent"
                v-bind="dictProps"
@@ -127,6 +126,13 @@ const focusEvent = () => {
     }
   }
 }
+const blurEvent = () => {
+  const $pulldown = pulldownRef.value
+  if ($pulldown && $pulldown.isPanelVisible()) {
+    $pulldown.hidePanel();
+
+  }
+}
 watch(() => props.modelValue, (data) => {
   searchName.value = data;
 })
@@ -201,6 +207,15 @@ function handleHistoryData(item) {
   searchName.value = item;
 }
 
+function handleKeydown(ev) {
+  console.log(ev);
+  const keyEvent = {40: handleKeydownDownSelect, 38: handleKeydownUpSelect, 13: handleKeydownEnterSelect};
+  if (keyEvent[ev.keyCode]) {
+    keyEvent[ev.keyCode](ev);
+  }
+}
+
+
 function handleKeydownDownSelect(ev) {
   if (currentIndex.value + 1 < tableData.value.length) {
     currentIndex.value++;
@@ -216,7 +231,9 @@ function handleKeydownUpSelect(ev) {
   }
 }
 function handleKeydownEnterSelect(ev) {
-  handleSubmit({row: xTable1.value.getCurrentRecord(), visibleData: tableData.value, rowIndex: currentIndex.value, $rowIndex: currentIndex.value})
+  if (currentIndex.value) {
+    handleSubmit({row: xTable1.value.getCurrentRecord(), visibleData: tableData.value, rowIndex: currentIndex.value, $rowIndex: currentIndex.value})
+  }
 
 }
 

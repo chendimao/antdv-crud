@@ -40,7 +40,16 @@ app.use(antdCrud);
 ####  插件有三个基础组件，分别是搜索组件（查询）、表格组件（列表）和表单组件（新增修改）。每个组件都有自己的配置文件，用于配置组件的属性和行为。
 ### 组件使用示例
 
+<div>基础目录结构</div>
+<div>data</div>
+<div>----form.ts</div>
+<div>----table.ts</div>
+<div>----search.ts</div>
+<div>index.vue</div>
+
+
 ```vue
+index.vue
 <!--搜索组件-->
  <a-crud-search ref="searchRef" @register="registerSearch" />
 
@@ -223,4 +232,4 @@ export default {
 
 ## 更多
 
-具体查看github 地址： [antdv-crud-vue3](https://github.com/chendimao/antdv-crud)。有问题联系qq：122803265
+具体查看github 地址： [antdv-crud](https://github.com/chendimao/antdv-crud)。有问题联系qq：122803265

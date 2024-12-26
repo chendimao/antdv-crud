@@ -190,6 +190,10 @@ async function getData(type: 'reset' | 'search') {
   initForm();
 }
 
+ function resetSearch() {
+   getData('reset');
+}
+
 
 const searchMethods = {
   validateSearch,
@@ -199,7 +203,8 @@ const searchMethods = {
   mergeResetParams,
   mergeSearchParams,
   getResetParams,
-  setSearchFormData
+  setSearchFormData,
+  resetSearch
 }
 
 defineExpose({searchMethods, aCardSearchRef, submit})

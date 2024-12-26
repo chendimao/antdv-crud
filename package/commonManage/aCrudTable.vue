@@ -185,7 +185,11 @@ const tableDefaultProps = ref({...{
     isMenu: true,
     immediate: true,
     isPagination: true,
+    isToolBox: true,
+    toolBox: {
+      showType: 'button',
 
+    },
   }, ...proxy.$crudGlobalTableConfig??{}})
 
  const paginationConfig = ref();

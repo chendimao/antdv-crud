@@ -3,6 +3,7 @@
 ## 介绍
 ### Ant Design Vue 3 CRUD 插件是一个基于 Vue 3 和 Ant Design Vue 的通用增删改查（CRUD）功能插件。它旨在简化开发过程，为开发人员提供一个快速构建管理界面的解决方案，无需编写重复的 CRUD 功能。有疑问联系qq：122803265
 
+## 访问[官网详细文档](http://chendimao.com:8888)
 ## 安装
 ### 本插件使用的依赖，使用前需要安装这些插件并正确引入
 ```json{4}
@@ -217,6 +218,6 @@ export default {
 ## 更多
 
 github ： [antdv-crud](https://github.com/chendimao/antdv-crud)
-官网 ： [antdv-crud](https://github.com/chendimao/antdv-crud)
+官网 ： [antdv-crud](http://chendimao.com:8888)
 
 。有问题联系qq：122803265

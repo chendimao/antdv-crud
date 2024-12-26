@@ -3,16 +3,16 @@
 layout: home
 
 hero:
-  name: "antdv-crud-vue3-doc"
+  name: "antdv-crud-doc"
   text: ""
-  tagline: 该插件是基于Vue 3和VXETable的通用增删改查插件
+  tagline: 该插件是基于Vue 3、antdv和VXETable的通用增删改查插件
   actions:
     - theme: brand
       text: 介绍
       link: /guide/introduce
     - theme: alt
-      text: API示例
-      link: /api-examples
+      text: 配置说明
+      link: /config
 
 features:
   - title: 简单易用
