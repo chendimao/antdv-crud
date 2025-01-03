@@ -4,7 +4,7 @@ import { web_alterationApply_insertOrUpdate,GetDiagnosis, web_alterationApply_ge
 import http from '../../util/http';
 import {getOptionList, valueToName} from "../../../package/utils";
 import {web_archivesManagement_getByGb25, web_archivesManagement_getByGb147} from '../../api/index';
-import {showDate, testSlot, testValidate} from "./fun";
+import {showDate, testSlot, testValidate, validateEndTime, validateStartTime} from "./fun";
 import {inputFormModel} from "../../../package/model";
 const searchForm = [
   { text: '单位名称', name: 'unitName', type: 'text' },
@@ -101,14 +101,26 @@ const base: inputFormModel[] = [
   },
   {
     text: '申请时间',
-    type: 'text',
-    name: 'department',
+    type: 'date',
+    name: 'startTime',
     span: 12,
     value: '',
     style: '',
     class: '',
     rules:[
-      { required: true, message: '请输入姓名234234', trigger: 'blur'},
+      { validator: validateStartTime, trigger: 'blur',},
+    ],
+    labelCol: { style: { width: '130px' } },
+  },{
+    text: '结束时间',
+    type: 'date',
+    name: 'endTime',
+    span: 12,
+    value: '',
+    style: '',
+    class: '',
+    rules:[
+      { validator: validateEndTime, trigger: 'blur',},
     ],
     labelCol: { style: { width: '130px' } },
   },

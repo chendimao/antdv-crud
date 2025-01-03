@@ -1,6 +1,6 @@
 {
   "name": "antdv-crud",
-  "version": "0.0.97",
+  "version": "0.0.99",
   "type": "module",
   "files": [
     "dist/*",
@@ -19,7 +19,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "dts": "vue-tsc --declaration --emitDeclarationOnly ",
-    "docs:dev": "vitepress dev docs",
+    "docs:dev": "vitepress dev docs --host",
     "docs:build": "vitepress build docs",
     "docs:preview": "vitepress preview docs"
   },

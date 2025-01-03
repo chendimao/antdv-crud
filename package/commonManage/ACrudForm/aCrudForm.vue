@@ -19,13 +19,13 @@
           style="overflow: auto"
       >
         <div class="mb-2 form-card" v-if="aCardFormRef.formData?.length > 0">
-          <a-card v-for="item in aCardFormRef.formData" :bordered="false">
+          <a-card v-for="(item, index) in aCardFormRef.formData" :bordered="false">
             <template #title v-if="item.title">
               <div >{{ item.title }}</div>
 
             </template>
             <FormInputItem
-                :ref="(el) => setItemRefs(el, item)"
+                :ref="(el) => setItemRefs(el, item, index)"
                 :visible="aCardFormRef.visible"
                 v-model:formState="aCardFormRef.formState"
                 :is-disabled="isTableDisabled"
@@ -86,13 +86,13 @@
           style="overflow: auto"
       >
         <div class="mb-2 form-card" v-if="aCardFormRef.formData?.length > 0">
-          <a-card v-for="item in aCardFormRef.formData" :bordered="false">
+          <a-card v-for="(item, index) in aCardFormRef.formData" :bordered="false">
             <template #title v-if="item.title">
               <div >{{ item.title }}</div>
 
             </template>
             <FormInputItem
-                :ref="(el) => setItemRefs(el, item)"
+                :ref="(el) => setItemRefs(el, item, index)"
                 :visible="aCardFormRef.visible"
                 v-model:formState="aCardFormRef.formState"
                 :is-disabled="isTableDisabled"
@@ -146,13 +146,13 @@
           style="overflow: auto"
       >
         <div class="mb-2 form-card" v-if="aCardFormRef.formData?.length > 0">
-          <a-card v-for="item in aCardFormRef.formData" :bordered="false">
+          <a-card v-for="(item, index) in aCardFormRef.formData" :bordered="false">
             <template #title v-if="item.title">
               <div >{{ item.title }}</div>
 
             </template>
             <FormInputItem
-                :ref="(el) => setItemRefs(el, item)"
+                :ref="(el) => setItemRefs(el, item, index)"
                 :visible="aCardFormRef.visible"
                 v-model:formState="aCardFormRef.formState"
                 :is-disabled="isTableDisabled"
@@ -261,7 +261,6 @@ import {
     aCardFormRef.value.formData.forEach((item) => {
       formList = [...item.formList()];
     });
-    ;
 
     formList.forEach((item) => {
       //  初始化默认数据
@@ -270,18 +269,21 @@ import {
     // 初始化数据
     aCardFormRef.value.formState = deepCopy(resetForm.value);
 
-    console.log(aCardFormRef.value, formList);
+    console.log(aCardFormRef.value, formList, itemRefs.value);
 
       formList.forEach((item) => {
      // 自定义validator的 传入当前表单值以便动态校验
      item[1].rules ? validateList.value[item[0]] = item[1].rules.map(ruleItem => {
        if (ruleItem.validator) {
          //console.log(aCardFormRef.value,ruleItem.validator, typeof ruleItem.validator);
-         ruleItem.cardForm = aCardFormRef;
-         ruleItem.refs = itemRefs.value;
+         // ruleItem.cardForm = aCardFormRef;
+         // ruleItem.refs = itemRefs;
+        // ruleItem.validator = (aCardFormRef, itemRefs) => ruleItem.validator({cardForm: aCardFormRef, refs: itemRefs});
+         console.log(ruleItem.validator);
+         ruleItem.validator = ruleItem.validator.bind(null, {cardForm: aCardFormRef, refs: itemRefs});
         //ruleItem.validator = ruleItem.validator.bind(undefined,{...this, cardForm: aCardFormRef, refs: itemRefs.value});
        }
-       console.log(ruleItem);
+
        return ruleItem;
      }) : '';
 
@@ -310,9 +312,9 @@ import {
     initForm();
   }
 
-  function setItemRefs(el, item) {
-    console.log(el);
+  function setItemRefs(el, item, index) {
     el && itemRefs.value.push(el);
+    console.log(el, item, index, itemRefs);
   }
 
 

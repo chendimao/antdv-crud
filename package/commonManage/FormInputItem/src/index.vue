@@ -63,6 +63,7 @@ const { validate, validateInfos, clearValidate , resetFields} = useForm(
 defineExpose({
   submit,
   clear,
+  formRef,
   validateFields
 })
 
