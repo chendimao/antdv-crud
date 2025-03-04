@@ -3,7 +3,7 @@
     <a-row :gutter="24">
       <template v-for="item in Data.values()">
         <a-col :span="item.span" v-if="item.type && (typeof item.show === 'function' ? item.show(formState, item, type)??true : item.show??true)">
-          <a-form-item  v-bind="validateInfos[item.name]" :label="item.text" :name="item.name" :label-col="item.labelCol??{ style: { width: '90px' } }" :wrapper-col="item.wrapperCol??{style: {width: '100%'}}"
+          <a-form-item  v-bind="validateInfos[item.name]" :label="item.text" :name="item.name" :label-col="item.labelCol" :wrapper-col="item.wrapperCol??{style: {width: '100%'}}"
            >
             <InputItem v-model:value="formState[item.name]"
                        :isDisabled=" (type == 'show' || (typeof item?.disabled === 'function' ? item?.disabled(formState, item, type)??isDisabled : item?.disabled??isDisabled))"

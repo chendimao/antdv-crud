@@ -38,6 +38,7 @@
     "vue": "^3.2.31",
     "vue-router": "^4.4.3",
     "vue-tsc": "^2.0.19",
+    "vxe-pc-ui": "^4.3.99",
     "vxe-table": "^4.7.53",
     "vxe-table-plugin-export-pdf": "^4.0.2"
   },

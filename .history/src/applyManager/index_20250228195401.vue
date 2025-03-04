@@ -117,7 +117,6 @@
 <script lang="ts" setup>
   import { defineComponent, getCurrentInstance, onMounted, reactive, ref } from 'vue';
 
-  import {mockData} from './data/mockData.ts';
   import retireData from './data/form.tsx';
   import searchData from './data/search';
   import {
@@ -151,7 +150,7 @@ const crudTableRef = ref();
   const tableProps = ref({
     api: summaryPageList,
     columns: tableData.tableForm(),
-    mockData: mockData,
+    mockData: [],
     isMenu: true,
     menuWidth: 300,
     isView: true,
