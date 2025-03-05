@@ -352,7 +352,7 @@ watch(() => props.item, async (data) => {
           params = {...params, ...item.dynamicParams(props.formState)};
         }
         inputItem.value.option = await getOptionList(item.api, params, item.relationField, item.childrenField);
-      } 
+      }  
     }
   }
 
@@ -567,11 +567,7 @@ function handleTableSelectChange(ev,op,  re) {
 
 
 </script>
-<script lang="ts">
-export default {
-  name: 'aCrudFormItem',
-};
-</script>
+
 <style scoped lang="less">
 .ant-input[disabled], .ant-picker-input > input[disabled], span.ant-select-selection-item {
   color:#000;
