@@ -279,7 +279,7 @@ function initFun() {
 
             let params = item.params;
             if(item.dynamicParams) {
-              params = {...item.dynamicParams(tableTransferPropsRef.value.columns,item, tableData)};
+              params = {...params, ...item.dynamicParams(tableTransferPropsRef.value.columns,item, tableData)};
             }
           column.option = await getOptionList(item.api, params, item.relationField, item.childrenField);
 
