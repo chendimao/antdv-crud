@@ -22,8 +22,8 @@ export const testValidate = async ( data) => {
 }
 
 export const validateStartTime =  (anyData: Object) => {
-    const { cardForm, refs } = anyData;
-    const formRef = refs.value[0].formRef;
+    const { cardForm,  refs } = anyData; 
+    const formRef = refs;
     console.log('formRef', formRef);
     console.log('value', cardForm.value);
     let startTime = cardForm.value.formState?.startTime;

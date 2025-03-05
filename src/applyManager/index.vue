@@ -124,7 +124,7 @@
     PlusOutlined,
 
   } from '@ant-design/icons-vue';
-  import { web_archivesManagement_getManagement_details, web_alterationApply_getByList, summaryPageList, GetDiagnosis } from '../api/';
+  import { web_archivesManagement_getManagement_details, web_alterationApply_getByList, summaryPageList, GetDiagnosis, web_alterationApply_insertOrUpdate } from '../api/';
 
 const {proxy } = getCurrentInstance() as any;
 
@@ -187,7 +187,7 @@ const crudTableRef = ref();
       isTable: false,
     },
     form: {
-      title: retireData.title,
+      title: '用户管理', 
       typeInfo: retireData.typeInfo,
       formData: retireData.formData,
       dataCallback: handleDataCallback,

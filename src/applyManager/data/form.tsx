@@ -251,5 +251,5 @@ export default {
     show: { title: '查看退休申请' },
   },
 
-  formData: [{ formList: baseForm,  title: '' }],
+  formData: base,
 };

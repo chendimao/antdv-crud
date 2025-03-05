@@ -318,7 +318,7 @@ function setTableProps(props, ref) {
   // 初始化参数 如果没有传入params 则使用searchRef的参数
   console.log(searchRef.value._value, 306);
   if (!tableTransferPropsRef.value.params) {
-    tableTransferPropsRef.value.params = searchRef?.value?._value?.getResetParams()??{};
+    tableTransferPropsRef.value.params = searchRef?.value?._value?.getResetParams() || {};
   }
   resetParams.value = deepCopy(tableTransferPropsRef.value.params);
 

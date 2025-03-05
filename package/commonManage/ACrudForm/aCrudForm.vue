@@ -6,9 +6,9 @@
         class="aCardForm"
         v-if="aCardFormRef.modalType == 'modal'"
         v-model:visible="aCardFormRef.visible"
-        :title="aCardFormRef?.typeInfo[aCardFormRef?.type]?.title??aCardFormRef.title"
+        :title="aCardFormRef?.title"
         :wrap-class-name="!aCardFormRef.width ? 'full-modal' : ''"
-        :confirmLoading="loading"
+        :confirmLoading="loading" 
         @ok.prevent="handleFormSubmit"
         @cancel="handleFormCancel"
         :width="aCardFormRef.width || '100%'"
@@ -18,22 +18,18 @@
           :style="{ maxHeight: 'calc(100vh - 210px)', height: aCardFormRef.height ? aCardFormRef.height : 'calc(100vh - 210px)' }"
           style="overflow: auto"
       >
-        <div class="mb-2 form-card" v-if="aCardFormRef.formData?.length > 0">
-          <a-card v-for="(item, index) in aCardFormRef.formData" :bordered="false">
-            <template #title v-if="item.title">
-              <div >{{ item.title }}</div>
-
-            </template>
+        <div class="mb-2 form-card"  > 
+          <a-card  :bordered="false"> 
             <FormInputItem
-                :ref="(el) => setItemRefs(el, item, index)"
+                ref="formItemRef"
                 :visible="aCardFormRef.visible"
                 v-model:formState="aCardFormRef.formState"
                 :is-disabled="isTableDisabled"
-                :formData="item.formList()"
+                :formData="aCardFormRef.formData"
                 :type="aCardFormRef.type"
                 :formValidate="validateList"
-                :labelCol="{ span: 8 }"
-                :wrapperCol="{ span: 16 }"
+                :labelCol="aCardFormRef?.labelCol??{ span: 8 }"
+                :wrapperCol="aCardFormRef?.labelCol??{ span: 16 }"
             >
               <template v-for="(_, name) in $slots" #[name]="{data}">
                   <slot v-if="name != 'default'" :name="name" :data="data"></slot>
@@ -56,14 +52,9 @@
       </div>
       <template #footer>
         <div :style="{ textAlign: aCardFormRef.footerPosition }">
-
-
           <slot :formState="aCardFormRef.formState" :loading="loading" :type="aCardFormRef.type">
             <!--          show 默认不显示确认取消按钮，除非手动配置显示-->
           <aCrudFormFooter :loading="loading" :aCardFormRef="aCardFormRef" @handleFormSubmit="handleFormSubmit" @handleFormCancel="handleFormCancel"/>
-
-
-
           </slot>
         </div>
       </template>
@@ -73,7 +64,7 @@
         class="aCardForm"
         :mask="aCardFormRef.mask"
         v-if="aCardFormRef.modalType == 'drawer'"
-        :title="aCardFormRef?.typeInfo[aCardFormRef?.type]?.title??aCardFormRef.title"
+          :title="aCardFormRef?.title"
         :width="aCardFormRef.width || '100%'"
         :visible="aCardFormRef.visible"
         :body-style="{ paddingBottom: '80px' }"
@@ -92,11 +83,11 @@
 
             </template>
             <FormInputItem
-                :ref="(el) => setItemRefs(el, item, index)"
+                ref="formItemRef"
                 :visible="aCardFormRef.visible"
                 v-model:formState="aCardFormRef.formState"
                 :is-disabled="isTableDisabled"
-                :formData="item.formList()"
+                :formData="item"
                 :type="aCardFormRef.type"
                 :formValidate="validateList"
 
@@ -105,16 +96,6 @@
           </a-card>
         </div>
 
-        <a-card v-if="aCardFormRef.detailComponent">
-          <component
-              :is="aCardFormRef.detailComponent"
-              :ref="aCardFormRef.name"
-              :is-disabled="isTableDisabled"
-              :visible="aCardFormRef.visible"
-              :type="aCardFormRef.type"
-              v-model:tData="aCardFormRef.formState"
-          ></component>
-        </a-card>
       </div>
       <template v-if="aCardFormRef.menuPosition === 'extra'" #extra>
         <div :style="{ textAlign: aCardFormRef.footerPosition }">
@@ -152,11 +133,11 @@
 
             </template>
             <FormInputItem
-                :ref="(el) => setItemRefs(el, item, index)"
+                ref="formItemRef"
                 :visible="aCardFormRef.visible"
                 v-model:formState="aCardFormRef.formState"
                 :is-disabled="isTableDisabled"
-                :formData="item.formList()"
+                :formData="item"
                 :type="aCardFormRef.type"
                 :formValidate="validateList"
                 :labelCol="{ span: 8 }"
@@ -206,8 +187,10 @@ import {
   const { proxy } = getCurrentInstance();
 
   const searchRef = ref();
+  const testRef = ref();
 
   const tableRef = ref();
+  const formItemRef = ref();
   // props集合
   const aCardFormRef = ref();
   // 默认props
@@ -234,7 +217,6 @@ import {
   });
 
   const loading = ref(false);
-  let itemRefs = ref([]);
   const validateList = ref({});
   const isTableDisabled = computed(() => {
     return aCardFormRef.value.type == 'show' || aCardFormRef.value.type == 'check';
@@ -258,29 +240,46 @@ import {
 
     let formList = [];
     validateList.value = {};
-    aCardFormRef.value.formData.forEach((item) => {
-      formList = [...item.formList()];
-    });
+    console.log(aCardFormRef.value.formData);
 
+    const flatFormData = (formData) => {
+      formData.forEach(item => {
+        if (item.type == 'grid' && item.column.length > 0) {
+          item.column.forEach(colItem => {
+            flatFormData(colItem.children);
+          })
+        } else {
+          formList.push(item);
+        }
+      })
+    }
+
+    flatFormData(aCardFormRef.value.formData);
+    // aCardFormRef.value.formData.forEach((item) => {
+    //   console.log(item);
+    //   formList.push(item);
+    // });
+    console.log(formList);
+    
     formList.forEach((item) => {
       //  初始化默认数据
-      resetForm.value[item[0]] = item[1]?.value??'';
+      resetForm.value[item['name']] = item?.value??'';
     });
     // 初始化数据
     aCardFormRef.value.formState = deepCopy(resetForm.value);
 
-    console.log(aCardFormRef.value, formList, itemRefs.value);
+    console.log(aCardFormRef.value, formList);
 
       formList.forEach((item) => {
      // 自定义validator的 传入当前表单值以便动态校验
-     item[1].rules ? validateList.value[item[0]] = item[1].rules.map(ruleItem => {
+     item.rules ? validateList.value[item['name']] = item.rules.map(ruleItem => {
        if (ruleItem.validator) {
          //console.log(aCardFormRef.value,ruleItem.validator, typeof ruleItem.validator);
          // ruleItem.cardForm = aCardFormRef;
          // ruleItem.refs = itemRefs;
         // ruleItem.validator = (aCardFormRef, itemRefs) => ruleItem.validator({cardForm: aCardFormRef, refs: itemRefs});
-         console.log(ruleItem.validator);
-         ruleItem.validator = ruleItem.validator.bind(null, {cardForm: aCardFormRef, refs: itemRefs});
+       
+         ruleItem.validator = ruleItem.validator.bind(null, {cardForm: aCardFormRef, refs: formItemRef});
         //ruleItem.validator = ruleItem.validator.bind(undefined,{...this, cardForm: aCardFormRef, refs: itemRefs.value});
        }
 
@@ -297,7 +296,6 @@ import {
 
   function setFormProps(props, ref) {
     aCardFormRef.value = null;
-    itemRefs.value = [];
     tableRef.value = ref.tableRef;
     searchRef.value = ref.searchRef;
     formTransferPropsRef.value = props;
@@ -312,11 +310,6 @@ import {
     initForm();
   }
 
-  function setItemRefs(el, item, index) {
-    el && itemRefs.value.push(el);
-    console.log(el, item, index, itemRefs);
-  }
-
 
 
   function handleFormCancel() {
@@ -325,10 +318,11 @@ import {
   }
 
   function handleFormShow(t, formState) {
-    console.log(t, formState, resetForm.value);
+    console.log(t, formState, resetForm.value, formItemRef, testRef);
 
-    itemRefs.value = [];
     setFormVisible(true);
+    console.log(aCardFormRef.value.visible);
+    
     aCardFormRef.value.type = t;
     if (t == 'insert') {
       aCardFormRef.value.formState = deepCopy(resetForm.value);
@@ -349,26 +343,15 @@ import {
     else
     {
       let flag = true;
-      for (const ref of itemRefs.value) {
        //  console.log( 176, ref.submit()); // 提交两次
-        if (!(await ref.submit())) {
+        if (!(await formItemRef.value.submit())) {
           flag = false;
         }
-      }
+  
 
       // 校验通过
       if (flag) {
-        // 如果有明细表 参数单独处理
-        if (aCardFormRef.value.detailComponent) {
-          let tableErr = '';
-          console.log(proxy.$refs[aCardFormRef.value.name]);
-
-          tableErr = (await proxy.$refs[aCardFormRef.value.name].validAllEvent()) ?? undefined;
-
-          if (tableErr) {
-            return;
-          }
-        }
+        
         loading.value = true;
 
         let  res;
