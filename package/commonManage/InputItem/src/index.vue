@@ -19,7 +19,7 @@
                       :allowClear="item.allowClear??$crudGlobalInputConfig?.allowClear"
                       v-model:value="inputValue"
                       v-bind="item.$attrs"
-                      @blur="validateFun(item.name, { trigger: 'blur' }).catch(() => {})"
+                      @blur="handleBlur"
                       type="text" >
                   <template #addonAfter v-if="item.afterText">
                       {{item.afterText}}
@@ -34,8 +34,8 @@
                       :disabled="isDisabled"
                       :allowClear="item.allowClear??$crudGlobalInputConfig?.allowClear"
                       v-model:value="inputValue"
-                      @blur="validateFun(item.name, { trigger: 'blur' }).catch(() => {})"
                       v-bind="item.$attrs"
+                      @blur="handleBlur"
                         >
                   <template #addonAfter v-if="item.afterText">
                       {{item.afterText}}
@@ -44,10 +44,12 @@
                   </a-input-number>
                 </template>
                 <template v-else-if="item.type == 'textarea'">
-                  <a-textarea    :allowClear="item.allowClear??$crudGlobalInputConfig?.allowClear"  v-bind="item.$attrs" :disabled="isDisabled"
+                  <a-textarea    :allowClear="item.allowClear??$crudGlobalInputConfig?.allowClear"   :disabled="isDisabled"
                                 size="default"
-                                 @blur="validateFun(item.name, { trigger: 'blur' }).catch(() => {})"
-                                v-model:value="inputValue" :rows="item.rows" />
+                                :rows="item.rows"
+                                v-bind="item.$attrs"
+                                 @blur="handleBlur"
+                                v-model:value="inputValue"  />
                 </template>
                 <template v-else-if="item.type == 'select'">
 
@@ -60,11 +62,12 @@
                       :disabled="isDisabled"
                       :options="item.option"
                       :filter-option="filterOption"
-                      @change="handleSelectChange"
-                      @blur="validateFun(item.name, { trigger: 'blur' }).catch(() => {})"
-                      v-bind="item.$attrs"
-                      style="width: 100%;border: 0;"
+                       style="width: 100%;border: 0;"
                       :fieldNames="{label: 'name', value: 'value'}"
+                      v-bind="item.$attrs"
+                      @change="handleSelectChange"
+                      @blur="handleBlur"
+                     
                   >
 
 <!--                    <a-select-option v-for="data in item.option" :value="data.value">{{ data.name }}</a-select-option>-->
@@ -79,10 +82,11 @@
                       :show-search="$crudGlobalInputConfig?.showSearch"
                       :disabled="isDisabled"
                       :tree-data="item.option"
-                      @change="handleTreeSelectChange"
-                      @blur="validateFun(item.name, { trigger: 'blur' }).catch(() => {})"
-                      v-bind="item.$attrs"
                       style="width: 100%;border: 0;"
+                        v-bind="item.$attrs"
+                      @change="handleTreeSelectChange"
+                      @blur="handleBlur"
+                    
                   >
 
 <!--                    <a-select-option v-for="data in item.option" :value="data.value">{{ data.name }}</a-select-option>-->
@@ -96,13 +100,13 @@
                       :allowClear="item.allowClear??$crudGlobalInputConfig?.allowClear"
                       :show-search="$crudGlobalInputConfig?.showSearch ? {filter: cascaderFilterOption} : false"
                       :disabled="isDisabled"
-                      @change="changeResourceName"
                       :multiple="!!item.multiple"
                       :options="item.option"
-                      @blur="validateFun(item.name, { trigger: 'blur' }).catch(() => {})"
                       style="width: 100%;border: 0;"
                       :fieldNames="{label: 'name', value: 'value'}"
                       v-bind="item.$attrs"
+                      @change="changeResourceName"
+                      @blur="handleBlur"
                   />
 
 
@@ -120,9 +124,9 @@
                       mode="multiple"
                       v-model:value="inputValue"
                       :disabled="isDisabled"
-                      @blur="validateFun(item.name, { trigger: 'blur' }).catch(() => {})"
                       style="width: 100%;border: 0;height: 30px;border-bottom: 1px solid #ccc;"
                       v-bind="item.$attrs"
+                      @blur="handleBlur"
                   >
                     <a-select-option v-for="data in item.option" :value="data.value">{{ data.name }}</a-select-option>
                   </a-select>
@@ -137,9 +141,10 @@
                       show-time format="YYYY-MM-DD HH:mm:ss"
                       :disabled="isDisabled"
                       size="default"
-                      @blur="validateFun(item.name, { trigger: 'blur' }).catch(() => {})"
                       :allowClear="item.allowClear??$crudGlobalInputConfig?.allowClear"
-                      v-bind="item.$attrs"/>
+                      v-bind="item.$attrs"
+                      @blur="handleBlur"
+                      />
                 </template>
                 <template v-else-if="item.type == 'date'">
                   <a-date-picker
@@ -149,9 +154,10 @@
                       format="YYYY-MM-DD"
                       :disabled="isDisabled"
                       size="default"
-                      @blur="validateFun(item.name, { trigger: 'blur' }).catch(() => {})"
                       :allowClear="item.allowClear??$crudGlobalInputConfig?.allowClear"
-                      v-bind="item.$attrs"/>
+                      v-bind="item.$attrs"
+                      @blur="handleBlur"
+                      />
                 </template>
                 <template v-else-if="item.type == 'year'">
                   <a-date-picker
@@ -162,9 +168,10 @@
                       picker="year"
                       :disabled="isDisabled"
                       size="default"
-                      @blur="validateFun(item.name, { trigger: 'blur' }).catch(() => {})"
                       :allowClear="item.allowClear??$crudGlobalInputConfig?.allowClear"
-                      v-bind="item.$attrs"/>
+                      v-bind="item.$attrs"
+                      @blur="handleBlur"
+                      />
                 </template>
                 <template v-else-if="item.type == 'month'">
                   <a-date-picker
@@ -175,9 +182,9 @@
                       picker="month"
                       :disabled="isDisabled"
                       size="default"
-                      @blur="validateFun(item.name, { trigger: 'blur' }).catch(() => {})"
                       :allowClear="item.allowClear??$crudGlobalInputConfig?.allowClear"
                       v-bind="item.$attrs"
+                      @blur="handleBlur"
                   />
                 </template>
                 <template v-else-if="item.type == 'daterange'">
@@ -187,11 +194,11 @@
                       v-model:value="inputValue"
                       :disabled="isDisabled"
                       size="default"
-                      @blur="validateFun(item.name, { trigger: 'blur' }).catch(() => {})"
                       :format="item?.format??item.picker == 'year' ? 'YYYY' :item.picker == 'month' || item.picker == 'quarter' ? 'YYYY-MM' : 'YYYY-MM-DD' "
                       :valueFormat="item?.valueFormat??item.picker == 'year' ? 'YYYY' :item.picker == 'month' || item.picker == 'quarter' ? 'YYYY-MM' : 'YYYY-MM-DD' "
                       :allowClear="item.allowClear??$crudGlobalInputConfig?.allowClear"
                       v-bind="item.$attrs"
+                      @blur="handleBlur"
                   />
                 </template>
                 <template v-else-if="item.type == 'upload' && isArray(inputValue)">
@@ -202,8 +209,8 @@
                       :maxCount="item.uploadField.maxCount??100"
                       :disabled="isDisabled"
                       list-type="picture-card"
-                      @change="handleFileChange"
                       v-bind="item.$attrs"
+                      @change="handleFileChange"
                   >
                     <div  >
                       <plus-outlined />
@@ -278,7 +285,8 @@
                                :showPage="item.showPage"
                                :searchField="item.searchField"
                                v-model="inputValue"
-                               @change="handleDictChange"/>
+                               @change="handleDictChange"
+                               />
                 </template>
 
                 <template v-else>
@@ -351,7 +359,7 @@ watch(() => props.item, async (data) => {
         if(item.dynamicParams) {
           params = {...params, ...item.dynamicParams(props.formState)};
         }
-        inputItem.value.option = await getOptionList(item.api, params, item.relationField, item.childrenField);
+        inputItem.value.option = await getOptionList(item.api, params, item.relationField??item.field, item.childrenField);
       } else if (item.type == 'function') {
 
       }
@@ -455,6 +463,9 @@ const cascaderFilterOption = (inputValue, path) => {
 
 const handleFileChange = (ev) => {
   console.log(ev);
+  if (props.item.$attrs.onChange) {
+    props.item.$attrs.onChange(ev);
+  }
   if (ev.file.status === 'done' || ev.file.status === 'removed') {
     emit('change', inputItem.value, ev);
     return;
@@ -471,14 +482,18 @@ onMounted(() => {
 
 const handleDictChange = (value, data) => {
   console.log(value, data, 'dictchange')
-
+  if (props.item.$attrs.onChange) {
+    props.item.$attrs.onChange(value, data);
+  }
     emit('change', inputItem.value, value,  data);
     return;
 
 }
 const handleTreeSelectChange = (value, label, extra) => {
   console.log(value, label,  extra, 'tree change')
-
+  if (props.item.$attrs.onChange) {
+    props.item.$attrs.onChange(value, label, extra);
+  }
     emit('change', inputItem.value, value,  extra.triggerNode?extra.triggerNode.props:extra);
     return;
 
@@ -486,8 +501,25 @@ const handleTreeSelectChange = (value, label, extra) => {
 
 const handleSelectChange = (value, label) => {
   console.log(value, label, 'select change')
+
+  if (props.item.$attrs?.onChange) {
+    props.item.$attrs.onChange(value, label);
+  }
+
     emit('change', inputItem.value, value, label);
     return;
+
+}
+
+const handleBlur = (ev) => {
+
+  if (props.item.$attrs?.onBlur) {
+    props.item.$attrs.onBlur(ev);
+  } 
+  
+props.validateFun(props.item.name, { trigger: 'blur' }).catch(() => {
+  
+})
 
 }
 
@@ -546,6 +578,11 @@ const changeResourceName = (
     value: string[],
     selectedOptions: Record<string, any>[],
 ) => {
+
+  if (props.item.$attrs.onChange) {
+    props.item.$attrs.onChange(value, selectedOptions);
+  }
+
   selectData.value = []
   selectedOptions.forEach((item: any) => {
     const _parent = item.map((item: any) => item.value)

@@ -243,7 +243,7 @@ function initFun() {
             if(item.dynamicParams) {
               params = {...params, ...item.dynamicParams(tableTransferPropsRef.value.columns,item, tableData)};
             }
-          column.option = await getOptionList(item.api, params, item.relationField, item.childrenField);
+          column.option = await getOptionList(item.api, params, item.relationField??item.field, item.childrenField);
 
         }
       })

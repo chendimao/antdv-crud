@@ -74,6 +74,7 @@ export interface computedFun<T extends 'function' | 'option'> {
   type: T;
   api?:  T extends 'option' ? Function : never;
   relationField?: T extends 'option' ? {name: string, value: string} : never;
+  field?: T extends 'option' ? {name: string, value: string} : never;
   params?:  T extends 'option' ? object : never;
   dynamicParams?: T extends 'option' ? Function : never; // 动态参数
   fun?: T extends 'function' ? Function : never; // 只有在 type 为 'function' 时 fun 才是必需的
