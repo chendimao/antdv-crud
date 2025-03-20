@@ -57,19 +57,9 @@ const search = [
   // {text: '时间', type: 'date', name: 'dates', span:5,  style: 'min-width: 360px;', labelCol: {style: {width: '90px'}}, class: '',    },
 ];
 
-
-
-const searchForm: Function = ((): Map => {
-     return new Map(search.map(item => [item.name, item]))
-}
-
-)
-
-console.log(searchForm());
+ 
 // 封装页面统一数据
-export default {
-  searchForm
-}
+export default search
 
 
 

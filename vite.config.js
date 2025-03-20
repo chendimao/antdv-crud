@@ -28,7 +28,7 @@ export default defineConfig({
       name: 'antdv-crud',
       fileName: (format) => `antdv-crud.${format}.js`,
     },
-    sourcemap: true,
+    sourcemap: false,
   },
   resolve: {
     alias: [

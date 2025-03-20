@@ -18,8 +18,7 @@
               show-overflow
               :header-cell-class-name="() => 'headerCellClassName'"
               :cell-class-name="() => 'cellClassName unitClassName'"
-              highlight-hover-row
-              highlight-current-row
+              
               resizable
               size="mini"
               ref="xTable1"
@@ -93,6 +92,7 @@ onMounted(()=>{
   currentPage.value = props.params[props.pageField];
   pageSize.value = props.params[props.sizeField];
   searchName.value = props.modelValue;
+  getData();
 })
 
 
@@ -105,7 +105,7 @@ const currentRow = ref();
 const xTable1 = ref();
 
 const currentPage = ref(1);
-const tableTotal = ref(100);
+const tableTotal = ref(0);
 const pageSize = ref(10);
 const paginationConfig = ref();
 const currentData = ref();
@@ -128,10 +128,10 @@ const focusEvent = () => {
 }
 const blurEvent = () => {
   const $pulldown = pulldownRef.value
-  if ($pulldown && $pulldown.isPanelVisible()) {
-    $pulldown.hidePanel();
+  // if ($pulldown && $pulldown.isPanelVisible()) {
+  //   $pulldown.hidePanel();
 
-  }
+  // }
 }
 watch(() => props.modelValue, (data) => {
   searchName.value = data;

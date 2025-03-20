@@ -11,7 +11,7 @@ export const testDate = (formState, data, type) =>{
 }
 export const testValidate = async ( data) => {
     const {cardForm, refs} = data;
-    console.log(cardForm.value,refs.value[0].formRef);
+    console.log(cardForm.value,refs );
     return new Promise((resolve, reject) => {
         if (cardForm.value.formState.describe !== 'test') {
             resolve()
@@ -31,7 +31,7 @@ export const validateStartTime =  (anyData: Object) => {
 
     console.log(endTime);
     if (endTime !='') {
-        formRef.validateFields('endTime', (validate) => {
+        formRef.value.validateFields('endTime', (validate) => {
             console.log(validate);
         });
 

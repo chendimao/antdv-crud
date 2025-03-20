@@ -6,12 +6,12 @@
         class="aCardForm"
         v-if="aCardFormRef.modalType == 'modal'"
         v-model:visible="aCardFormRef.visible"
-        :title="aCardFormRef?.title"
+        :title="title"
         :wrap-class-name="!aCardFormRef.width ? 'full-modal' : ''"
         :confirmLoading="loading" 
         @ok.prevent="handleFormSubmit"
         @cancel="handleFormCancel"
-        :width="aCardFormRef.width || '100%'"
+        :width="aCardFormRef.width??'100%'"
     >
       <div
 
@@ -19,7 +19,7 @@
           style="overflow: auto"
       >
         <div class="mb-2 form-card"  > 
-          <a-card  :bordered="false"> 
+          <div   > 
             <FormInputItem
                 ref="formItemRef"
                 :visible="aCardFormRef.visible"
@@ -36,19 +36,8 @@
               </template>
             </FormInputItem>
 
-          </a-card>
+          </div>
         </div>
-
-        <a-card v-if="aCardFormRef.detailComponent">
-          <component
-              :is="aCardFormRef.detailComponent"
-              :ref="aCardFormRef.name"
-              :is-disabled="isTableDisabled"
-              :visible="aCardFormRef.visible"
-              :type="aCardFormRef.type"
-              v-model:tData="aCardFormRef.formState"
-          ></component>
-        </a-card>
       </div>
       <template #footer>
         <div :style="{ textAlign: aCardFormRef.footerPosition }">
@@ -64,7 +53,7 @@
         class="aCardForm"
         :mask="aCardFormRef.mask"
         v-if="aCardFormRef.modalType == 'drawer'"
-          :title="aCardFormRef?.title"
+          :title="title"
         :width="aCardFormRef.width || '100%'"
         :visible="aCardFormRef.visible"
         :body-style="{ paddingBottom: '80px' }"
@@ -77,23 +66,20 @@
           style="overflow: auto"
       >
         <div class="mb-2 form-card" v-if="aCardFormRef.formData?.length > 0">
-          <a-card v-for="(item, index) in aCardFormRef.formData" :bordered="false">
-            <template #title v-if="item.title">
-              <div >{{ item.title }}</div>
-
-            </template>
+          <div>
+          
             <FormInputItem
                 ref="formItemRef"
                 :visible="aCardFormRef.visible"
                 v-model:formState="aCardFormRef.formState"
                 :is-disabled="isTableDisabled"
-                :formData="item"
+                :formData="aCardFormRef.formData"
                 :type="aCardFormRef.type"
                 :formValidate="validateList"
 
             />
 
-          </a-card>
+          </div>
         </div>
 
       </div>
@@ -123,21 +109,18 @@
 
       <div
 
-          :style="{ maxHeight: 'calc(100vh - 210px)', height: aCardFormRef.height ? aCardFormRef.height : 'calc(100vh - 210px)' }"
+          :style="{ maxHeight: 'calc(100vh - 210px)', height: aCardFormRef.height ? aCardFormRef.height : 'calc(100vh - 210px)', width: aCardFormRef.width ? aCardFormRef.width : '100%' }"
           style="overflow: auto"
       >
         <div class="mb-2 form-card" v-if="aCardFormRef.formData?.length > 0">
-          <a-card v-for="(item, index) in aCardFormRef.formData" :bordered="false">
-            <template #title v-if="item.title">
-              <div >{{ item.title }}</div>
-
-            </template>
+          <div>
+            
             <FormInputItem
                 ref="formItemRef"
                 :visible="aCardFormRef.visible"
                 v-model:formState="aCardFormRef.formState"
                 :is-disabled="isTableDisabled"
-                :formData="item"
+                :formData="aCardFormRef.formData"
                 :type="aCardFormRef.type"
                 :formValidate="validateList"
                 :labelCol="{ span: 8 }"
@@ -148,19 +131,8 @@
               </template>
             </FormInputItem>
 
-          </a-card>
+          </div>
         </div>
-
-        <a-card v-if="aCardFormRef.detailComponent">
-          <component
-              :is="aCardFormRef.detailComponent"
-              :ref="aCardFormRef.name"
-              :is-disabled="isTableDisabled"
-              :visible="aCardFormRef.visible"
-              :type="aCardFormRef.type"
-              v-model:tData="aCardFormRef.formState"
-          ></component>
-        </a-card>
       </div>
 
     </div>
@@ -183,13 +155,21 @@ import {
   import FormInputItem from '../FormInputItem/';
   import {deepCopy} from "../../utils";
   import aCrudFormFooter from './component/aCrudFormFooter.vue';
+import { isFunction } from '../../utils/is';
 
   const { proxy } = getCurrentInstance();
-
-  const searchRef = ref();
+ 
   const testRef = ref();
 
-  const tableRef = ref();
+  const typeText = ref(
+   {
+    update: '修改',
+    insert: '新增',
+    show: '查看',
+    check: '审核',
+   }
+  );
+   const title = ref();
   const formItemRef = ref();
   // props集合
   const aCardFormRef = ref();
@@ -227,8 +207,7 @@ import {
 
 
 
-  function initForm() {
-    console.log('initForm');
+  function initForm() { 
     // for (const ref of itemRefs.value) {
     //   //ref && ref.clear();
     // }
@@ -237,12 +216,11 @@ import {
     //   return;
     // }
 
-
+    title.value = aCardFormRef.value.title;
     let formList = [];
     validateList.value = {};
-    console.log(aCardFormRef.value.formData);
 
-    const flatFormData = (formData) => {
+    const flatFormData = (formData) => { 
       formData.forEach(item => {
         if (item.type == 'grid' && item.column.length > 0) {
           item.column.forEach(colItem => {
@@ -258,8 +236,7 @@ import {
     // aCardFormRef.value.formData.forEach((item) => {
     //   console.log(item);
     //   formList.push(item);
-    // });
-    console.log(formList);
+    // }); 
     
     formList.forEach((item) => {
       //  初始化默认数据
@@ -268,7 +245,6 @@ import {
     // 初始化数据
     aCardFormRef.value.formState = deepCopy(resetForm.value);
 
-    console.log(aCardFormRef.value, formList);
 
       formList.forEach((item) => {
      // 自定义validator的 传入当前表单值以便动态校验
@@ -294,13 +270,11 @@ import {
   }
 
 
-  function setFormProps(props, ref) {
+  function setFormProps(props) {
     aCardFormRef.value = null;
-    tableRef.value = ref.tableRef;
-    searchRef.value = ref.searchRef;
+    
     formTransferPropsRef.value = props;
-      aCardFormRef.value = {...aCardDefaultFormRef.value, ...props};
-
+      aCardFormRef.value = {...aCardDefaultFormRef.value, ...props}; 
     initForm();
   }
 
@@ -310,6 +284,26 @@ import {
     initForm();
   }
 
+  function setFormPropsValue(key, value){
+    aCardFormRef.value[key] = value;
+    initForm();
+  }
+  function getFormPropsValue(key){
+    return aCardFormRef.value[key];
+  }
+
+  function setFormDataValue(key, value) { 
+    for (let index = 0; index < aCardFormRef.value.formData.length; index++) {
+      if ( aCardFormRef.value.formData[index].name == key) {
+        aCardFormRef.value.formData[index] = value;
+      }
+    }
+    initForm();
+  }
+  
+  function getFormDataValue(key) {
+    return aCardFormRef.value.formData.find(item => item.name == key);
+  }
 
 
   function handleFormCancel() {
@@ -317,16 +311,30 @@ import {
     emits('formCancel', getFormState())
   }
 
-  function handleFormShow(t, formState) {
-    console.log(t, formState, resetForm.value, formItemRef, testRef);
-
+  async function handleFormShow(t = 'insert', formState) {
+    //console.log(t, formState, resetForm.value, formItemRef, testRef);
+    console.log(t, aCardFormRef.value.type);
+    aCardFormRef.value.type = t;
     setFormVisible(true);
-    console.log(aCardFormRef.value.visible);
+    title.value = aCardFormRef.value[aCardFormRef.value.type + 'Title']??typeText.value[aCardFormRef.value.type] + aCardFormRef.value.title;
+    console.log(title.value, 328);
+    
+   // console.log(aCardFormRef.value.visible);
     
     aCardFormRef.value.type = t;
     if (t == 'insert') {
       aCardFormRef.value.formState = deepCopy(resetForm.value);
     } else {
+
+      if (aCardFormRef.value['showApi'] && isFunction(aCardFormRef.value['showApi'])) {
+             const res = await aCardFormRef.value['showApi'](formState);
+             if (res.code == 0) {
+              aCardFormRef.value.formState = res.data??{};
+             }
+        return;
+          }
+
+
       aCardFormRef.value.formState = deepCopy(formState);
     }
 
@@ -343,7 +351,7 @@ import {
     else
     {
       let flag = true;
-       //  console.log( 176, ref.submit()); // 提交两次
+       //  console.log( 176, ref.submit()); // 提交两次 
         if (!(await formItemRef.value.submit())) {
           flag = false;
         }
@@ -355,26 +363,30 @@ import {
         loading.value = true;
 
         let  res;
+        if (!(aCardFormRef.value[aCardFormRef.value.type + 'Api'] && isFunction(aCardFormRef.value[aCardFormRef.value.type + 'Api'] ))) {
+            message.error('请正确设置' + aCardFormRef.value.type + 'Api');
+            return;
+          }  
 
-        if (aCardFormRef.value.requestCallback) {
-         res = await aCardFormRef.value.requestCallback(
-              aCardFormRef.value.typeInfo[aCardFormRef.value.type].api,
-              params ? { ...aCardFormRef.value.formState, ...params } : aCardFormRef.value.formState
-          ).catch((err) => {
-            loading.value = false;
-            console.log(err);
-            emits('formSubmit', err);
-          });
-        } else {
-          res = await aCardFormRef.value.typeInfo[aCardFormRef.value.type]
-              .api(params ? { ...aCardFormRef.value.formState, ...params } : aCardFormRef.value.formState).catch((err) => {
-                loading.value = false;
-                console.log(err);
-                emits('formSubmit', err);
-              });
 
-        }
-        console.log(res, 324);
+                  if (aCardFormRef.value.requestCallback) {
+              res = await aCardFormRef.value.requestCallback(
+                  aCardFormRef.value[aCardFormRef.value.type + 'Api'],
+                    params ? { ...aCardFormRef.value.formState, ...params } : aCardFormRef.value.formState
+                ).catch((err) => {
+                  loading.value = false;
+                // console.log(err);
+                  emits('formSubmit', err);
+                });
+              } else {
+                res = await aCardFormRef.value[aCardFormRef.value.type + 'Api'](params ? { ...aCardFormRef.value.formState, ...params } : aCardFormRef.value.formState).catch((err) => {
+                      loading.value = false;
+                    // console.log(err);
+                      emits('formSubmit', err);
+                    });
+
+              }
+           
 
 
         if (aCardFormRef.value.dataCallback) {
@@ -382,17 +394,21 @@ import {
         }
 
 
-        if (res.code == 0) {
+        if (res?.code == 0) {
           message.success('保存成功');
           setFormVisible(false);
-          if (tableRef.value && aCardFormRef.value.isTable !== false) {
-            tableRef.value._value.getData();
+          if (aCardFormRef.value.tableMethods) {
+            aCardFormRef.value.tableMethods.getData();
           } else {
             emits('formSubmit', res);
           }
-        } else {
-          message.error(res.msg || '保存失败');
-          emits('formSubmit', res);
+        } else { 
+          message.error(res?.msg || '保存失败');
+          if (aCardFormRef.value.tableMethods) {
+            aCardFormRef.value.tableMethods.getData();
+          } else {
+            emits('formSubmit', res);
+          }
         }
         loading.value = false;
 
@@ -428,6 +444,7 @@ watch(() => props.formProps, (data) => {
   }
 
   function setFormVisible(visible) {
+    console.log(visible, aCardFormRef.value);
     aCardFormRef.value.visible = visible;
   }
 
@@ -443,14 +460,14 @@ watch(() => props.formProps, (data) => {
     mergeResetFormData,
     getFormRefData,
     setFormData,
+    setFormPropsValue,
+    setFormDataValue,
+    getFormPropsValue,
+    getFormDataValue,
     setFormVisible
   }
-
-
-
-  defineExpose({formMethods, aCardFormRef})
-
-  emits('register', formMethods);
+  console.log(formMethods, formItemRef.value, 450);
+  emits('register', formMethods, formItemRef);
 </script>
 <script lang="ts">
   export default {
@@ -458,6 +475,11 @@ watch(() => props.formProps, (data) => {
   };
 </script>
 <style lang="less">
+  .aCardForm {
+    .ant-modal-body{
+      padding: 5px;
+    }
+  }
 
 .full-modal {
   .ant-modal {
@@ -474,6 +496,8 @@ watch(() => props.formProps, (data) => {
   .ant-modal-body {
     flex: 1;
   }
+
+
 }
 
 </style>

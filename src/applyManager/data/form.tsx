@@ -82,7 +82,7 @@ const base: inputFormModel[] = [
   {
     text: '职称',
     type: 'text',
-    name: 'describe',
+    name: 'zkmc',
     span: 12,
     show: true,
     value: '',
@@ -90,11 +90,30 @@ const base: inputFormModel[] = [
       console.log(data, form, type);
       return false;
     },
-    labelCol: { style: { width: '300px' } },
+    labelCol: { style: { width: '100px' } },
     wrapperCol: {  },
     rules:[
       { required: true, message: '请输入姓名'},
       {  validator: testValidate, trigger: 'blur'}
+    ],
+
+    class: '',
+  },
+  {
+    text: 'createBy',
+    type: 'text',
+    name: 'createBy',
+    span: 12,
+    show: true,
+    value: '',
+    disabled: (data, form, type) => {
+      console.log(data, form, type);
+      return false;
+    },
+    labelCol: { style: { width: '100px' } },
+    wrapperCol: {  },
+    rules:[
+      { required: true, message: '请输入createBy'}, 
     ],
 
     class: '',
@@ -236,20 +255,8 @@ const base: inputFormModel[] = [
 ];
 
 
-
-const baseForm: Function = ((): Map =>
-        new Map(base.map(item => [item.name, item]))
-)
+ 
 
 
 // 封装页面统一数据
-export default {
-  typeInfo: {
-    insert: { api: web_alterationApply_insertOrUpdate, title: '新增退休申请' },
-    update: { api: web_alterationApply_insertOrUpdate, title: '编辑退休申请' },
-    check: { api: web_alterationApply_insertOrUpdate, title: '审核退休申请' },
-    show: { title: '查看退休申请' },
-  },
-
-  formData: base,
-};
+export default base;

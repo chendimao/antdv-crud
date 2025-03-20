@@ -4,7 +4,7 @@
     <template #title>
 
       <a-crud-search ref="searchRef"
-                     @register="registerSearch"
+                     @register="testUseSearch.register"
                      @search="emitSearch"
                      >
 
@@ -60,6 +60,16 @@
 
           test form</a-button
         >
+        <a-button
+            @click="handleToggleForm"
+            type="primary"
+            style="float: left; margin : 10px"
+            size="middle"
+            class="!px-2"
+        >
+
+          切换form</a-button
+        >
 
 
       </a-crud-search>
@@ -69,7 +79,7 @@
         <a-crud-dict style="width:200px;" @change="changeDict" :api="GetDiagnosis" :params='{"page":1,"rows":30,"limit":30,"code":1}' searchField="dmmc" />
         <div class="mr-0 overflow-hidden bg-white vben-basic-table vben-basic-table-form-container">
           <a-crud-table
-            @register="registerTable2"
+            @register="testUseTable.register"
             :table-props="tableProps"
             ref="crudTableRef"
           >
@@ -86,6 +96,18 @@
                 </template>
                 新增</a-button
               >
+              <a-button
+                  @click="handleAddShow2('insert')"
+                  type="primary"
+                  style="float: left; magin-top: 10px"
+                  size="middle"
+                  class="!px-2"
+              >
+                <template #icon>
+                  <PlusOutlined />
+                </template>
+                新增2</a-button
+              >
             </template>
             <template #default="{row}">
               <a-button   @click="handleUpdateShow(row)">编辑</a-button>
@@ -101,7 +123,7 @@
 
   </a-card>
   <div>
-    <a-crud-form @register="registerForm" ref="cardFormRef">
+    <a-crud-form @register="testUseForm.register" ref="cardFormRef">
 
       <template #testSlot="{data}">
         <a-input v-model:value="data.formState.testSlot"  @blur="data.validateFun(data.item.name, { trigger: 'blur' }).catch(() => {})"/>
@@ -111,14 +133,21 @@
       </template>
 
     </a-crud-form>
+
+    <!-- <a-crud-form @register="testUseForm2.registerForm" ref="cardFormRef">
+      <template #testSlot="{data}">
+        <a-input v-model:value="data.formState.testSlot"  @blur="data.validateFun(data.item.name, { trigger: 'blur' }).catch(() => {})"/>
+      </template>
+    </a-crud-form> -->
   </div>
   <!-- </PageWrapper> -->
 </template>
 <script lang="ts" setup>
-  import { defineComponent, getCurrentInstance, onMounted, reactive, ref } from 'vue';
+  import { defineComponent, getCurrentInstance, onMounted, reactive,nextTick, ref } from 'vue';
 
   import {mockData} from './data/mockData.ts';
   import retireData from './data/form.tsx';
+  import retireData2 from './data/form2.tsx';
   import searchData from './data/search';
   import {
     PlusOutlined,
@@ -142,7 +171,7 @@ const {proxy } = getCurrentInstance() as any;
   });
 
   const cardFormRef = ref();
-
+  const methods = ref();
 
 const crudTableRef = ref();
   const test = ref(123);
@@ -151,11 +180,10 @@ const crudTableRef = ref();
   const tableProps = ref({
     api: summaryPageList,
     columns: tableData.tableForm(),
-    mockData: mockData,
+     mockData: mockData,
     isMenu: true,
     menuWidth: 300,
-    isView: true,
-
+    isView: true, 
     isEdit: false,
     beforeCallback: (props) => {
       props.params.userId = 'sfadfas';
@@ -179,55 +207,28 @@ const crudTableRef = ref();
       showPrint: false
     },
   });
-  const crudProps = ref({
 
-    table: tableProps.value,
-    search: {
-      formData: searchData.searchForm(),
-      isTable: false,
-    },
-    form: {
+  
+  const formProps =  ref({
       title: '用户管理', 
-      typeInfo: retireData.typeInfo,
-      formData: retireData.formData,
-      dataCallback: handleDataCallback,
+      formData: retireData,
+      insertApi: web_alterationApply_insertOrUpdate,
+      updateApi: web_alterationApply_insertOrUpdate,
       requestCallback: handleRequestCallback,
-      name: 'bmgl',
-      width: '100%',
-      height: '100%'
-    },
-  });
-
-
-  const [
-    {
-      registerTable: registerTable2 ,
-      registerSearch,
-      registerForm
-    },
-    {getData,
-      getTableRef,
-        getTableData,
-      getTotalPagination,
-      getCurrentPagination,
-      setCurrentPagination,
-      handleFormShow,
-      mergeFormResetParams,
-      handleFormSubmit,
-      mergeSearchParams,
-      mergeTableProps,
-      mergeSearchResetParams,
-      getSearch,
-      getSearchParams,
-      setSearchParams,
-      resetSearch,
-      reset}
-  ]= antdCrud.useCrudTable(
-      crudProps.value
-  );
-const test2 = ref();
+      name: 'bmgl', 
+      modalType: 'modal',
+       
+    });
+   
+    const searchProps =  {
+      formData: searchData,
+    } ; 
+    const testUseForm = new antdCrud.useForm(formProps.value);
+    const testUseTable = new antdCrud.useTable(tableProps.value);
+    const testUseSearch = new antdCrud.useSearch(searchProps );
 onMounted(async () => {
-
+  methods.value  = new antdCrud.useCrud({form: testUseForm, table: testUseTable, search: testUseSearch}).methods;
+  console.log(methods, 240);
 });
 
 
@@ -240,16 +241,21 @@ function handleDataCallback(res) {
   }
 
    function handleAddShow(t) {
+   methods.value.handleFormShow(t)
+ } 
 
-   mergeFormResetParams({ page: 234234});
-
-   handleFormShow(t);
- }
+  function handleToggleForm() {
+    // let zkmcData = formMethods.value.getFormDataValue('zkmc');
+    // formMethods.value.setFormDataValue('zkmc', {...zkmcData, text: 'test'})
+    // console.log(formMethods.value.getFormDataValue('zkmc'));
+    
+    methods.value.setFormPropsValue('visible',  !methods.value.getFormPropsValue('visible'));
+  }
 
  function handleSave(formState) {
    console.log(formState);
    formState.abccdefg = 'tset';
-   handleFormSubmit({eee: 1});
+   methods.value.handleFormSubmit({eee: 1});
  }
 
  function beforeCallback(props) {
@@ -261,7 +267,7 @@ function handleDataCallback(res) {
  function handleUpdateShow(row) {
   handleData.value = row;
    console.log(handleData.value);
-  handleFormShow('update', row);
+   methods.value.handleFormShow('update', row);
  }
 
  function changeDict(ev, data) {
@@ -273,11 +279,11 @@ function handleDataCallback(res) {
   }
 
 
-  function emitSearch(parms) {
+  function emitSearch(params) {
     // 查询图表接口
-    console.log('search');
+    console.log('search', params);
     // 查询table列表
-    getSearch(parms);
+    methods.value.getData(params);
   }
 
 
@@ -298,26 +304,24 @@ function handleDataCallback(res) {
   }
 
 
-  async function handleSearch(e) {
-        const params = await getSearchParams();
-        getSearch({...params, test: 34})
+  async function handleSearch(e) { 
+    methods.value.getSearch({test: 34}, true)
 
   }
 
   async function handleForm(e) {
     tableProps.value.test = 'test';
-    console.log(cardFormRef.value)
-    cardFormRef.value.formMethods.handleFormSubmit();
-
+    console.log(cardFormRef.value);
+    
   }
 
 
  async function handleGetData() {
-await mergeTableProps({api: web_alterationApply_getByList});
+await methods.value.mergeTableProps({api: web_alterationApply_getByList});
   //  await mergeSearchParams({test: '1234123123'});
-   await mergeSearchResetParams({test234: 23424});
-   const params = await getSearchParams();
-     getSearch({...params, test234: 23424});
+   await  methods.value.mergeSearchResetParams({test234: 23424});
+   const params = await  methods.value.getSearchParams();
+   methods.value.getSearch({...params, test234: 23424});
     //getData();
   }
 

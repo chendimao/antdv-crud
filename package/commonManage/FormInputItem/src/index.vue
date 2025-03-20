@@ -1,7 +1,7 @@
 <template>
   <a-form class="aCardFormItem" :model="Data" labelWrap name="basic" ref="formRef" :rules="Validate" :label-col="labelCol" :wrapper-col="wrapperCol" autocomplete="off">
-    <a-row :gutter="24">
-      <template v-for="item in Data"> 
+    <a-row  style="width: 100%;">
+      <template v-for="item in Data.values()"> 
         <template v-if="item.type && (typeof item.show === 'function' ? item.show(formState, item, type)??true : item.show??true)">
           <a-col :span="item.span"  v-if="item.type != 'grid'">
           <a-form-item   v-bind="validateInfos[item.name]" :label="item.text" :name="item.name" :label-col="item.labelCol" :wrapper-col="item.wrapperCol??{style: {width: '100%'}}"
@@ -80,7 +80,7 @@ const props = defineProps({
 })
 const emit = defineEmits(['update:formState']);
 
-const Data = ref(props.formData);
+const Data = ref(props.formData); 
 const Validate = ref(props.formValidate);
 const labelCol = reactive(props.labelCol);
 const wrapperCol = reactive(props.wrapperCol);
@@ -101,7 +101,7 @@ defineExpose({
 })
 
 onMounted(() => {
-  initFun();
+  // initFun();
 })
 
 
@@ -120,17 +120,18 @@ watch(() => props.formState, (data) => {
 }, { deep: true, immediate: true });
 
 
-watch(() => props.formData, (d) => {
-  Data.value = d;
+watch(() => props.formData, (d) => { 
+  Data.value = new Map(d.map(item => [item.name, item]));
+    
 }, { deep: true, immediate: true });
 
 
 
 function initFun() {
   // 运行item初始化方法
-  console.log(Data.value);
+  console.log(Data.value.values(), 133);
   
-  Data.value.forEach(item => {
+  Data.value.values().forEach(item => {
 
     if (item.computedFun) {
       item.computedFun.forEach(item => {
