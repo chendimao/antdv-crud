@@ -11,6 +11,12 @@ const search = [
     name: 'subjectName',
     option: [{name: 'a1', value: 1}, {name: 'a2', value: 2}, {name: 'a3', value: 3}],
     span: 6,
+    $attrs: {
+      onChange: (data) => {
+          console.log(data);
+          
+      }
+    },
     style: 'width: 660px',
     labelCol: { style: { width: '90px' } },
     wrapperCol: { style: { width: '200px' } },

@@ -18,8 +18,11 @@
                       size="default"
                       :allowClear="item.allowClear??$crudGlobalInputConfig?.allowClear"
                       v-model:value="inputValue"
-                      v-bind="item.$attrs"
-                      @blur="handleBlur"
+                     
+                      v-bind="{
+                          ...item.$attrs,
+                          onBlur: handleBlur,
+                        }" 
                       type="text" >
                   <template #addonAfter v-if="item.afterText">
                       {{item.afterText}}
@@ -34,8 +37,10 @@
                       :disabled="isDisabled"
                       :allowClear="item.allowClear??$crudGlobalInputConfig?.allowClear"
                       v-model:value="inputValue"
-                      v-bind="item.$attrs"
-                      @blur="handleBlur"
+                      v-bind="{
+                          ...item.$attrs,
+                          onBlur: handleBlur,
+                        }" 
                         >
                   <template #addonAfter v-if="item.afterText">
                       {{item.afterText}}
@@ -47,8 +52,10 @@
                   <a-textarea    :allowClear="item.allowClear??$crudGlobalInputConfig?.allowClear"   :disabled="isDisabled"
                                 size="default"
                                 :rows="item.rows"
-                                v-bind="item.$attrs"
-                                 @blur="handleBlur"
+                                v-bind="{
+                                  ...item.$attrs,
+                                  onBlur: handleBlur,
+                                }" 
                                 v-model:value="inputValue"  />
                 </template>
                 <template v-else-if="item.type == 'select'">
@@ -64,9 +71,11 @@
                       :filter-option="filterOption"
                        style="width: 100%;border: 0;"
                       :fieldNames="{label: 'name', value: 'value'}"
-                      v-bind="item.$attrs"
-                      @change="handleSelectChange"
-                      @blur="handleBlur"
+                      v-bind="{
+                        ...item.$attrs,
+                        onChange: handleSelectChange,
+                        onBlur: handleBlur
+                      }"  
                      
                   >
 
@@ -83,9 +92,11 @@
                       :disabled="isDisabled"
                       :tree-data="item.option"
                       style="width: 100%;border: 0;"
-                        v-bind="item.$attrs"
-                      @change="handleTreeSelectChange"
-                      @blur="handleBlur"
+                      v-bind="{
+                        ...item.$attrs,
+                        onChange: handleTreeSelectChange,
+                        onBlur: handleBlur
+                      }" 
                     
                   >
 
@@ -104,9 +115,11 @@
                       :options="item.option"
                       style="width: 100%;border: 0;"
                       :fieldNames="{label: 'name', value: 'value'}"
-                      v-bind="item.$attrs"
-                      @change="changeResourceName"
-                      @blur="handleBlur"
+                      v-bind="{
+                        ...item.$attrs,
+                        onChange: changeResourceName,
+                        onBlur: handleBlur
+                      }" 
                   />
 
 
@@ -125,8 +138,10 @@
                       v-model:value="inputValue"
                       :disabled="isDisabled"
                       style="width: 100%;border: 0;height: 30px;border-bottom: 1px solid #ccc;"
-                      v-bind="item.$attrs"
-                      @blur="handleBlur"
+                      v-bind="{
+                          ...item.$attrs,
+                          onBlur: handleBlur,
+                        }" 
                   >
                     <a-select-option v-for="data in item.option" :value="data.value">{{ data.name }}</a-select-option>
                   </a-select>
@@ -142,8 +157,10 @@
                       :disabled="isDisabled"
                       size="default"
                       :allowClear="item.allowClear??$crudGlobalInputConfig?.allowClear"
-                      v-bind="item.$attrs"
-                      @blur="handleBlur"
+                      v-bind="{
+                          ...item.$attrs,
+                          onBlur: handleBlur,
+                        }" 
                       />
                 </template>
                 <template v-else-if="item.type == 'date'">
@@ -155,8 +172,10 @@
                       :disabled="isDisabled"
                       size="default"
                       :allowClear="item.allowClear??$crudGlobalInputConfig?.allowClear"
-                      v-bind="item.$attrs"
-                      @blur="handleBlur"
+                      v-bind="{
+                          ...item.$attrs,
+                          onBlur: handleBlur,
+                        }" 
                       />
                 </template>
                 <template v-else-if="item.type == 'year'">
@@ -169,8 +188,10 @@
                       :disabled="isDisabled"
                       size="default"
                       :allowClear="item.allowClear??$crudGlobalInputConfig?.allowClear"
-                      v-bind="item.$attrs"
-                      @blur="handleBlur"
+                      v-bind="{
+                          ...item.$attrs,
+                          onBlur: handleBlur,
+                        }" 
                       />
                 </template>
                 <template v-else-if="item.type == 'month'">
@@ -183,8 +204,10 @@
                       :disabled="isDisabled"
                       size="default"
                       :allowClear="item.allowClear??$crudGlobalInputConfig?.allowClear"
-                      v-bind="item.$attrs"
-                      @blur="handleBlur"
+                      v-bind="{
+                          ...item.$attrs,
+                          onBlur: handleBlur,
+                        }" 
                   />
                 </template>
                 <template v-else-if="item.type == 'daterange'">
@@ -197,8 +220,10 @@
                       :format="item?.format??item.picker == 'year' ? 'YYYY' :item.picker == 'month' || item.picker == 'quarter' ? 'YYYY-MM' : 'YYYY-MM-DD' "
                       :valueFormat="item?.valueFormat??item.picker == 'year' ? 'YYYY' :item.picker == 'month' || item.picker == 'quarter' ? 'YYYY-MM' : 'YYYY-MM-DD' "
                       :allowClear="item.allowClear??$crudGlobalInputConfig?.allowClear"
-                      v-bind="item.$attrs"
-                      @blur="handleBlur"
+                      v-bind="{
+                          ...item.$attrs,
+                          onBlur: handleBlur,
+                        }" 
                   />
                 </template>
                 <template v-else-if="item.type == 'upload' && isArray(inputValue)">
@@ -209,8 +234,10 @@
                       :maxCount="item.uploadField.maxCount??100"
                       :disabled="isDisabled"
                       list-type="picture-card"
-                      v-bind="item.$attrs"
-                      @change="handleFileChange"
+                      v-bind="{
+                        ...item.$attrs,
+                        onChange: handleFileChange
+                      }" 
                   >
                     <div  >
                       <plus-outlined />
@@ -283,9 +310,11 @@
                                :name="item.name"
                                :debounceTime="item.debounceTime"
                                :showPage="item.showPage"
-                               :searchField="item.searchField"
-                               v-model="inputValue"
-                               @change="handleDictChange"
+                               :searchField="item.searchField" 
+                               v-bind="{
+                                    ...item.$attrs,
+                                    onChange: handleDictChange,
+                                  }" 
                                />
                 </template>
 
@@ -317,7 +346,7 @@ import {
   getCurrentInstance,
   onUnmounted
 } from "vue";
-import {isArray, isDate, isNull, isNumber, isObject, isString} from "../../../utils/is";
+import {isArray, isDate, isFunction, isNull, isNumber, isObject, isString} from "../../../utils/is";
 import {PlusOutlined} from "@ant-design/icons-vue";
 import {getOptionList, setObjToUrlParams, valueToName} from "../../../utils";
 import {Api} from "../../../hooks/crud/api";
@@ -500,7 +529,7 @@ const handleTreeSelectChange = (value, label, extra) => {
 }
 
 const handleSelectChange = (value, label) => {
-  console.log(value, label, 'select change')
+  console.log(props.item.$attrs?.onChange, isFunction(props.item.$attrs?.onChange), value, label, 'select change')
 
   if (props.item.$attrs?.onChange) {
     props.item.$attrs.onChange(value, label);
