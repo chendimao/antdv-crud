@@ -33,7 +33,7 @@
               @cell-dblclick="handleSubmit"
               :sort-config="{trigger: 'cell'}">
 
-            <vxe-column v-for="item in tableField" :type="item?.type??''" :field="item.field" :title="item.title" :width="item.width"     ></vxe-column>
+            <vxe-column v-for="item in tableField" :type="item?.type??''" :key="item.field" :field="item.field" :title="item.title" :width="item.width"     ></vxe-column>
 
 
           </vxe-table>
@@ -74,6 +74,7 @@ const props = defineProps({
   api: {required: true, type: Function},
   params: {required: true, type: Object},
   showPage: {type: Boolean, default: true},
+  immediate: {type: Boolean, default: true},
   showHistory: {type: Boolean, default: true},
    pageField: {type: String, default: 'page'},
    sizeField: {type: String, default: 'limit'},
@@ -92,7 +93,10 @@ onMounted(()=>{
   currentPage.value = props.params[props.pageField];
   pageSize.value = props.params[props.sizeField];
   searchName.value = props.modelValue;
-  getData();
+  if (props.immediate) {
+    getData();
+
+  } 
 })
 
 
@@ -183,7 +187,9 @@ const  getData = debounce(() => {
     }
 
 
-  });
+  }).catch(() => {
+    loading.value = false;
+  })
 }, props.debounceTime);
 
 const pageChangeEvent = (ev) => {
