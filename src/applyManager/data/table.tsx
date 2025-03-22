@@ -89,6 +89,15 @@ const table: inputFormModel[] = [
         name: 'bm',
         $attrs: { minWidth: '250px', showOverflow: true },
       },
+      // {
+      //   text: 'render',
+      //   type: 'h',
+      //   h: (...data) => { 
+      //     return h('div', {style: {color: 'red'}},'render');
+      //   },
+      //   name: 'render',
+      //   $attrs: { minWidth: '160px' },
+      // },
       {
         text: '状态',
         type: 'slot',

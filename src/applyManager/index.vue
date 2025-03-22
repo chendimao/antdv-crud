@@ -217,6 +217,7 @@ const crudTableRef = ref();
       requestCallback: handleRequestCallback,
       name: 'bmgl', 
       modalType: 'modal',
+      /// visible: true,
        
     });
    
@@ -226,6 +227,8 @@ const crudTableRef = ref();
     const testUseForm = new antdCrud.useForm(formProps.value);
     const testUseTable = new antdCrud.useTable(tableProps.value);
     const testUseSearch = new antdCrud.useSearch(searchProps );
+    console.log(testUseForm, testUseTable.tableMethods, testUseSearch);
+    
 onMounted(async () => {
   methods.value  = new antdCrud.useCrud({form: testUseForm, table: testUseTable, search: testUseSearch}).methods;
   console.log(methods, 240);
@@ -248,6 +251,7 @@ function handleDataCallback(res) {
     // let zkmcData = formMethods.value.getFormDataValue('zkmc');
     // formMethods.value.setFormDataValue('zkmc', {...zkmcData, text: 'test'})
     // console.log(formMethods.value.getFormDataValue('zkmc'));
+    console.log(methods.value);
     
     methods.value.setFormPropsValue('visible',  !methods.value.getFormPropsValue('visible'));
   }
@@ -324,6 +328,7 @@ await methods.value.mergeTableProps({api: web_alterationApply_getByList});
    methods.value.getSearch({...params, test234: 23424});
     //getData();
   }
+
 
 </script>
 <style scoped lang="less">

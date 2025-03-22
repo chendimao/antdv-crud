@@ -69,6 +69,9 @@ export interface inputFormModel {
   h?: Function, //自定义h函数
 }
 
+ 
+
+
 //computedFun model
 export interface computedFun<T extends 'function' | 'option'> {
   type: T;

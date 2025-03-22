@@ -10,9 +10,13 @@ export const mockData = [
         "ysmc": "头痛",
         "bm": "ZXY-6.BA00.Y.B04.02.01.04.02.01.Z01",
         "bz": 0,
+        "year":'2025',
+        "dmmc": "头痛",
+        "dm": "Z01",
         "createTime": 1733905220000,
         "updateTime": 1737873302000,
         "createBy": null,
+
         "updateBy": null,
         "dataState": 0,
         "selytableName": "generate9",

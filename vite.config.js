@@ -10,7 +10,7 @@ function pathResolve(dir) {
 export default defineConfig({
   plugins: [vue(), vueJsx()],
   esbuild: {
-     drop: process.env.NODE_ENV !=='development' ? ["console", "debugger"] : [],
+     //drop: process.env.NODE_ENV !=='development' ? ["console", "debugger"] : [],
   },
   build: {
     rollupOptions: {
@@ -21,6 +21,14 @@ export default defineConfig({
         globals: {
           vue: 'vue',
         },
+        chunkFileNames: (chunkInfo) => {
+          // 根据组件路径进行分组
+          if (chunkInfo.name.includes('crud')) {
+            return 'crudItem/[name].[hash].js';
+          }
+          
+          return 'js/[name].[hash].js';
+        }
       },
     },
     lib: {

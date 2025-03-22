@@ -16,7 +16,7 @@
       <div
 
           :style="{ maxHeight: 'calc(100vh - 210px)', height: aCardFormRef.height ? aCardFormRef.height : 'calc(100vh - 210px)' }"
-          style="overflow: auto"
+           
       >
         <div class="mb-2 form-card"  > 
           <div   > 

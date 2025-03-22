@@ -9,6 +9,7 @@
             <InputItem v-model:value="formState[item.name]"
                        :isDisabled=" (type == 'show' || (typeof item?.disabled === 'function' ? item?.disabled(formState, item, type)??isDisabled : item?.disabled??isDisabled))"
                        :form-state="formState"
+                       :formData="Data"
                        :validateFun="validate"
                        @change="inputChange" :item="item" >
               <template v-for="(_, name) in $slots" #[name]="{data}">
@@ -27,7 +28,7 @@
                   <a-col  :span="cItem.span"  v-if="(typeof cItem?.show === 'function' ? cItem?.show(formState, cItem, type)??true : cItem?.show??true)">
                     <a-form-item  v-bind="validateInfos[cItem.name]" :label="cItem.text" :name="cItem.name" :label-col="cItem?.labelCol" :wrapper-col="cItem?.wrapperCol??{style: {width: '100%'}}" >
                           <InputItem v-model:value="formState[cItem.name]"
-                                  
+                                  :formData="colItem.children"
                                     :isDisabled=" (type == 'show' || (typeof cItem?.disabled === 'function' ? cItem?.disabled(formState, cItem, type)??isDisabled : cItem?.disabled??isDisabled))"
                                     :form-state="formState"
                                     :validateFun="validate"
@@ -115,8 +116,7 @@ watch(() => props.visible, (data) => {
 
 
 watch(() => props.formState, (data) => {
-  formState.value = data;
-  console.log(formState.value);
+  formState.value = data; 
 }, { deep: true, immediate: true });
 
 
@@ -146,14 +146,46 @@ function initFun() {
 }
 
 
-function inputChange(inputItem, value, otherData) {
-// otherdata dict数据
-  const {type, uploadField, name, computedFun} = inputItem;
-  console.log(name, value, otherData);
 
-  if (type == 'upload') {
-    uploadField.changeCallback(formState, inputItem, value );
-  } else  if (type == 'dict') {
+// 返回值只有一个的时候
+function inputChange(inputItem, ...data) {
+// otherdata dict数据
+  const {type,  name, computedFun} = inputItem;
+  
+  console.log(data, 155);
+  
+ if (data.length == 1) { 
+ 
+
+  if (type == 'checkbox') { 
+    let checkData = data[0].join(',');
+    if (checkData && !checkData[0]) {
+      checkData = null;
+    }
+    formState.value[name] = checkData;
+  
+  } else {
+    formState.value[name] = data[0];
+  }
+  
+  // 执行额外的函数
+  if (computedFun?.length > 0) {
+    for (const item of computedFun) {
+      if (item.type == 'function' && !item.immediate) {
+        // formState 所有表单值 Data 所有表单字段  inputItem 当前更改的表单字段 value 当前更改的表单值 type 当前表单是新增 insert 还是 修改 update
+        item.fun(formState, Data, inputItem, data[0], props.type);
+      }
+    }
+  }
+
+
+ } else { 
+  console.log(data, 183);
+  const  value  = data[0];
+  const  otherData  = data[1];
+   if (type == 'dict') {
+ 
+   
     if (otherData?.row) {
       if (isString(inputItem.valueField)) {
         formState.value[inputItem.valueField] = otherData.row[inputItem.valueField];
@@ -167,10 +199,34 @@ function inputChange(inputItem, value, otherData) {
         })
       }
     }
-
-  } else {
-    formState.value[name] = value;
+    if (value == null) {
+      console.log(value, 203);
+      
+      if (isString(inputItem.valueField)) {
+        formState.value[inputItem.valueField] = '';
+      } else if (isArray(inputItem.valueField)) {
+        inputItem.valueField.forEach(valueKey => {
+          formState.value[valueKey] = '';
+        })
+      } else if (isObject(inputItem.valueField)) {
+        Object.keys(inputItem.valueField).forEach(valueKey => {
+          formState.value[inputItem.valueField[valueKey]] = '';
+        })
+      }
   }
+  } else if (type == 'cascader') {
+    let selectData = []
+    const { selectedOptions } = data;
+  selectedOptions.forEach((item: any) => {
+    const _parent = item.map((item: any) => item.value)
+    // 删除最后一项
+    _parent.pop()
+    // item[item.length - 1] 传入最后一项，也就是最后选择的那一项
+    treeToArr([item[item.length - 1]], _parent, selectData)
+  })
+  // 最终的赋值
+  formState.value[name] = selectData; 
+  } 
   // 执行额外的函数
   if (computedFun?.length > 0) {
     for (const item of computedFun) {
@@ -181,7 +237,28 @@ function inputChange(inputItem, value, otherData) {
     }
   }
 
+
+
+
+ }
+
+ 
+
 }
+ 
+const treeToArr = (_tree: any[], _parent: any['options'] = [], selectData = []) => {
+  _tree.forEach((item) => {
+    if (!item.children) {
+      // value_type 就是你要级联选择器上绑定的 value 键
+      selectData.value.push(_parent.concat(item.value))
+    } else {
+      treeToArr(item.children, _parent.concat(item.value), selectData)
+    }
+  })
+}
+
+
+
 async function submit() {
   console.log(formState,
       Validate,)

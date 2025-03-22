@@ -79,8 +79,8 @@
                       }}</span>
                     <span v-else>{{ row[item.name] }}</span>
                   </span>
-                <span v-else-if="item.type == 'h'">
-                    <div v-render="item.h(row, item, tableMethods, this)">
+                <span v-else-if="item.type == 'h'"> 
+                    <div v-render="() => item.h(row, item, tableMethods, this)">
                     </div>
                 </span>
                 <span v-else-if="item.type == 'date'">
@@ -442,12 +442,7 @@ function reset() {
   initPage(deepCopy(resetParams.value));
   getData();
 }
-
- const  vRender =  {
-   updated: async (el, ctx) => {
-     render(await ctx.value, el)
- },
- }
+ 
 
 
  // 如果有查看和编辑

@@ -1,301 +1,25 @@
 <template>
       <span class="aCardInput">
         <a-col :span="24" class="input-item" :class="item.class"  :offset="item.offset ? item.offset : 0">
-        <template v-if="item.type == 'null'">
-            <div  >
-              {{item.text}}
-            </div>
-        </template>
-
-        <template v-else>
-
-
-              <div class="input-content" >
-                <template v-if="item.type == 'text'">
-
-                  <a-input
-                      :disabled="isDisabled"
-                      size="default"
-                      :allowClear="item.allowClear??$crudGlobalInputConfig?.allowClear"
-                      v-model:value="inputValue"
-                     
-                      v-bind="{
-                          ...item.$attrs,
-                          onBlur: handleBlur,
-                        }" 
-                      type="text" >
-                  <template #addonAfter v-if="item.afterText">
-                      {{item.afterText}}
-                  </template>
-
-                  </a-input>
-                </template>
-                <template v-if="item.type == 'number'">
-
-                  <a-input-number
-                      style="width: 100%;"
-                      :disabled="isDisabled"
-                      :allowClear="item.allowClear??$crudGlobalInputConfig?.allowClear"
-                      v-model:value="inputValue"
-                      v-bind="{
-                          ...item.$attrs,
-                          onBlur: handleBlur,
-                        }" 
-                        >
-                  <template #addonAfter v-if="item.afterText">
-                      {{item.afterText}}
-                  </template>
-
-                  </a-input-number>
-                </template>
-                <template v-else-if="item.type == 'textarea'">
-                  <a-textarea    :allowClear="item.allowClear??$crudGlobalInputConfig?.allowClear"   :disabled="isDisabled"
-                                size="default"
-                                :rows="item.rows"
-                                v-bind="{
-                                  ...item.$attrs,
-                                  onBlur: handleBlur,
-                                }" 
-                                v-model:value="inputValue"  />
-                </template>
-                <template v-else-if="item.type == 'select'">
-
-                  <a-select
-
-                      size="default"
-                      v-model:value="inputValue"
-                      :allowClear="item.allowClear??$crudGlobalInputConfig?.allowClear"
-                      :show-search="$crudGlobalInputConfig?.showSearch"
-                      :disabled="isDisabled"
-                      :options="item.option"
-                      :filter-option="filterOption"
-                       style="width: 100%;border: 0;"
-                      :fieldNames="{label: 'name', value: 'value'}"
-                      v-bind="{
-                        ...item.$attrs,
-                        onChange: handleSelectChange,
-                        onBlur: handleBlur
-                      }"  
-                     
-                  >
-
-<!--                    <a-select-option v-for="data in item.option" :value="data.value">{{ data.name }}</a-select-option>-->
-                  </a-select>
-                </template>
-                <template v-else-if="item.type == 'treeSelect'">
-
-                  <a-tree-select
-
-                      v-model:value="inputValue"
-                      :allowClear="item.allowClear??$crudGlobalInputConfig?.allowClear"
-                      :show-search="$crudGlobalInputConfig?.showSearch"
-                      :disabled="isDisabled"
-                      :tree-data="item.option"
-                      style="width: 100%;border: 0;"
-                      v-bind="{
-                        ...item.$attrs,
-                        onChange: handleTreeSelectChange,
-                        onBlur: handleBlur
-                      }" 
-                    
-                  >
-
-<!--                    <a-select-option v-for="data in item.option" :value="data.value">{{ data.name }}</a-select-option>-->
-                  </a-tree-select>
-                </template>
-                <template v-else-if="item.type == 'cascader'">
-                  <a-cascader
-
-                      size="default"
-                      v-model:value="inputValue"
-                      :allowClear="item.allowClear??$crudGlobalInputConfig?.allowClear"
-                      :show-search="$crudGlobalInputConfig?.showSearch ? {filter: cascaderFilterOption} : false"
-                      :disabled="isDisabled"
-                      :multiple="!!item.multiple"
-                      :options="item.option"
-                      style="width: 100%;border: 0;"
-                      :fieldNames="{label: 'name', value: 'value'}"
-                      v-bind="{
-                        ...item.$attrs,
-                        onChange: changeResourceName,
-                        onBlur: handleBlur
-                      }" 
-                  />
-
-
-                  <!--                    <a-select-option v-for="data in item.option" :value="data.value">{{ data.name }}</a-select-option>-->
-
-
-                </template>
-
-
-
-                <template v-else-if="item.type == 'checkbox'">
-                  <a-select
-
-                      size="default"
-                      mode="multiple"
-                      v-model:value="inputValue"
-                      :disabled="isDisabled"
-                      style="width: 100%;border: 0;height: 30px;border-bottom: 1px solid #ccc;"
-                      v-bind="{
-                          ...item.$attrs,
-                          onBlur: handleBlur,
-                        }" 
-                  >
-                    <a-select-option v-for="data in item.option" :value="data.value">{{ data.name }}</a-select-option>
-                  </a-select>
-
-
-                </template>
-                <template v-else-if="item.type == 'datetime'">
-                  <a-date-picker    
-                      style="width: 100%;" 
-                      v-model:value="inputValue"
-                      valueFormat="YYYY-MM-DD HH:mm:ss"
-                      show-time format="YYYY-MM-DD HH:mm:ss"
-                      :disabled="isDisabled"
-                      size="default"
-                      :allowClear="item.allowClear??$crudGlobalInputConfig?.allowClear"
-                      v-bind="{
-                          ...item.$attrs,
-                          onBlur: handleBlur,
-                        }" 
-                      />
-                </template>
-                <template v-else-if="item.type == 'date'">
-                  <a-date-picker
-                      style="width: 100%;"
-                      v-model:value="inputValue"
-                      valueFormat="YYYY-MM-DD"
-                      format="YYYY-MM-DD"
-                      :disabled="isDisabled"
-                      size="default"
-                      :allowClear="item.allowClear??$crudGlobalInputConfig?.allowClear"
-                      v-bind="{
-                          ...item.$attrs,
-                          onBlur: handleBlur,
-                        }" 
-                      />
-                </template>
-                <template v-else-if="item.type == 'year'">
-                  <a-date-picker
-                      style="width: 100%;"
-                      v-model:value="inputValue"
-                      valueFormat="YYYY"
-                      format="YYYY"
-                      picker="year"
-                      :disabled="isDisabled"
-                      size="default"
-                      :allowClear="item.allowClear??$crudGlobalInputConfig?.allowClear"
-                      v-bind="{
-                          ...item.$attrs,
-                          onBlur: handleBlur,
-                        }" 
-                      />
-                </template>
-                <template v-else-if="item.type == 'month'">
-                  <a-date-picker
-                      style="width: 100%;"
-                      v-model:value="inputValue"
-                      valueFormat="MM"
-                      format="MM"
-                      picker="month"
-                      :disabled="isDisabled"
-                      size="default"
-                      :allowClear="item.allowClear??$crudGlobalInputConfig?.allowClear"
-                      v-bind="{
-                          ...item.$attrs,
-                          onBlur: handleBlur,
-                        }" 
-                  />
-                </template>
-                <template v-else-if="item.type == 'daterange'">
-                  <a-range-picker
-                      style="width: 100%;"
-                      :picker="item.picker"
-                      v-model:value="inputValue"
-                      :disabled="isDisabled"
-                      size="default"
-                      :format="item?.format??item.picker == 'year' ? 'YYYY' :item.picker == 'month' || item.picker == 'quarter' ? 'YYYY-MM' : 'YYYY-MM-DD' "
-                      :valueFormat="item?.valueFormat??item.picker == 'year' ? 'YYYY' :item.picker == 'month' || item.picker == 'quarter' ? 'YYYY-MM' : 'YYYY-MM-DD' "
-                      :allowClear="item.allowClear??$crudGlobalInputConfig?.allowClear"
-                      v-bind="{
-                          ...item.$attrs,
-                          onBlur: handleBlur,
-                        }" 
-                  />
-                </template>
-                <template v-else-if="item.type == 'upload' && isArray(inputValue)">
-                  <a-upload
-
-                      v-model:file-list="inputValue"
-                      :action="item.uploadField.url"
-                      :maxCount="item.uploadField.maxCount??100"
-                      :disabled="isDisabled"
-                      list-type="picture-card"
-                      v-bind="{
-                        ...item.$attrs,
-                        onChange: handleFileChange
-                      }" 
-                  >
-                    <div  >
-                      <plus-outlined />
-                      <div style="margin-top: 8px">上传</div>
-                    </div>
-                  </a-upload>
-                </template>
-
-                <template v-else-if="item.type == 'switch'">
-                  <a-switch      v-model:checked="inputValue"  :disabled="isDisabled"  :unCheckedValue="item.unCheckedValue" :checkedValue="item.checkedValue" :checked-children="item.checkedChildren" :un-checked-children="item.unCheckedChildren" v-bind="item.$attrs"/>
-                </template>
-                <template v-else-if="item.type == 'radio'">
-                     <a-radio-group v-model:value="inputValue" :disabled="isDisabled"   v-bind="item.$attrs">
-
-                      <a-radio-button v-if="item.optionType == 'button'" :value="radio.value"   v-for="radio in item.option">{{ radio.name }}</a-radio-button>
-                      <a-radio v-else :value="radio.value" :style="item.vertical === true ? radioStyle : {}" v-for="radio in item.option">{{ radio.name }}</a-radio>
-
-                    </a-radio-group>
-
-                </template>
+       
+        
+ 
+              <div class="input-content" > 
+                <component 
+                  :is="componentMap[props.item.type]"
+                  v-if="componentMap[props.item.type]"
+                  v-model="inputValue"
+                  :item="props.item"
+                  :form-state="props.formState"
+                  :form-data="props.formData"
+                  :is-disabled="isDisabled"
+                  :validate-fun="validateFun" 
+                  :id="id" 
+                />
+  
                 <template v-else-if="item.type == 'origin'">
                   {{inputValue}}
-                </template>
-               <template v-else-if="item.type == 'list'">
-                  <vxe-table
-
-                      border
-                      show-overflow
-                      :data="inputValue"
-                      ref="xTable"
-                      :column-config="{resizable: true}"
-                      :edit-config="!isDisabled ? {trigger: 'click', mode: 'cell'} : {}"
-                      v-bind="item.$attrs"
-                  >
-                    <vxe-column type="seq" width="60"></vxe-column>
-                    <vxe-column v-for="list in item.listField" :field="list.key" :title="list.label" :edit-render="{autofocus: '.vxe-input--inner'}">
-                      <template #edit="{ row }" v-if="list.type == 'text'">
-                        <vxe-input v-model="row[list.key]" type="text"></vxe-input>
-                      </template>
-                      <template #default="{ row }" v-if="list.type == 'select'">
-                        <span>{{ valueToName(list.list, row.useflag, 'value', 'label') }}</span>
-                      </template>
-                      <template #edit="{ row }"  v-if="list.type == 'select'">
-                        <vxe-select v-model="row.useflag" transfer>
-                          <vxe-option v-for="i in list.list" :key="i.value" :value="i.value" :label="i.label"></vxe-option>
-                        </vxe-select>
-                      </template>
-                    </vxe-column>
-                    <vxe-column title="操作">
-                      <template #default="{ row }" >
-                        <a-button type="link" style="color: orangered;" @click="handleDelete(row)">删除</a-button>
-                      </template>
-                    </vxe-column>
-                  </vxe-table>
-                  <div class="text-center" ref="testref" style="border: 1px solid #e5e5e5;border-top: 0;">
-                    <a-button type="link" @click="handleAddList(-1)">插入数据</a-button>
-                  </div>
-                </template>
+                </template> 
 
                 <template v-else-if="item.type == 'slot'">
                    <slot :name="item.name"  :data="{formState, inputValue, item, isDisabled, validateFun}"  ></slot>
@@ -303,31 +27,26 @@
                 <template v-else-if="item.type == 'dict'">
                   <a-crud-dict :api="item.api"
                                :params="item.params"
+                               :is-disabled="isDisabled"
                                :sizeField="item.sizeField"
                                :tableField="item.tableField"
+                               :valueField="item.valueField"
                                :callbackFun="item.callbackFun"
                                :pageField="item.pageField"
                                :name="item.name"
                                :debounceTime="item.debounceTime"
-                               :showPage="item.showPage"
+                               :showPage="item.showPage" 
+                               v-model="inputValue"
                                :searchField="item.searchField" 
+                               @change="handleDictChange"
                                v-bind="{
-                                    ...item.$attrs,
-                                    onChange: handleDictChange,
-                                  }" 
+                                ...item.$attrs, 
+                                }"  
                                />
                 </template>
-
-                <template v-else>
-
-                </template>
-
-
-
-
+  
               </div>
-
-        </template>
+ 
 
       </a-col>
       <a-col v-if="item.afterSpan" :span="item.afterSpan" />
@@ -344,294 +63,232 @@ import {
   onMounted,
   defineProps,
   getCurrentInstance,
-  onUnmounted
+  onUnmounted,
+  defineAsyncComponent
 } from "vue";
 import {isArray, isDate, isFunction, isNull, isNumber, isObject, isString} from "../../../utils/is";
 import {PlusOutlined} from "@ant-design/icons-vue";
 import {getOptionList, setObjToUrlParams, valueToName} from "../../../utils";
-import {Api} from "../../../hooks/crud/api";
-import {inputFormModel} from "../../../model";
-import ACrudDict from "../../aCrudDict.vue";
+import type {inputFormModel} from "../../../model";
+import ACrudDict from "../../aCrudDict.vue"; 
 
-const { proxy } = getCurrentInstance();
 
-const props = defineProps({
-  value: {},
-  validateFun: {},
-  item: {type: Object as () => (inputFormModel)},
-  formState: {type: Object},
-  isDisabled: {type: Boolean, default: false }
-});
-const emit =  defineEmits(['change', 'value', 'update:item']);
-const inputValue = ref();
-const inputItem = ref(props.item);
-const table = ref();
-const tableRef = ref();
-const xTable = ref();
-const timeout = ref();
+// 定义全局配置接口
+interface CrudGlobalConfig {
+  allowClear?: boolean;
+  showSearch?: boolean;
+  isTrim?: boolean;
+}
+
+ 
+
+// 定义计算函数接口
+interface ComputedFun {
+  type: 'option' | 'function';
+  api?: Function;
+  params?: Record<string, any>;
+  dynamicParams?: (formState: any) => Record<string, any>;
+  relationField?: string;
+  field?: string;
+  childrenField?: string;
+}
+ 
+// 扩展 inputFormModel 接口
+interface ExtendedInputFormModel extends Omit<inputFormModel, 'computedFun'> {
+  $attrs?: EventHandlers & AntdvEventHandlers;
+  computedFun?: ComputedFun[];
+  uploadField?: {
+    url: string;
+    maxCount?: number;
+    initCallback: (formState: any) => any;
+  };
+  newData?: Record<string, any>;
+  primaryKey?: string;
+  beforeXa0?: number;
+  option?: Array<{
+    value: string | number;
+    name: string;
+  }>;
+  listField?: Array<{
+    key: string;
+    label: string;
+    type: string;
+  }>;
+  api?: string;
+  params?: Record<string, any>;
+  sizeField?: string;
+  tableField?: string;
+  callbackFun?: Function;
+  pageField?: string;
+  name?: string;
+  debounceTime?: number;
+  showPage?: boolean;
+  searchField?: string;
+}
+
+const { proxy } = getCurrentInstance()!;
+
+// 声明全局配置
+declare global {
+  interface ComponentCustomProperties {
+    $crudGlobalInputConfig: CrudGlobalConfig;
+  }
+}
+
+const props = defineProps<{
+  value?: any;
+  validateFun?: (name: string, options: { trigger: string }) => Promise<void>;
+  item: ExtendedInputFormModel;
+  formState?: Record<string, any>;
+  formData?: Record<string, any>;
+  isDisabled?: boolean;
+  id?: string;
+}>();
+
+const emit = defineEmits<{
+  (e: 'change', item: ExtendedInputFormModel, value: any, ...args: any[]): void;
+  (e: 'value', value: any): void;
+  (e: 'update:item', item: ExtendedInputFormModel): void;
+}>();
+
+const inputValue = ref<any>();
+  const listKey = ref(['select', 'treeSelect', 'dict']);
+const inputItem = ref<ExtendedInputFormModel>(props.item);
+ 
 const radioStyle = ref({
   display: 'flex',
   height: '30px',
   lineHeight: '30px',
 });
 
+const componentMap = {
+  // 基础输入组件
+  text: defineAsyncComponent(() => import('./component/crudInput.vue')),
+  number: defineAsyncComponent(() => import('./component/crudInputNumber.vue')),
+  textarea: defineAsyncComponent(() => import('./component/crudTextarea.vue')), 
+  search: defineAsyncComponent(() => import('./component/crudInputSearch.vue')),
 
+  // 选择类组件
+  select: defineAsyncComponent(() => import('./component/crudSelect.vue')),
+  treeSelect: defineAsyncComponent(() => import('./component/crudTreeSelect.vue')),
+  cascader: defineAsyncComponent(() => import('./component/crudCascader.vue')),
+  autoComplete: defineAsyncComponent(() => import('./component/crudAutoComplete.vue')),
+  radio: defineAsyncComponent(() => import('./component/crudRadio.vue')),
+  checkbox: defineAsyncComponent(() => import('./component/crudCheckbox.vue')),
+  switch: defineAsyncComponent(() => import('./component/crudSwitch.vue')),
+  mention: defineAsyncComponent(() => import('./component/crudMention.vue')),
+
+  // 日期时间类
+  date: defineAsyncComponent(() => import('./component/crudDatePicker.vue')),
+  datetime: defineAsyncComponent(() => import('./component/crudDatePicker.vue')),
+  year: defineAsyncComponent(() => import('./component/crudDatePicker.vue')),
+  month: defineAsyncComponent(() => import('./component/crudDatePicker.vue')),
+  daterange: defineAsyncComponent(() => import('./component/crudDateRangePicker.vue')),
+  time: defineAsyncComponent(() => import('./component/crudTimePicker.vue')),
+  calendar: defineAsyncComponent(() => import('./component/crudCalendar.vue')),
+
+  // 上传展示类
+  upload: defineAsyncComponent(() => import('./component/crudUpload.vue')),
+  rate: defineAsyncComponent(() => import('./component/crudRate.vue')),
+  slider: defineAsyncComponent(() => import('./component/crudSlider.vue')),
+  colorPicker: defineAsyncComponent(() => import('./component/crudColorPicker.vue')),
+
+  // 数据展示类
+  tabs: defineAsyncComponent(() => import('./component/crudTabs.vue')),
+  steps: defineAsyncComponent(() => import('./component/crudSteps.vue')),
+  progress: defineAsyncComponent(() => import('./component/crudProgress.vue')),
+  badge: defineAsyncComponent(() => import('./component/crudBadge.vue')),
+  avatar: defineAsyncComponent(() => import('./component/crudAvatar.vue')),
+  descriptions: defineAsyncComponent(() => import('./component/crudDescriptions.vue')),
+  empty: defineAsyncComponent(() => import('./component/crudEmpty.vue')), 
+  skeleton: defineAsyncComponent(() => import('./component/crudSkeleton.vue')),
+  statistic: defineAsyncComponent(() => import('./component/crudStatistic.vue')),
+  tag: defineAsyncComponent(() => import('./component/crudTag.vue')),
+
+  // 反馈类
+  tooltip: defineAsyncComponent(() => import('./component/crudTooltip.vue')),
+  popover: defineAsyncComponent(() => import('./component/crudPopover.vue')),
+  popconfirm: defineAsyncComponent(() => import('./component/crudPopconfirm.vue')),
+
+  // 数据传输类
+  transfer: defineAsyncComponent(() => import('./component/crudTransfer.vue')),
+
+  // 表单类
+  form: defineAsyncComponent(() => import('./component/crudForm.vue')),
+  formItem: defineAsyncComponent(() => import('./component/crudFormItem.vue'))
+};
 
 watch(() => props.item, async (data) => {
-
   inputItem.value = data;
   // 执行额外的函数
-  if (inputItem.value.computedFun?.length > 0) {
+  if (inputItem.value?.computedFun?.length > 0) {
     for (const item of inputItem.value.computedFun) {
       if (item.type == 'option') {
-        let params = item.params??{};
+        let params = item.params ?? {};
         if(item.dynamicParams) {
           params = {...params, ...item.dynamicParams(props.formState)};
         }
-        inputItem.value.option = await getOptionList(item.api, params, item.relationField??item.field, item.childrenField);
+        if(item.api && item.field) {
+          inputItem.value.option = await getOptionList(item.api, params, { field: item.field, name: item.field, value: item.field }, item.childrenField);
+        }
       } else if (item.type == 'function') {
-
+        // 处理函数类型
       }
     }
   }
-
-
-
 }, {immediate: true})
 
 
 
-
-function handleDelete(row) {
-  console.log(row);
-  xTable.value.remove(row);
-}
-
-async function handleAddList (row) {
-  const $table = xTable.value
-  let record = props.item.newData;
-  record[props.item.primaryKey] = props.id;
-  const { row: newRow } = await $table.insertAt(record, row)
-  inputValue.value = $table.getTableData().fullData;
-
-  console.log(inputValue.value);
-  // await $table.setEditCell(newRow, 'name')
-}
-
+ 
 
 
 // 显示空格
 const itemXa0 = computed(() => {
   let html = '';
-  for (let i = 0; i < inputItem.value.beforeXa0; i++) {
+  const beforeXa0 = inputItem.value?.beforeXa0 ?? 0;
+  for (let i = 0; i < beforeXa0; i++) {
     html += '\xa0';
   }
   return html;
 });
 watch(() => props.value, async (data) => {
-  //  inputValue.value = (isNumber(data) ? String(data) : isNull(data) &&  props.item.type != 'checkbox' ? '' : data);
-  inputValue.value = ( isNull(data) &&  inputItem.value.type != 'checkbox' ? '' : data);
+  inputValue.value = (isNull(data) && inputItem.value?.type != 'checkbox' ? '' : data);
 
-  if (inputItem.value.type == 'checkbox') {
-
+  if (inputItem.value?.type == 'checkbox') {
     inputValue.value = String(inputValue.value).split(',');
-    if (inputValue.value &&  inputValue.value[0] == ''  ) {
+    if (inputValue.value && inputValue.value[0] == '') {
       inputValue.value = [];
     }
+  } 
+  // else if (inputItem.value?.type == 'upload' && inputItem.value?.uploadField?.initCallback) {
+  //   inputValue.value = inputItem.value.uploadField.initCallback(props.formState);
+  // } 
+}, {immediate: true});
 
-  } else if (inputItem.value.type == 'upload') {
+watch(() => inputValue.value, (ev) => {
 
-    inputValue.value = inputItem.value.uploadField.initCallback(props.formState);
-    console.log(inputValue.value);
-
-
-
-
-  }
-  // 执行额外的函数
-  // if (inputItem.value.computedFun?.length > 0) {
-  //   for (const item of inputItem.value.computedFun) {
-  //     if (item.type == 'option') {
-  //       inputItem.value.option = await getOptionList(item.api, item.params, item.relationField);
-  //     } else if (item.type == 'function') {
-  //       console.log(item);
-  //       item(props.formState, inputItem.value);
-  //     }
-  //   }
-  // }
-
-
-}, {immediate: true})
-
-watch(() => inputValue.value, (data) => {
-
+  if (!inputItem.value && listKey.value.includes(inputItem.value.type)) return;
   if (proxy.$crudGlobalInputConfig?.isTrim === true) {
-    inputValue.value = data?.trim ? data.trim() : data ;
-  }
-  inputChange(data);
+    inputValue.value = ev?.trim ? ev.trim() : ev ;
+  } 
+
+inputChange(ev);
 })
+ 
 
-
-const filterOption = (input: string, option: any, fieldNames: any) => {
-
-  return option.name.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+const inputChange = async (ev) => { 
+  emit('change', inputItem.value, ev);
 };
-const cascaderFilterOption = (inputValue, path) => {
-
-    return path.some(option => {
-      if (option.name) {
-        return option.name.toLowerCase().indexOf(inputValue.toLowerCase()) > -1
-      } else {
-        return false;
-      }
-
-    });
-
-};
-
-
-const handleFileChange = (ev) => {
-  console.log(ev);
-  if (props.item.$attrs.onChange) {
-    props.item.$attrs.onChange(ev);
-  }
-  if (ev.file.status === 'done' || ev.file.status === 'removed') {
-    emit('change', inputItem.value, ev);
-    return;
-  } else {
-    return;
-  }
-}
-
-onMounted(() => {
-
-  //  inputChange(props.value);
-})
-
-
+ 
+ 
 const handleDictChange = (value, data) => {
   console.log(value, data, 'dictchange')
-  if (props.item.$attrs.onChange) {
-    props.item.$attrs.onChange(value, data);
-  }
+
     emit('change', inputItem.value, value,  data);
     return;
 
 }
-const handleTreeSelectChange = (value, label, extra) => {
-  console.log(value, label,  extra, 'tree change')
-  if (props.item.$attrs.onChange) {
-    props.item.$attrs.onChange(value, label, extra);
-  }
-    emit('change', inputItem.value, value,  extra.triggerNode?extra.triggerNode.props:extra);
-    return;
-
-}
-
-const handleSelectChange = (value, label) => {
-  console.log(props.item.$attrs?.onChange, isFunction(props.item.$attrs?.onChange), value, label, 'select change')
-
-  if (props.item.$attrs?.onChange) {
-    props.item.$attrs.onChange(value, label);
-  }
-
-    emit('change', inputItem.value, value, label);
-    return;
-
-}
-
-const handleBlur = (ev) => {
-
-  if (props.item.$attrs?.onBlur) {
-    props.item.$attrs.onBlur(ev);
-  } 
-  
-props.validateFun(props.item.name, { trigger: 'blur' }).catch(() => {
-  
-})
-
-}
-
-
-const inputChange = async (ev) => {
-  console.log(ev, inputItem.value, inputValue, 446);
-
-  // dict  handleDictChange 方法处理
-  // upload  handleFileChange 方法处理
-  // select handleSelectChange 处理
-  // treeSelect handleTreeSelectChange 处理
-  if (['upload', 'dict', 'select', 'treeSelect'].includes(inputItem.value.type)) {
-    return
-  }
-
-
-
-
-
-  let data = ev;
-
-
-  if (inputItem.value.type == 'checkbox') {
-    data =  ev.join(',');
-    if (data &&  !data[0]  ) {
-      data = null;
-    }
-
-  }
-
-
-
-
-  emit('change', inputItem.value, data);
-
-}
-
-
-
-// type为
-const selectData = ref<any>([])
-// （注意）树形结构平铺，且仅获取有完整上下级节点的，没有下级的需要提前disabled 掉，否则会出现意想不到的bug
-// 利用递归循环，组合数据结构，最终是一个二维数组
-const treeToArr = (_tree: any[], _parent: any['options'] = []) => {
-  _tree.forEach((item) => {
-    if (!item.children) {
-      // value_type 就是你要级联选择器上绑定的 value 键
-      selectData.value.push(_parent.concat(item.value))
-    } else {
-      treeToArr(item.children, _parent.concat(item.value))
-    }
-  })
-}
-
-const changeResourceName = (
-    value: string[],
-    selectedOptions: Record<string, any>[],
-) => {
-
-  if (props.item.$attrs.onChange) {
-    props.item.$attrs.onChange(value, selectedOptions);
-  }
-
-  selectData.value = []
-  selectedOptions.forEach((item: any) => {
-    const _parent = item.map((item: any) => item.value)
-    // 删除最后一项
-    _parent.pop()
-    // item[item.length - 1] 传入最后一项，也就是最后选择的那一项
-    treeToArr([item[item.length - 1]], _parent)
-  })
-  // 最终的赋值
-  inputValue.value = selectData.value
-  console.log(inputValue.value);
-  emit('change', inputItem.value, inputValue.value)
-}
-
-
-function handleTableSelectChange(ev,op,  re) {
-  console.log(ev, op, re, inputItem);
-}
-
-
 
 
 </script>

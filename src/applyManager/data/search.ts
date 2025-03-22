@@ -6,6 +6,30 @@ const search = [
   // {text: '科室名称', type: 'select', name: 'applyKs', allowClear: true, span: 5, computedFun: [{type: 'option',  api: 'getByGb25', relationField: ['name/dmmc', 'value/dm'] , request: 'get'}],option:[],  style: 'min-width: 260px;', labelCol: {style: {width: '90px'}}, class: '',     },
 
   {
+    text: '名称',
+    type: 'text',
+    name: 'text1',
+    
+    span: 6,
+    $attrs: {
+      onBlur: (data) => {
+          console.log(data);
+      },
+      onFocus: (data) => {
+          console.log(data);
+      },
+      onPressEnter:(data) => {
+        console.log(data);
+        
+      }
+    },
+    
+    style: 'width: 660px',
+    labelCol: { style: { width: '90px' } },
+    wrapperCol: { style: { width: '200px' } },
+    class: '',
+  },
+  {
     text: '主题名称',
     type: 'select',
     name: 'subjectName',
@@ -46,7 +70,12 @@ const search = [
     type: 'daterange',
     name: 'subjectName3',
     span: 10,
-
+    $attrs: {
+      onOpenChange: (...data) => {
+        console.log(...data);
+        
+      }
+    },
     value: [],
     $attrs: {buttonStyle:"solid"},
     optionType: 'button',

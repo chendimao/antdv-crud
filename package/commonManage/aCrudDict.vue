@@ -3,9 +3,11 @@
     <template #default>
       <a-input v-model:value="searchName"
                autocomplete="off"
+               :disabled="isDisabled"
                @keydown="handleKeydown"
                 @blur="blurEvent"
                allow-clear
+               @change="handleChange"
                @focus="focusEvent"
                v-bind="dictProps"
       ></a-input>
@@ -33,7 +35,7 @@
               @cell-dblclick="handleSubmit"
               :sort-config="{trigger: 'cell'}">
 
-            <vxe-column v-for="item in tableField" :type="item?.type??''" :key="item.field" :field="item.field" :title="item.title" :width="item.width"     ></vxe-column>
+            <vxe-column v-for="item in tableField" :type="item?.type??''" :key="item.field" :field="item.field" :title="item.title" :width="item.width??100"     ></vxe-column>
 
 
           </vxe-table>
@@ -74,11 +76,13 @@ const props = defineProps({
   api: {required: true, type: Function},
   params: {required: true, type: Object},
   showPage: {type: Boolean, default: true},
+  isDisabled: {type: Boolean, default: false},
   immediate: {type: Boolean, default: true},
   showHistory: {type: Boolean, default: true},
    pageField: {type: String, default: 'page'},
    sizeField: {type: String, default: 'limit'},
   name: {type: String, default: 'dmmc'},
+  defaultValue: {type: String, default: ''},
   debounceTime: {type: String, default: '200'},
   searchField: {type: String, default: 'dmmc'},
 
@@ -88,11 +92,12 @@ const props = defineProps({
 
 const emits = defineEmits(['change', 'update:modelValue']);
 
+const searchNameTmp = ref(null); // 如果没有选择字典，则输入框恢复上一次选中的值
 
 onMounted(()=>{
   currentPage.value = props.params[props.pageField];
   pageSize.value = props.params[props.sizeField];
-  searchName.value = props.modelValue;
+  searchNameTmp.value =  searchName.value = props.modelValue;
   if (props.immediate) {
     getData();
 
@@ -101,7 +106,7 @@ onMounted(()=>{
 
 
 
-const searchName = ref('');
+const searchName = ref(null);
 const loading = ref(false)
 
 const currentIndex = ref(0);
@@ -132,14 +137,22 @@ const focusEvent = () => {
 }
 const blurEvent = () => {
   const $pulldown = pulldownRef.value
+  console.log($pulldown);
+ if (!$pulldown.isPanelVisible()) {
+  searchName.value = searchNameTmp.value;
+ }
+  console.log(searchNameTmp.value);
+  
   // if ($pulldown && $pulldown.isPanelVisible()) {
   //   $pulldown.hidePanel();
 
   // }
 }
-watch(() => props.modelValue, (data) => {
-  searchName.value = data;
-})
+watch(() => props.modelValue, (data) => { 
+   searchName.value = data; 
+  
+} )
+ 
 watch( searchName, (data) => {
   console.log(data);
   emits('update:modelValue', data);
@@ -199,14 +212,25 @@ const pageChangeEvent = (ev) => {
 
 function handleSubmit(ev) {
   pulldownRef.value.togglePanel();
-  searchName.value = ev.row[props.name];
+  searchName.value = ev.row[props.searchField??props.name];
   currentData.value = ev;
   if (!historyData.value.includes(searchName.value)) {
     historyData.value.push(searchName.value);
     historyData.value = historyData.value.splice(-3);
   }
+  searchNameTmp.value = searchName.value;
   emits('change',  searchName.value, currentData.value, tableData);
 
+}
+
+function handleChange(ev) {
+  console.log(ev);
+  if (ev.type == 'click') {
+    searchName.value = null;
+    searchNameTmp.value = null;
+    currentData.value = null;
+    emits('change',  searchName.value, currentData.value, tableData);
+  }
 }
 
 function handleHistoryData(item) {

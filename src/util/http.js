@@ -7,6 +7,7 @@ if(process.env.NODE_ENV=='development'){
   baseURL='http://zbzt.tongchealth.com/basic-api';
   baseURL='http://hnszy.tongchealth.com/web-api';
   baseURL='http://zylcbz.tongchealth.com/basic-api';
+  baseURL='http://zsk.tongchealth.com/basic-api';
 }else{
     baseURL='http://zbzt.tongchealth.com/basic-api';
 }
