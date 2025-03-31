@@ -15,11 +15,9 @@
       ...eventHandlers
     }"
   >
-    <template v-if="item.$slots?.count" #count>
-      <slot name="count"></slot>
-    </template>
-    <template v-if="item.$slots?.default">
-      <slot></slot>
+
+    <template v-for="(slot, name) in item?.$slots??[]" v-slot:[name]="data">
+      <span v-render="() => slot(item, formState, formData,  data)"></span>
     </template>
   </a-badge>
 </template>

@@ -8,7 +8,7 @@
     :default-open="item.defaultOpen"
     :dropdown-match-select-width="item.dropdownMatchSelectWidth"
     :filter-option="item.filterOption"
-    :options="item.options"
+    :options="item.option"
     :placeholder="item.placeholder"
     :size="item.size"
     v-model:value="inputValue"
@@ -17,17 +17,16 @@
       ...eventHandlers
     }"
   >
-    <template v-if="item.$slots?.default" #default>
-      <slot></slot>
+
+    <template v-for="(slot, name) in item?.$slots??[]" v-slot:[name]="data">
+      <span v-render="() => slot(item, formState, formData,  data)"></span>
     </template>
-    <template v-if="item.$slots?.option" #option="{ value, label }">
-      <slot name="option" :value="value" :label="label"></slot>
-    </template>
+
   </a-auto-complete>
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue';
+import {computed, render} from 'vue';
 import type { ComponentCustomProperties } from 'vue';
 
 // 定义全局配置接口
@@ -105,6 +104,8 @@ const inputValue = computed({
     eventHandlers.onInput(val);
   }
 });
+
+
 
 // 事件处理函数
 const eventHandlers = {

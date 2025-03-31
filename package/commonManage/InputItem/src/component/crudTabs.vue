@@ -17,17 +17,8 @@
       ...eventHandlers
     }"
   >
-    <template v-if="item.$slots?.tabBarExtraContent" #rightExtra>
-      <slot name="tabBarExtraContent"></slot>
-    </template>
-    <template v-if="item.$slots?.addIcon" #addIcon>
-      <slot name="addIcon"></slot>
-    </template>
-    <template v-if="item.$slots?.removeIcon" #removeIcon>
-      <slot name="removeIcon"></slot>
-    </template>
-    <template v-if="item.$slots?.moreIcon" #moreIcon>
-      <slot name="moreIcon"></slot>
+    <template v-for="(slot, name) in item?.$slots??[]" v-slot:[name]="data">
+      <div v-render="() => slot(item, formState, formData,  data)"></div>
     </template>
   </a-tabs>
 </template>

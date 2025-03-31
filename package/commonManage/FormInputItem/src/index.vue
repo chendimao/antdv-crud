@@ -103,6 +103,7 @@ defineExpose({
 
 onMounted(() => {
   // initFun();
+
 })
 
 
@@ -116,7 +117,7 @@ watch(() => props.visible, (data) => {
 
 
 watch(() => props.formState, (data) => {
-  formState.value = data; 
+  formState.value = data;
 }, { deep: true, immediate: true });
 
 
@@ -142,6 +143,10 @@ function initFun() {
         }
       })
     }
+    if ( item?.$attrs.hasOwnProperty('onMounted')) {
+      item?.$attrs.onMounted(formState, Data,  props.type);
+    }
+
   })
 }
 

@@ -17,12 +17,6 @@ const table: inputFormModel[] = [
 
 
 
-const tableForm: Function = (() =>
-        new Map(table.map(item => [item.name, item]))
-)
 
 
-
-export default {
-    tableForm
-};
+export default table;

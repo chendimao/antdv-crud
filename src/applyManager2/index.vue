@@ -155,7 +155,7 @@ const crudTableRef = ref();
 
         table: {
           api: summaryPageList,
-          columns: tableData.tableForm(),
+          columns: tableData,
           isMenu: true,
            menuWidth: 300,
           isView: true,

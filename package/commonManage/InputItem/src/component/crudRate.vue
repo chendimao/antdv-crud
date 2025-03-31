@@ -1,18 +1,17 @@
 <template>
   <a-rate
     :disabled="isDisabled"
-    :allow-half="item.allowHalf"
-    :allow-clear="item.allowClear"
-    :character="item.character"
-    :count="item.count"
-    :tooltips="item.tooltips"
-    :auto-focus="item.autoFocus"
     v-model:value="inputValue"
     v-bind="{
       ...item.$attrs,
       ...eventHandlers
     }"
-  />
+  >
+
+    <template v-for="(slot, name) in item?.$slots??[]" v-slot:[name]="data">
+      <div v-render="() => slot(item, formState, formData,  data)"></div>
+    </template>
+  </a-rate>
 </template>
 
 <script lang="ts" setup>

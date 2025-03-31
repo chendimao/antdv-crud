@@ -12,6 +12,10 @@
     <template #addonAfter v-if="item.afterText">
       {{item.afterText}}
     </template>
+
+    <template v-for="(slot, name) in item?.$slots??[]" v-slot:[name]="data">
+      <div v-render="() => slot(item, formState, formData,  data)"></div>
+    </template>
   </a-input-number>
 </template>
 

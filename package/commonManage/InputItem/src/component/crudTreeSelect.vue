@@ -22,12 +22,13 @@
       ...item.$attrs,
       ...eventHandlers
     }"
-  > 
-  <template #suffixIcon>
-    123
-  </template>
+  >
+
+      <template v-for="(slot, name) in item?.$slots??[]" v-slot:[name]="data">
+        <div v-render="() => slot(item, formState, formData,  data)"></div>
+      </template>
   </a-tree-select>
-   
+
   </div>
 </template>
 
@@ -142,7 +143,7 @@ const inputValue = computed({
   }
 });
 
- 
+
 
 // 原生事件处理函数
 const eventHandlers = {
@@ -179,7 +180,7 @@ const eventHandlers = {
   },
   onSelect: (value: any, node: any, extra: any) => {
     if (props.item.$attrs?.onSelect) {
-      props.item.$attrs.onSelect(value, node, extra);
+      props.item.$attrs.onSelect(props.item, props.formState, props.formData, value, node, extra);
     }
   },
   onTreeExpand: (expandedKeys: string[]) => {

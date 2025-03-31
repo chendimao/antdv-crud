@@ -2,26 +2,14 @@
   <a-progress
     :disabled="isDisabled"
     :percent="inputValue"
-    :format="item.format"
-    :status="item.status"
-    :stroke-linecap="item.strokeLinecap"
-    :stroke-color="item.strokeColor"
-    :success-percent="item.successPercent"
-    :type="item.type"
-    :show-info="item.showInfo"
-    :steps="item.steps"
-    :stroke-width="item.strokeWidth"
-    :width="item.width"
-    :gap-degree="item.gapDegree"
-    :gap-position="item.gapPosition"
-    :size="item.size"
     v-bind="{
       ...item.$attrs,
       ...eventHandlers
     }"
   >
-    <template v-if="item.$slots?.format" #format="{ percent, successPercent }">
-      <slot name="format" :percent="percent" :success-percent="successPercent"></slot>
+
+    <template v-for="(slot, name) in item?.$slots??[]" v-slot:[name]="data">
+      <div v-render="() => slot(item, formState, formData,  data)"></div>
     </template>
   </a-progress>
 </template>

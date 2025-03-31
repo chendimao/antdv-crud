@@ -10,6 +10,10 @@
     <a-checkbox v-for="option in item.option" :value="option.value">
       {{ option.name }}
     </a-checkbox>
+
+    <template v-for="(slot, name) in item?.$slots??[]" v-slot:[name]="data">
+      <div v-render="() => slot(item, formState, formData,  data)"></div>
+    </template>
   </a-checkbox-group>
 </template>
 

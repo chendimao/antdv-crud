@@ -6,6 +6,7 @@ import {getOptionList, valueToName} from "../../../package/utils";
 import {web_archivesManagement_getByGb25, web_archivesManagement_getByGb147} from '../../api/index';
 import {showDate, testSlot, testValidate, validateEndTime, validateStartTime} from "./fun";
 import {inputFormModel} from "../../../package/model";
+import {PlusCircleFilled, UserOutlined} from "@ant-design/icons-vue";
 const searchForm = [
   { text: '单位名称', name: 'unitName', type: 'text',
      rules: [  
@@ -15,7 +16,20 @@ const searchForm = [
   // {text: '电话', name: 'phone', type: 'text' },
   // {text: '', type: 'default', name: 'category', value: 1}
 ];
-
+const mentionOptions = [
+  {
+    value: 'afc163',
+    label: 'afc163',
+  },
+  {
+    value: 'zombieJ',
+    label: 'zombieJ',
+  },
+  {
+    value: 'yesmeck',
+    label: 'yesmeck',
+  },
+];
 const treeOption = [
   {
     title: 'Node1',
@@ -75,6 +89,18 @@ export const stateList = [
   { name: '医务处主任审核未通过', value: '8' },
 ];
 
+export const autoCompleteList = [
+  { value: '待提交',},
+  { value: '科室主任待审核',},
+  { value: '科室主任已通过/医务处待审核'},
+  { value: '科室主任未通过',},
+  { value: '医务处未通过',},
+  { value: '医务处已通过',},
+  { value: '医务处主任待审核',},
+  { value: '医务处主任审核通过',},
+  { value: '医务处主任审核未通过',},
+];
+
 
 // 列表显示的字段
 
@@ -113,6 +139,27 @@ const base: inputFormModel[] = [
     wrapperCol: {  },
     rules:[
       { required: true, message: '请输入姓名'},
+      {  validator: testValidate, trigger: 'blur'}
+    ],
+
+    class: '',
+  },
+  {
+    text: '提及',
+    type: 'mention',
+    name: 'mention',
+    span: 12,
+    show: true,
+    value: '',
+    disabled: (data, form, type) => {
+      console.log(data, form, type);
+      return false;
+    },
+    option: mentionOptions,
+    labelCol: { style: { width: '100px' } },
+    wrapperCol: {  },
+    rules:[
+      { required: true, message: '请输入search'},
       {  validator: testValidate, trigger: 'blur'}
     ],
 
@@ -199,7 +246,7 @@ const base: inputFormModel[] = [
     type: 'month',
     name: 'month',
     span: 12,
-    value: '',
+    value: '2025-03',
     style: '',
     class: '',
     rules:[
@@ -233,7 +280,7 @@ const base: inputFormModel[] = [
   },{
     text: '时间',
     type: 'time',
-    name: 'datetime',
+    name: 'time',
     span: 12,
     value: '',
     style: '',
@@ -247,8 +294,8 @@ const base: inputFormModel[] = [
     text: '树形下拉选',
     type: 'treeSelect',
     name: 'treeselect',
-    span: 24,
-    value: '',
+    span: 12,
+    value: [],
     style: '',
     class: '',
      option: treeOption,
@@ -258,9 +305,9 @@ const base: inputFormModel[] = [
       value: 'value',
       children: 'children'
     },
-    h: (...data) => {
+    title: (...data) => {
       console.log(data);
-      return h('div', {style: {color: 'red'}},'render');
+      return h('div', {style: {color: 'red'}}, 'title test');
     },
    $attrs: {
      treeNodeFilterProp: 'title'
@@ -278,7 +325,7 @@ const base: inputFormModel[] = [
     name: 'dmmc',
     api: GetDiagnosis,
     params: {"page":1,"rows":30,"limit":30,"code":1},
-    span: 24,
+    span: 12,
     value: '123555',
     style: '',
     class: '',
@@ -293,10 +340,234 @@ const base: inputFormModel[] = [
     ],
   },
   {
-    text: 'test',
+    text: '自动完成输入框',
+    type: 'autoComplete',
+    name: 'autoComplete',
+    span: 12,
+    value: '',
+    style: '',
+    class: '',
+    option: [],
+    $attrs: {
+      onSearch: (...data) => {
+        data[0].option = autoCompleteList.filter(item => item.value.includes(data[3]))
+      }
+    },
+    $slots: {
+      clearIcon: (...data) => {
+        console.log(data);
+        return (
+            <UserOutlined/>
+        )
+      },
+      placeholder: (...data) => {
+        return 'test';
+      }
+    },
+
+    rules:[
+      { required: true, message: '请输入select'},
+      {  validator: testSlot, trigger: 'blur'}
+    ],
+    labelCol: { style: { width: '100px' } },
+  },
+  {
+    text: '头像',
+    type: 'avatar',
+    name: 'avatar',
+    span: 4,
+    size: 50,
+    style: 'background: red;',
+    value:"https://www.antdv.com/assets/logo.1ef800a8.svg",
+    $slots: {
+      icon: (...data) => {
+        return (
+            <div>
+              test
+            </div>
+        )
+      }
+    },
+    labelCol: { style: { width: '130px' } },
+
+  }, {
+    text: '徽标数',
+    type: 'badge',
+    name: 'badge',
+    span: 4,
+    value: 20,
+    dot: true,
+    style: 'background: red;',
+    $attrs: {
+ numberStyle:  {
+      backgroundColor: 'red',
+          color: 'white',
+          boxShadow: '0 0 0 1px #d9d9d9 inset',
+      }
+    },
+
+    labelCol: { style: { width: '130px' } },
+
+  },{
+    text: '级联选择器',
+    type: 'cascader',
+    name: 'cascader',
+    span: 12,
+    value: '',
+    option: treeOption,
+    fieldNames: {label: 'title', value: 'value'},
+    labelCol: { style: { width: '130px' } },
+
+  },{
+    text: '描述列表',
+    type: 'descriptions',
+    name: 'descriptions',
+    span: 12,
+    layout:"vertical",
+    bordered: true,
+    value: {cpmc: '蛋糕', cpsl: '20'},
+    list: [
+        {label: "产品名称", field: 'cpmc'},
+      { label: "数量",
+        field: 'cpsl' ,
+        $slots: {
+        label: (...data) => {
+          return (<div style={{color: 'green'}}>这是slot label</div>);
+        }
+        }
+      }
+    ],
+    $slots :{
+      title: (...data) => {
+        return (<div style={{color: 'red'}}>这是标题</div>);
+      },
+      extra: (...data) => {
+        return (<div>这是描述列表的extra</div>);
+      }
+    },
+    fieldNames: {label: 'title', value: 'value'},
+    labelCol: { style: { width: '130px' } },
+
+  },{
+    text: '进度条',
+    type: 'progress',
+    name: 'progress',
+    span: 12,
+    value: 20,
+    labelCol: { style: { width: '130px' } },
+
+  },{
+    text: '评分',
+    type: 'rate',
+    name: 'rate',
+    span: 12,
+    value: 20,
+    labelCol: { style: { width: '130px' } },
+
+  },{
+    text: '滑动条',
+    type: 'slider',
+    name: 'slider',
+    span: 12,
+    value: 20,
+    $attrs: {
+      onChange: (...data) => {
+        console.log(data);
+      }
+    },
+    labelCol: { style: { width: '130px' } },
+
+  },{
+    text: '统计数值',
+    type: 'statistic',
+    name: 'statistic',
+    span: 12,
+    value: 20,
+     title: 'tset 统计数值',
+    labelCol: { style: { width: '130px' } },
+
+  },{
+    text: '表格',
+    type: 'table',
+    name: 'table',
+    columns: [{
+      text: '专科编码',
+      type: 'text',
+      name: 'zkbm',
+      $attrs: { minWidth: '100px', showOverflow: true,   editRender: {name: 'input'} },
+    },
+
+      {
+        text: '专科名称',
+        type: 'text',
+        name: 'zkmc',
+        $attrs: { minWidth: '100px', showOverflow: true },
+      },
+
+      {
+        text: '病名编码',
+        type: 'text',
+        name: 'ysbm',
+        $attrs: { minWidth: '100px', showOverflow: true },
+      },
+      {
+        text: '病名名称',
+        type: 'text',
+        name: 'ysmc',
+        $attrs: { minWidth: '100px', showOverflow: true },
+      },
+      ],
+    value: [
+      {
+
+        "zkbm": "ZXY-6",
+        "bmbm": "BA00.Y",
+        "zhbm": "B04.02.01.04.02.01",
+        "ysbm": "Z01",
+        "ysmc": "头痛",
+
+      },{
+
+        "zkbm": "ZXY-6",
+        "bmbm": "BA00.Y",
+        "zhbm": "B04.02.01.04.02.01",
+        "ysbm": "Z01",
+        "ysmc": "头痛",
+
+      },{
+
+        "zkbm": "ZXY-6",
+        "bmbm": "BA00.Y",
+        "zhbm": "B04.02.01.04.02.01",
+        "ysbm": "Z01",
+        "ysmc": "头痛",
+
+      },
+    ],
+   $attrs: {
+     editConfig: {trigger: 'click', mode: 'cell'},
+   },
+    span: 24,
+    labelCol: { style: { width: '130px' } },
+
+  },
+
+  {
+    text: '步骤条',
+    type: 'steps',
+    name: 'steps',
+    span: 24,
+    value: '',
+    style: '',
+    class: '',
+    labelCol: { style: { width: '130px' } },
+
+  },
+  {
+    text: '插槽',
     type: 'slot',
     name: 'testSlot',
-    span: 24,
+    span: 12,
     value: '',
     style: '',
     class: '',
@@ -334,6 +605,16 @@ const base: inputFormModel[] = [
     },
     labelCol: {style: {width: '130px'}},
     width: '120px', class: '',   },
+  {
+    text: '日历',
+    type: 'calendar',
+    name: 'calendar',
+    span: 12,
+    value: '',
+    fullscreen: false,
+    labelCol: { style: { width: '130px' } },
+
+  },
   {
     type: 'p',
     name: 'limit',

@@ -5,6 +5,7 @@
     :alt="item.alt"
     :gap="item.gap"
     :size="item.size"
+    :style="item.style"
     :shape="item.shape"
     :draggable="item.draggable"
     :crossorigin="item.crossorigin"
@@ -14,9 +15,11 @@
       ...eventHandlers
     }"
   >
-    <template v-if="item.$slots?.default">
-      <slot></slot>
+
+    <template v-for="(slot, name) in item?.$slots??[]" v-slot:[name]="data">
+      <span v-render="() => slot(item, formState, formData,  data)"></span>
     </template>
+
   </a-avatar>
 </template>
 
@@ -80,6 +83,7 @@ const emit = defineEmits<{
 const inputValue = computed({
   get: () => props.modelValue ?? '',
   set: (val) => {
+
     emit('update:modelValue', val);
     eventHandlers.onInput(val);
   }

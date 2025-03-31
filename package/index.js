@@ -26,11 +26,12 @@ const config = (Vue, config) => {
 }
 
 const install = function(Vue, config = undefined) {
- 
+
     Vue.directive('render', {
       mounted: async (el, binding) => {
-        if (typeof binding.value === 'function') {
+        if (typeof binding.value === 'function' && el) {
           const result = await binding.value();
+            console.log(result);
           if (result) {
             el.innerHTML = '';
             render(result, el);
@@ -38,7 +39,7 @@ const install = function(Vue, config = undefined) {
         }
       },
       updated: async (el, binding) => {
-        if (typeof binding.value === 'function') {
+        if (typeof binding.value === 'function' && el) {
           const result = await binding.value();
           if (result) {
             el.innerHTML = '';

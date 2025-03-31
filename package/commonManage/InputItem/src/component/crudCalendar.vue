@@ -3,10 +3,12 @@
     :disabled="isDisabled"
     :fullscreen="item.fullscreen"
     :mode="item.mode"
-    :value="inputValue"
+    v-model:value="inputValue"
     :default-value="item.defaultValue"
     :locale="item.locale"
     :valid-range="item.validRange"
+    :style="item.style"
+    :class="item.class"
     :disable-date="item.disableDate"
     :header-render="item.headerRender"
     v-bind="{
@@ -14,17 +16,9 @@
       ...eventHandlers
     }"
   >
-    <template v-if="item.$slots?.dateCellRender" #dateCellRender="date">
-      <slot name="dateCellRender" :date="date"></slot>
-    </template>
-    <template v-if="item.$slots?.dateFullCellRender" #dateFullCellRender="date">
-      <slot name="dateFullCellRender" :date="date"></slot>
-    </template>
-    <template v-if="item.$slots?.monthCellRender" #monthCellRender="date">
-      <slot name="monthCellRender" :date="date"></slot>
-    </template>
-    <template v-if="item.$slots?.monthFullCellRender" #monthFullCellRender="date">
-      <slot name="monthFullCellRender" :date="date"></slot>
+
+    <template v-for="(slot, name) in item?.$slots??[]" v-slot:[name]="data">
+      <div v-render="() => slot(item, formState, formData,  data)"></div>
     </template>
   </a-calendar>
 </template>

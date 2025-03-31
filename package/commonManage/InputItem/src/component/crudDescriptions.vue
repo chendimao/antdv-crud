@@ -8,21 +8,23 @@
     :layout="item.layout"
     :colon="item.colon"
     :extra="item.extra"
-    :items="inputValue"
     v-bind="{
       ...item.$attrs,
       ...eventHandlers
     }"
   >
-    <template v-if="item.$slots?.title" #title>
-      <slot name="title"></slot>
+
+    <template v-for="(slot, name) in item?.$slots??[]" v-slot:[name]="data">
+      <div v-render="() => slot(item, formState, formData,  data)"></div>
     </template>
-    <template v-if="item.$slots?.extra" #extra>
-      <slot name="extra"></slot>
-    </template>
-    <template v-if="item.$slots?.label" #label="{ item }">
-      <slot name="label" :item="item"></slot>
-    </template>
+
+    <a-descriptions-item v-for="dItem in item.list??[]" :label="dItem.label">
+      {{item.value[dItem.field]??''}}
+      <template v-for="(slot, name) in dItem.$slots" v-slot:[name]="data">
+        <div v-render="() => slot(item, formState, formData,  data)"></div>
+      </template>
+    </a-descriptions-item>
+
   </a-descriptions>
 </template>
 
@@ -80,7 +82,7 @@ interface InputFormItem {
 }
 
 const props = defineProps<{
-  modelValue?: DescriptionItem[];
+  modelValue?: any;
   validateFun?: (name: string, options: { trigger: string }) => Promise<void>;
   item: InputFormItem;
   formState?: Record<string, any>;

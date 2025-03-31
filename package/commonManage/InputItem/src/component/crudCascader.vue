@@ -9,12 +9,17 @@
         :multiple="!!item.multiple"
         :options="item.option"
         style="width: 100%;border: 0;"
-        :fieldNames="{label: 'name', value: 'value'}"
+        :fieldNames="item.fieldNames??{label: 'name', value: 'value'}"
         v-bind="{
         ...item.$attrs,
         ...eventHandlers
         }"  
-/>
+    >
+
+      <template v-for="(slot, name) in item?.$slots??[]" v-slot:[name]="data">
+        <div v-render="() => slot(item, formState, formData,  data)"></div>
+      </template>
+    </a-cascader>
   </template>
   
   <script lang="ts" setup>

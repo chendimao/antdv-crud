@@ -20,11 +20,8 @@
       ...eventHandlers
     }"
   >
-    <template v-if="item.$slots?.title" #title>
-      <slot name="title"></slot>
-    </template>
-    <template v-if="item.$slots?.default">
-      <slot></slot>
+    <template v-for="(slot, name) in item?.$slots??[]" v-slot:[name]="data">
+      <div v-render="() => slot(item, formState, formData,  data)"></div>
     </template>
   </a-tooltip>
 </template>

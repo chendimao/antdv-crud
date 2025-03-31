@@ -4,47 +4,56 @@
        
         
  
-              <div class="input-content" > 
-                <component 
-                  :is="componentMap[props.item.type]"
-                  v-if="componentMap[props.item.type]"
-                  v-model="inputValue"
-                  :item="props.item"
-                  :form-state="props.formState"
-                  :form-data="props.formData"
-                  :is-disabled="isDisabled"
-                  :validate-fun="validateFun" 
-                  :id="id" 
-                />
-  
-                <template v-else-if="item.type == 'origin'">
-                  {{inputValue}}
-                </template> 
+              <div class="input-content" >
 
-                <template v-else-if="item.type == 'slot'">
-                   <slot :name="item.name"  :data="{formState, inputValue, item, isDisabled, validateFun}"  ></slot>
-                </template>
-                <template v-else-if="item.type == 'dict'">
-                  <a-crud-dict :api="item.api"
-                               :params="item.params"
-                               :is-disabled="isDisabled"
-                               :sizeField="item.sizeField"
-                               :tableField="item.tableField"
-                               :valueField="item.valueField"
-                               :callbackFun="item.callbackFun"
-                               :pageField="item.pageField"
-                               :name="item.name"
-                               :debounceTime="item.debounceTime"
-                               :showPage="item.showPage" 
-                               v-model="inputValue"
-                               :searchField="item.searchField" 
-                               @change="handleDictChange"
-                               v-bind="{
-                                ...item.$attrs, 
-                                }"  
-                               />
-                </template>
-  
+                            <component
+     :is="componentMap[props.item.type]"
+     v-if="componentMap[props.item.type]"
+     v-model="inputValue"
+     :item="props.item"
+     :form-state="props.formState"
+     :form-data="props.formData"
+     :is-disabled="isDisabled"
+     :validate-fun="validateFun"
+     :id="id"
+ />
+
+                              <template v-else-if="item.type == 'origin'">
+                                {{inputValue}}
+                              </template>
+
+                              <template v-else-if="item.type == 'slot'">
+                                 <slot :name="item.name"  :data="{formState, inputValue, item, isDisabled, validateFun}"  ></slot>
+                              </template>
+                              <template v-else-if="item.type == 'dict'">
+                                <a-crud-dict :api="item.api"
+                                             :params="item.params"
+                                             :is-disabled="isDisabled"
+                                             :sizeField="item.sizeField"
+                                             :tableField="item.tableField"
+                                             :valueField="item.valueField"
+                                             :callbackFun="item.callbackFun"
+                                             :pageField="item.pageField"
+                                             :name="item.name"
+                                             :debounceTime="item.debounceTime"
+                                             :showPage="item.showPage"
+                                             v-model="inputValue"
+                                             :searchField="item.searchField"
+                                             @change="handleDictChange"
+                                             v-bind="{
+                                              ...item.$attrs,
+                                              }"
+                                />
+                              </template>
+                              <template v-else-if="item.type == 'table'">
+                                <a-crud-table :isForm="true"
+                                              v-if="formTable"
+                                              @register="formTable.register"
+                                              @change="handleTableChange"
+                                >
+
+                                </a-crud-table>
+                              </template>
               </div>
  
 
@@ -70,7 +79,9 @@ import {isArray, isDate, isFunction, isNull, isNumber, isObject, isString} from 
 import {PlusOutlined} from "@ant-design/icons-vue";
 import {getOptionList, setObjToUrlParams, valueToName} from "../../../utils";
 import type {inputFormModel} from "../../../model";
-import ACrudDict from "../../aCrudDict.vue"; 
+import ACrudDict from "../../aCrudDict.vue";
+import ACrudTable from "../../aCrudTable.vue";
+import useTable from "../../../hooks/useTable";
 
 
 // 定义全局配置接口
@@ -80,7 +91,6 @@ interface CrudGlobalConfig {
   isTrim?: boolean;
 }
 
- 
 
 // 定义计算函数接口
 interface ComputedFun {
@@ -161,12 +171,13 @@ const radioStyle = ref({
   lineHeight: '30px',
 });
 
+const formTable = ref();
+
 const componentMap = {
   // 基础输入组件
   text: defineAsyncComponent(() => import('./component/crudInput.vue')),
   number: defineAsyncComponent(() => import('./component/crudInputNumber.vue')),
-  textarea: defineAsyncComponent(() => import('./component/crudTextarea.vue')), 
-  search: defineAsyncComponent(() => import('./component/crudInputSearch.vue')),
+  textarea: defineAsyncComponent(() => import('./component/crudTextarea.vue')),
 
   // 选择类组件
   select: defineAsyncComponent(() => import('./component/crudSelect.vue')),
@@ -200,26 +211,27 @@ const componentMap = {
   badge: defineAsyncComponent(() => import('./component/crudBadge.vue')),
   avatar: defineAsyncComponent(() => import('./component/crudAvatar.vue')),
   descriptions: defineAsyncComponent(() => import('./component/crudDescriptions.vue')),
-  empty: defineAsyncComponent(() => import('./component/crudEmpty.vue')), 
-  skeleton: defineAsyncComponent(() => import('./component/crudSkeleton.vue')),
   statistic: defineAsyncComponent(() => import('./component/crudStatistic.vue')),
   tag: defineAsyncComponent(() => import('./component/crudTag.vue')),
 
   // 反馈类
   tooltip: defineAsyncComponent(() => import('./component/crudTooltip.vue')),
-  popover: defineAsyncComponent(() => import('./component/crudPopover.vue')),
-  popconfirm: defineAsyncComponent(() => import('./component/crudPopconfirm.vue')),
 
   // 数据传输类
   transfer: defineAsyncComponent(() => import('./component/crudTransfer.vue')),
 
-  // 表单类
-  form: defineAsyncComponent(() => import('./component/crudForm.vue')),
-  formItem: defineAsyncComponent(() => import('./component/crudFormItem.vue'))
 };
 
 watch(() => props.item, async (data) => {
   inputItem.value = data;
+
+  // 如果是table
+  if (inputItem.value.type === 'table') {
+    console.log( inputItem.value, 224);
+      formTable.value = new useTable({...inputItem.value, isToolBox: false, isForm: true, pagination: {isPagination: false } });
+  }
+
+
   // 执行额外的函数
   if (inputItem.value?.computedFun?.length > 0) {
     for (const item of inputItem.value.computedFun) {
@@ -236,6 +248,11 @@ watch(() => props.item, async (data) => {
       }
     }
   }
+
+
+
+
+
 }, {immediate: true})
 
 
@@ -288,6 +305,10 @@ const handleDictChange = (value, data) => {
     emit('change', inputItem.value, value,  data);
     return;
 
+}
+
+const handleTableChange = (value) => {
+  emit('change', inputItem.value, value);
 }
 
 

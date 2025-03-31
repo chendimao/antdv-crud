@@ -5,7 +5,7 @@
     :prefix="item.prefix"
     :split="item.split"
     :placement="item.placement"
-    :options="item.options"
+    :options="item.option"
     :loading="item.loading"
     :rows="item.rows"
     :get-popup-container="item.getPopupContainer"
@@ -15,11 +15,9 @@
       ...eventHandlers
     }"
   >
-    <template v-if="item.$slots?.option" #option="{ value, label }">
-      <slot name="option" :value="value" :label="label"></slot>
-    </template>
-    <template v-if="item.$slots?.notFoundContent" #notFoundContent>
-      <slot name="notFoundContent"></slot>
+
+    <template v-for="(slot, name) in item?.$slots??[]" v-slot:[name]="data">
+      <div v-render="() => slot(item, formState, formData,  data)"></div>
     </template>
   </a-mentions>
 </template>

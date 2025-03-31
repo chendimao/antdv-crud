@@ -62,14 +62,14 @@
                v-bind="tablePropsRef"
                :data="tableData">
 
-          <template v-for="(item, index) in tableTransferPropsRef.columns.values()" :key="index" >
+          <template v-for="(item, index) in tableColumn.values()" :key="index" >
             <vxe-column v-if="item.type === 'seq'"    v-bind="item.$attrs" :type="'seq'"  ></vxe-column>
             <vxe-column v-else-if="item.type === 'checkbox'"    v-bind="item.$attrs"  :type="'checkbox'"   ></vxe-column>
             <vxe-column v-else-if="item.type === 'radio'"  v-bind="item.$attrs"  :type="'radio'" ></vxe-column>
             <vxe-column v-else-if="item.type === 'expand'"    v-bind="item.$attrs"   :type="'expand'" ></vxe-column>
             <vxe-column  v-else   :sortable="tableTransferPropsRef.isSortable !== false && item.sortable !== false"   :field="item.name" :title="item.text" :width="item.width" v-bind="item.$attrs" >
               <template #header>
-                <span>{{item.fun ? item.fun( tableTransferPropsRef.columns, tableData) : item.text}}</span>
+                <span>{{item.fun ? item.fun( tableColumn, tableData) : item.text}}</span>
               </template>
               <template #default="{ row }">
                 <span v-if="item.type == 'text'">{{ row[item.name] }}</span>
@@ -151,10 +151,8 @@ import {
 import {assertIsFunction, assertIsOption, computedFun, isComputedFunction} from "../model";
 const { proxy } = getCurrentInstance();
 
- const emits = defineEmits([ 'register']);
- const props = defineProps({
-   tableProps: {},
- })
+ const emits = defineEmits([ 'register', 'change']);
+
 
  const tableTotal = ref(0);
  const tableLoading = ref(false);
@@ -167,6 +165,17 @@ const { proxy } = getCurrentInstance();
  const pageSize = ref(10);
  const resetParams = ref();
  const filterName = ref();
+ const tableColumn = ref(new Map());
+
+
+ watch(() => tableData, (data) => {
+
+    if (tableTransferPropsRef.value.isForm) {
+      emits('change', data.value);
+    }
+ }, {deep: true})
+
+
  
 const tableDefaultProps = ref({...{
     maxHeight: "600px",
@@ -202,6 +211,10 @@ const paginationTransferPropsRef = ref();
  onMounted(() => {
  //  tableTransferPropsRef.immediate && getData();
    // 将表格和工具栏进行关联
+
+
+
+
     if ((tableTransferPropsRef.value.isToolBox || tablePropsRef.value.isToolBox) && tableTransferPropsRef.value?.toolBox?.showType !== 'button' && tablePropsRef.value?.toolBox?.showType !== 'button') {
       const $table = aCardTable.value
       const $toolbar = toolbarRef.value
@@ -214,20 +227,12 @@ const paginationTransferPropsRef = ref();
  })
 
 
- 
- 
-
-watch(() => props.tableProps, (data) => {
-  tableTransferPropsRef.value = {...tableTransferPropsRef.value, ...data};
-  console.log(data, tableTransferPropsRef, 256);
-}, {deep: true })
-
 
 
 
 function initFun() {
   // 运行item初始化方法
-  tableTransferPropsRef.value.columns.forEach(column => {
+  tableColumn.value.forEach(column => {
 
     if (column.computedFun) {
       column.computedFun.forEach(async (item: computedFun<'function'> | computedFun<'option'>) => {
@@ -235,13 +240,13 @@ function initFun() {
         console.log(isComputedFunction(item));
         if (isComputedFunction(item)) {
           assertIsFunction(item);
-          item.fun( tableTransferPropsRef.value.columns, item, tableData);
+          item.fun( tableColumn.value, item, tableData);
         } else  {
           assertIsOption(item);
 
             let params = item.params;
             if(item.dynamicParams) {
-              params = {...params, ...item.dynamicParams(tableTransferPropsRef.value.columns,item, tableData)};
+              params = {...params, ...item.dynamicParams(tableColumn.value,item, tableData)};
             }
           column.option = await getOptionList(item.api, params, item.relationField??item.field, item.childrenField);
 
@@ -328,11 +333,24 @@ function handlePageSizeChange(current, pageSize) {
 // 设置 table props
 function setTableProps(props) {
   tableTransferPropsRef.value = props
+
+  tableColumn.value =  new Map(tableTransferPropsRef.value.columns.map(item => [item.name, item]));
+
+
   // 设置 table props， 由默认props 和 传入的 props 组成
     tablePropsRef.value = { ...tableDefaultProps.value, ...tableTransferPropsRef.value?.$attrs??{}};
   // 初始化参数 如果没有传入params 则使用searchMethods的参数 
  
     tableTransferPropsRef.value.params =  tableTransferPropsRef.value.params??{};
+
+
+    // isform 是否是在form表单中使用的，可编辑状态
+  if (tableTransferPropsRef.value.isForm) {
+    tableData.value = tableTransferPropsRef.value.value;
+    return;
+  }
+
+
     console.log( tableTransferPropsRef.value.params);
   resetParams.value = deepCopy(tableTransferPropsRef.value.params);
 
@@ -346,7 +364,6 @@ function setTableProps(props) {
   // 判断初始化时是否需要请求数据
   if (tableTransferPropsRef.value.immediate !== false) {
     setTimeout(() => {
-      console.log('test getdata 344')
       getData();
     }, 100);
   }
@@ -417,7 +434,7 @@ function mergeTableProps(props) {
  */
 
 function setTableColumns(columns) {
-  tableTransferPropsRef.value.columns = columns;
+  tableColumn.value = columns;
   initFun();
 }
 
@@ -446,7 +463,7 @@ function reset() {
 
 
  // 如果有查看和编辑
- function handleFormShow(t, row) {  
+ function handleFormShow(t = 'insert', row) {
   if ( !tableTransferPropsRef.value.formMethods) {
     message.error('table未关联form页面');
     return;
@@ -495,7 +512,7 @@ const searchEvent = () => {
   if (filterVal) {
     const filterRE = new RegExp(filterVal, 'gi')
 
-    const searchProps = Array.from(tableTransferPropsRef.value.columns.keys());
+    const searchProps = Array.from(tableColumn.value.keys());
     const rest = tableData.value.filter(item => searchProps.some(key => String(item[key]).toLowerCase().indexOf(filterVal) > -1))
     tableData.value = rest.map(row => {
       const item = Object.assign({}, row)
@@ -539,8 +556,8 @@ const searchEvent = () => {
 async function getData(params?, isMerge = false) {
   console.log(params, tableTransferPropsRef.value);
   initFun();
-   if (tableTransferPropsRef.value.mockData) {
-     tableData.value = tableTransferPropsRef.value.mockData;
+   if (tableTransferPropsRef.value.mockData ||  tableTransferPropsRef.value.value) {
+     tableData.value = tableTransferPropsRef.value.mockData??tableTransferPropsRef.value.value;
      tableTotal.value = tableData.value.length;
      return tableData.value;
    }
@@ -561,6 +578,8 @@ async function getData(params?, isMerge = false) {
           : tableTransferPropsRef.value.params
          , tableTotal, tableLoading, tableTransferPropsRef.value.dataCallback) || [];
      return tableData;
+   } else {
+     message.error('请配置API');
    }
  }
 

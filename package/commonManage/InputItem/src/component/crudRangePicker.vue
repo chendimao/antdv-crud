@@ -18,6 +18,10 @@
       ...eventHandlers
     }"
   >
+
+    <template v-for="(slot, name) in item?.$slots??[]" v-slot:[name]="data">
+      <div v-render="() => slot(item, formState, formData,  data)"></div>
+    </template>
   </a-range-picker>
 </template>
 

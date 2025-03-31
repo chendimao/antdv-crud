@@ -1,12 +1,6 @@
 
-import {defineAsyncComponent, h, markRaw, render} from "vue";
-import {getOptionList, valueToName} from "../../../package/utils";
-import {sexList, stateList} from "./form";
-import {inputFormModel} from "../../../package/model";
-import {testTableOption} from "./fun";
-import { web_alterationApply_getByList } from "../../api";
 
-const table: inputFormModel[] = [
+export default  [
     {
         text: '专科编码',
         type: 'text',
@@ -109,12 +103,3 @@ const table: inputFormModel[] = [
 
 
 
-const tableForm: Function = (() =>
-        new Map(table.map(item => [item.name, item]))
-)
-
-
-
-export default {
-    tableForm
-};

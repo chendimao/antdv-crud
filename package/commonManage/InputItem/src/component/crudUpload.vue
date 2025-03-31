@@ -14,6 +14,9 @@
     <plus-outlined />
     <div style="margin-top: 8px">上传</div>
     </div>
+      <template v-for="(slot, name) in item?.$slots??[]" v-slot:[name]="data">
+        <div v-render="() => slot(item, formState, formData,  data)"></div>
+      </template>
   </a-upload> 
   </div>
 </template>

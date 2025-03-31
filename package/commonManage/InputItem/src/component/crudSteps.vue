@@ -17,8 +17,9 @@
       ...eventHandlers
     }"
   >
-    <template v-if="item.$slots?.progressDot" #progressDot="{ index, status, title, description }">
-      <slot name="progressDot" :index="index" :status="status" :title="title" :description="description"></slot>
+
+    <template v-for="(slot, name) in item?.$slots??[]" v-slot:[name]="data">
+      <div v-render="() => slot(item, formState, formData,  data)"></div>
     </template>
   </a-steps>
 </template>

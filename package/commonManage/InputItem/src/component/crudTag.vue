@@ -10,11 +10,8 @@
       ...eventHandlers
     }"
   >
-    <template v-if="item.$slots?.icon" #icon>
-      <slot name="icon"></slot>
-    </template>
-    <template v-if="item.$slots?.default">
-      <slot></slot>
+    <template v-for="(slot, name) in item?.$slots??[]" v-slot:[name]="data">
+      <div v-render="() => slot(item, formState, formData,  data)"></div>
     </template>
   </a-tag>
 </template>

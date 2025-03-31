@@ -21,11 +21,8 @@
       ...eventHandlers
     }"
   >
-    <template v-if="item.$slots?.children" #children="{ direction, filteredItems, selectedKeys, disabled: listDisabled }">
-      <slot name="children" :direction="direction" :filtered-items="filteredItems" :selected-keys="selectedKeys" :disabled="listDisabled"></slot>
-    </template>
-    <template v-if="item.$slots?.footer" #footer="{ direction }">
-      <slot name="footer" :direction="direction"></slot>
+    <template v-for="(slot, name) in item?.$slots??[]" v-slot:[name]="data">
+      <div v-render="() => slot(item, formState, formData,  data)"></div>
     </template>
   </a-transfer>
 </template>

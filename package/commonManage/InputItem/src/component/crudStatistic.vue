@@ -3,27 +3,15 @@
     :disabled="isDisabled"
     :value="inputValue"
     :title="item.title"
-    :precision="item.precision"
-    :group-separator="item.groupSeparator"
-    :prefix="item.prefix"
-    :suffix="item.suffix"
-    :value-style="item.valueStyle"
-    :formatter="item.formatter"
-    :loading="item.loading"
-    :decimalSeparator="item.decimalSeparator"
+
     v-bind="{
       ...item.$attrs,
       ...eventHandlers
     }"
   >
-    <template v-if="item.$slots?.title" #title>
-      <slot name="title"></slot>
-    </template>
-    <template v-if="item.$slots?.prefix" #prefix>
-      <slot name="prefix"></slot>
-    </template>
-    <template v-if="item.$slots?.suffix" #suffix>
-      <slot name="suffix"></slot>
+
+    <template v-for="(slot, name) in item?.$slots??[]" v-slot:[name]="data">
+      <div v-render="() => slot(item, formState, formData,  data)"></div>
     </template>
   </a-statistic>
 </template>

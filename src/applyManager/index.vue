@@ -80,7 +80,6 @@
         <div class="mr-0 overflow-hidden bg-white vben-basic-table vben-basic-table-form-container">
           <a-crud-table
             @register="testUseTable.register"
-            :table-props="tableProps"
             ref="crudTableRef"
           >
             <template #buttons>
@@ -94,8 +93,7 @@
                 <template #icon>
                   <PlusOutlined />
                 </template>
-                新增</a-button
-              >
+                新增</a-button>
               <a-button
                   @click="handleAddShow2('insert')"
                   type="primary"
@@ -179,7 +177,7 @@ const crudTableRef = ref();
 
   const tableProps = ref({
     api: summaryPageList,
-    columns: tableData.tableForm(),
+    columns: tableData,
      mockData: mockData,
     isMenu: true,
     menuWidth: 300,
@@ -220,7 +218,6 @@ const crudTableRef = ref();
       /// visible: true,
        
     });
-   
     const searchProps =  {
       formData: searchData,
     } ; 

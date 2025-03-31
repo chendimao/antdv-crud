@@ -1,23 +1,20 @@
 <template>
   <a-slider
     :disabled="isDisabled"
-    :min="item.min"
-    :max="item.max"
-    :step="item.step"
-    :marks="item.marks"
-    :included="item.included"
-    :range="item.range"
-    :reverse="item.reverse"
-    :vertical="item.vertical"
-    :tooltipVisible="item.tooltipVisible"
-    :tooltipPlacement="item.tooltipPlacement"
-    :tipFormatter="item.tipFormatter"
+    :min="item?.min??0"
+    :max="item?.max??100"
+    :step="item?.step??1"
     v-model:value="inputValue"
     v-bind="{
       ...item.$attrs,
       ...eventHandlers
     }"
-  />
+  >
+
+    <template v-for="(slot, name) in item?.$slots??[]" v-slot:[name]="data">
+      <div v-render="() => slot(item, formState, formData,  data)"></div>
+    </template>
+  </a-slider>
 </template>
 
 <script lang="ts" setup>
