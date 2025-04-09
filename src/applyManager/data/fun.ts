@@ -21,20 +21,20 @@ export const testValidate = async ( data) => {
     })
 }
 
-export const validateStartTime =  (anyData: Object) => {
-    const { cardForm,  refs } = anyData; 
-    const formRef = refs;
-    console.log('formRef', formRef);
+export const validateStartTime = async  (anyData: Object) => {
+    const { cardForm,  refs } = anyData;
+
+    console.log('formRef', refs.value.validateFields);
     console.log('value', cardForm.value);
-    let startTime = cardForm.value.formState?.startTime;
-    let endTime = cardForm.value.formState?.endTime;
 
-    console.log(endTime);
-    if (endTime !='') {
-        formRef.value.validateFields('endTime', (validate) => {
-            console.log(validate);
-        });
-
+    if (cardForm.value.formState?.date !='') {
+        console.log(cardForm.value.formState?.date);
+       setTimeout(async () => {
+           const res = await refs.value.validateFields(['year']);
+           console.log(res);
+       }, 100);
+    } else {
+        return Promise.reject('date不能为空')
     }
     // return Promise.resolve();
     // if (endTime && startTime > endTime) {
@@ -48,12 +48,26 @@ export const validateStartTime =  (anyData: Object) => {
     return Promise.resolve();
 
 };
+
+export const validateYear = async (anyData: Object) => {
+    const { cardForm,  refs } = anyData;
+    if (cardForm.value.formState?.date !='' && cardForm.value.formState?.year =='') {
+            return Promise.reject('date不为空时year不能为空');
+
+    } else{
+
+        return Promise.resolve();
+    }
+
+
+}
+
 export const validateEndTime = async (anyData: Object) => {
     const { cardForm } = anyData;
     console.log(anyData);
     let startTime = cardForm.value.formState?.startTime;
     let endTime = cardForm.value.formState?.endTime;
-    console.log(startTime, endTime);
+
     if (!endTime) {
         return Promise.resolve();
     }
@@ -70,13 +84,9 @@ export const validateEndTime = async (anyData: Object) => {
 };
 
 
-export const testSlot = ({cardForm}) => {
-    console.log(cardForm, 23);
-    return new Promise((resolve, reject) => {
-
-            resolve()
-
-    })
+export const testSlot = (data) => {
+    console.log(data, 23);
+      return Promise.reject('请输入testSlot');
 }
 
 export const testTableOption = (item, currentItem, data) => {

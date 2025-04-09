@@ -11,7 +11,6 @@
           v-bind="tableTransferPropsRef?.toolBox??tablePropsRef.toolBox"
           :refresh="{query:  getData(undefined)}">
         <slot name="buttons"  >
-
         </slot>
       </vxe-toolbar>
       <div  v-else
@@ -19,7 +18,7 @@
         <a-row style="width: 100%;">
           <a-col :span="12">
             <a-space >
-              <slot name="buttons"  >
+              <slot name="buttons"  :data="{ tableData, tableRef: aCardTable}">
 
               </slot>
             </a-space>
@@ -49,7 +48,6 @@
         </a-row>
       </div>
     </template>
-
     <vxe-table ref="aCardTable"
                custom
                print
@@ -71,27 +69,108 @@
               <template #header>
                 <span>{{item.fun ? item.fun( tableColumn, tableData) : item.text}}</span>
               </template>
-              <template #default="{ row }">
-                <span v-if="item.type == 'text'">{{ row[item.name] }}</span>
+
+
+              <template v-if="slotType !== 'default'" #default="{ row, $rowIndex }">
+                <span v-if="['text', 'search', 'number', 'textarea', 'integer', 'float', 'password', 'date', 'time', 'datetime', 'week', 'month', 'quarter', 'year'].includes(item.type)">{{ row[item.name] }}</span>
                 <span v-else-if="item.type == 'select'">
                     <span v-if="item.option">{{
                         valueToName(item.option, row[item.name], 'value', 'name')
                       }}</span>
                     <span v-else>{{ row[item.name] }}</span>
                   </span>
-                <span v-else-if="item.type == 'h'"> 
+                <span v-else-if="item.type == 'formCheckbox'">
+                    <span v-if="item.option">{{
+                        valueToName(item.option, row[item.name], 'value', 'name').join(item?.split??',')
+                      }}</span>
+                    <span v-else>{{ row[item.name] }}</span>
+                  </span>
+                <span v-else-if="item.type == 'formRadio'">
+                    <span v-if="item.option">{{
+                        valueToName(item.option, row[item.name], 'value', 'name')
+                      }}</span>
+                    <span v-else>{{ row[item.name] }}</span>
+                  </span>
+                <span v-else-if="item.type == 'switch'">
+                    <span  >{{
+                        row[item.name] === item.openValue ?
+                            item.openLabel :
+                            row[item.name] === item.closeValue ? item.closeLabel: ''
+                      }}</span>
+
+                  </span>
+                <span v-else-if="item.type == 'h'">
                     <div v-render="() => item.h(row, item, tableMethods, this)">
                     </div>
                 </span>
-                <span v-else-if="item.type == 'date'">
-                    <div>
-                      {{formatDate(row[item.name], item.format?? 'yyyy-MM-dd')}}
-                    </div>
-                </span>
+
                 <span v-else-if="item.type == 'slot'">
-                    <slot :name="item.name" :row="row"></slot>
+                     <slot   :name="item.name" :row="row" :data="{row, rowIndex: $rowIndex, tableData, tableRef: aCardTable}"></slot>
+
+
+                </span>
+                <span v-else-if="item.type == 'rate'">
+                     {{row[item.name]}}
+                </span>
+                <span v-else-if="item.type == 'slider'">
+                     {{row[item.name]}}
+                </span>
+                <span v-else-if="item.type == 'textarea'">
+                     {{row[item.textarea]}}
+                </span>
+                <span v-else-if="item.type == 'upload'">
+                    <vxe-upload
+                        show-download-button
+                        readonly
+                        v-model="row[item.name]"
+                        :download-method="item.$formAttrs.downloadMethod">
+                      </vxe-upload>
                 </span>
               </template>
+              <template #[slotType]="{row, $rowIndex}">
+                <vxe-input
+                    v-if="['text', 'search', 'number', 'textarea', 'integer', 'float', 'password', 'date', 'time', 'datetime', 'week', 'month', 'quarter', 'year'].includes(item.type)"
+                    v-model="row[item.name]" :type="item.type" :size="tablePropsRef?.size??'mini'"   v-bind="{...item.$formAttrs, ...eventHandlers(item)}"></vxe-input>
+
+                <vxe-select
+                    v-else-if="item.type == 'select'"
+                    v-model="row[item.name]" transfer :size="tablePropsRef?.size??'mini'"  v-bind="item.$formAttrs">
+                  <vxe-option v-for="oItem in item.option" :key="oItem.value" :value="oItem.value" :label="oItem.name"></vxe-option>
+                </vxe-select>
+
+                <vxe-checkbox-group
+                    v-else-if="item.type == 'formCheckbox'"
+                    v-model="row[item.name]" v-bind="item.$formAttrs">
+                  <vxe-checkbox  v-for="oItem in item.option" :key="oItem.value" :label="oItem.value" :content="oItem.name"></vxe-checkbox>
+                </vxe-checkbox-group>
+
+
+                <vxe-radio-group
+                    v-else-if="item.type == 'formRadio'"
+                    v-model="row[item.name]" v-bind="item.$formAttrs">
+                  <vxe-radio  v-for="oItem in item.option" :key="oItem.value" :label="oItem.value" :content="oItem.name"></vxe-radio>
+                </vxe-radio-group>
+
+                <vxe-switch
+                    v-else-if="item.type == 'switch'"
+                    v-model="row[item.name]"
+                    :open-label="item?.openLabel??'开启'"
+                    :close-label="item?.closeLabel??'关闭'"
+                    :open-value="item?.openValue??1"
+                    :close-value="item?.closeValue??0"
+                    v-bind="item.$formAttrs"
+                ></vxe-switch>
+                <vxe-rate v-else-if="item.type == 'rate'"  v-model="row[item.name]"  v-bind="item.$formAttrs"></vxe-rate>
+                <vxe-slider  v-else-if="item.type == 'slider'"  v-model="row[item.name]"  v-bind="item.$formAttrs"></vxe-slider>
+                <vxe-textarea  v-else-if="item.type == 'textarea'"  v-model="row[item.name]"  v-bind="item.$formAttrs"></vxe-textarea>
+                <vxe-upload  v-else-if="item.type == 'upload'"  v-model="row[item.name]"  v-bind="item.$formAttrs"></vxe-upload>
+
+                <span v-else-if="item.type == 'slot'">
+                    <slot   :name="item.name" :row="row" :data="{row, rowIndex: $rowIndex, tableData, tableRef: aCardTable}"></slot>
+
+                </span>
+              </template>
+
             </vxe-column>
 
           </template>
@@ -123,7 +202,6 @@
 
       </vxe-column>
     </vxe-table>
-
     <div style="text-align: right;padding: 10px 0px;"   v-if="tableTransferPropsRef?.pagination?.isPagination !== false  ">
       <a-pagination
           v-model:current="currentPage"
@@ -141,7 +219,7 @@
 
 <script setup lang="ts">
 import {useGetTable} from "../hooks/useGetData";
-import {render, h, ref, onMounted, defineProps, watch, getCurrentInstance, defineExpose} from "vue";
+import {render, h, ref, onMounted, defineProps, watch, getCurrentInstance, defineExpose, useSlots, computed} from "vue";
 import {deepCopy, formatDate, getOptionList, valueToName} from "../utils";
 import {message} from "ant-design-vue";
 import {
@@ -166,6 +244,11 @@ const { proxy } = getCurrentInstance();
  const resetParams = ref();
  const filterName = ref();
  const tableColumn = ref(new Map());
+ const slots = useSlots();
+
+ const slotType = computed(() => {
+   return tableTransferPropsRef.value?.slotType == 'edit' ? 'default' : 'edit';
+ })
 
 
  watch(() => tableData, (data) => {
@@ -212,7 +295,7 @@ const paginationTransferPropsRef = ref();
  //  tableTransferPropsRef.immediate && getData();
    // 将表格和工具栏进行关联
 
-
+   console.log(slots, 326);
 
 
     if ((tableTransferPropsRef.value.isToolBox || tablePropsRef.value.isToolBox) && tableTransferPropsRef.value?.toolBox?.showType !== 'button' && tablePropsRef.value?.toolBox?.showType !== 'button') {
@@ -488,6 +571,7 @@ function setTablePropsValue(key, value){
  
   }
   function getTablePropsValue(key){
+    console.log(tableTransferPropsRef.value)
     return tableTransferPropsRef.value[key];
   }
 
@@ -503,8 +587,6 @@ function setTablePropsValue(key, value){
   function getTableDataValue(key) {
     return tableTransferPropsRef.value.formData.find(item => item.name == key);
   }
-
-
 
 
 const searchEvent = () => {
@@ -617,6 +699,225 @@ if(validateRes){
 defineExpose({getTableRef, tableMethods, aCardTable})
 console.log(tableMethods);
 emits('register', tableMethods);
+
+
+
+
+
+// 编辑状态下原生事件处理函数
+const eventHandlers = (item) => {
+  return {
+    onFocus: (...e) => {
+      if (item.$formAttrs?.onFocus) {
+        item.$formAttrs.onFocus(item, tableData, ...e);
+      }
+    },
+    onBlur: (...e) => {
+
+      if (item.$formAttrs?.onBlur) {
+        item.$formAttrs.onBlur(item, tableData, ...e);
+      }
+    },
+    onInput: (...e) => {
+      if (item.$formAttrs?.onInput) {
+        item.$formAttrs.onInput(item, tableData, ...e);
+      }
+    },
+    onChange: (...e) => {
+      console.log(e);
+      if (item.$formAttrs?.onChange) {
+        item.$formAttrs.onChange(item, tableData, ...e);
+      }
+    },
+    onSubmit: (...e) => {
+      if (item.$formAttrs?.onSubmit) {
+        item.$formAttrs.onSubmit(item, tableData, ...e);
+      }
+
+    },
+    onReset: (...e) => {
+      if (item.$formAttrs?.onReset) {
+        item.$formAttrs.onReset(item, tableData, ...e);
+      }
+    },
+    onKeydown: (e: KeyboardEvent) => {
+      if (item.$formAttrs?.onKeydown) {
+        item.$formAttrs.onKeydown(item, tableData, ...e);
+      }
+    },
+    onKeypress: (e: KeyboardEvent) => {
+      if (item.$formAttrs?.onKeypress) {
+        item.$formAttrs.onKeypress(item, tableData, ...e);
+      }
+      if (e.key === 'Enter') {
+        e.preventDefault();
+      }
+    },
+    onKeyup: (e: KeyboardEvent) => {
+      if (item.$formAttrs?.onKeyup) {
+        item.$formAttrs.onKeyup(item, tableData, ...e);
+      }
+    },
+    onClick: (e: MouseEvent) => {
+      if (item.$formAttrs?.onClick) {
+        item.$formAttrs.onClick(item, tableData, ...e);
+      }
+    },
+    onDblclick: (e: MouseEvent) => {
+      if (item.$formAttrs?.onDblclick) {
+        item.$formAttrs.onDblclick(item, tableData, ...e);
+      }
+    },
+    onMousedown: (e: MouseEvent) => {
+      if (item.$formAttrs?.onMousedown) {
+        item.$formAttrs.onMousedown(item, tableData, ...e);
+      }
+    },
+    onMouseup: (e: MouseEvent) => {
+      if (item.$formAttrs?.onMouseup) {
+        item.$formAttrs.onMouseup(item, tableData, ...e);
+      }
+    },
+    onMousemove: (e: MouseEvent) => {
+      if (item.$formAttrs?.onMousemove) {
+        item.$formAttrs.onMousemove(item, tableData, ...e);
+      }
+    },
+    onMouseover: (e: MouseEvent) => {
+      if (item.$formAttrs?.onMouseover) {
+        item.$formAttrs.onMouseover(item, tableData, ...e);
+      }
+    },
+    onMouseout: (e: MouseEvent) => {
+      if (item.$formAttrs?.onMouseout) {
+        item.$formAttrs.onMouseout(item, tableData, ...e);
+      }
+    },
+    onCopy: (e: ClipboardEvent) => {
+      if (item.$formAttrs?.onCopy) {
+        item.$formAttrs.onCopy(item, tableData, ...e);
+      }
+    },
+    onCut: (e: ClipboardEvent) => {
+      if (item.$formAttrs?.onCut) {
+        item.$formAttrs.onCut(item, tableData, ...e);
+      }
+    },
+    onPaste: (e: ClipboardEvent) => {
+      if (item.$formAttrs?.onPaste) {
+        item.$formAttrs.onPaste(item, tableData, ...e);
+      }
+    },
+    onDrag: (e: DragEvent) => {
+      if (item.$formAttrs?.onDrag) {
+        item.$formAttrs.onDrag(item, tableData, ...e);
+      }
+    },
+    onDragstart: (e: DragEvent) => {
+      if (item.$formAttrs?.onDragstart) {
+        item.$formAttrs.onDragstart(item, tableData, ...e);
+      }
+    },
+    onDragend: (e: DragEvent) => {
+      if (item.$formAttrs?.onDragend) {
+        item.$formAttrs.onDragend(item, tableData, ...e);
+      }
+    },
+    onDragenter: (e: DragEvent) => {
+      if (item.$formAttrs?.onDragenter) {
+        item.$formAttrs.onDragenter(item, tableData, ...e);
+      }
+    },
+    onDragover: (e: DragEvent) => {
+      if (item.$formAttrs?.onDragover) {
+        item.$formAttrs.onDragover(item, tableData, ...e);
+      }
+    },
+    onDragleave: (e: DragEvent) => {
+      if (item.$formAttrs?.onDragleave) {
+        item.$formAttrs.onDragleave(item, tableData, ...e);
+      }
+    },
+    onDrop: (e: DragEvent) => {
+      if (item.$formAttrs?.onDrop) {
+        item.$formAttrs.onDrop(item, tableData, ...e);
+      }
+    },
+    onSearch: (value: string) => {
+      if (item.$formAttrs?.onSearch) {
+        item.$formAttrs.onSearch(item, tableData, value);
+      }
+    },
+    onPressEnter: (...e) => {
+      if (item.$formAttrs?.onPressEnter) {
+        item.$formAttrs.onPressEnter(item, tableData, ...e);
+      }
+    },
+    onClear: (...e) => {
+      console.log(e);
+      if (item.$formAttrs?.onClear) {
+        item.$formAttrs.onClear(item, tableData, ...e);
+      }
+    },
+    onSearchClick: (...e) => {
+      console.log(e);
+      if (item.$formAttrs?.onSearchClick) {
+        item.$formAttrs.onSearchClick(item, tableData, ...e);
+      }
+    },
+    onToggleVisible: (...e) => {
+      console.log(e);
+      if (item.$formAttrs?.onToggleVisible) {
+        item.$formAttrs.onToggleVisible(item, tableData, ...e);
+      }
+    },
+    onPrevNumber: (...e) => {
+      console.log(e);
+      if (item.$formAttrs?.onPrevNumber) {
+        item.$formAttrs.onPrevNumber(item, tableData, ...e);
+      }
+    },
+    onNextNumber: (...e) => {
+      console.log(e);
+      if (item.$formAttrs?.onNextNumber) {
+        item.$formAttrs.onNextNumber(item, tableData, ...e);
+      }
+    },
+    onPrefixClick: (...e) => {
+      console.log(e);
+      if (item.$formAttrs?.onPrefixClick) {
+        item.$formAttrs.onPrefixClick(item, tableData, ...e);
+      }
+    },
+    onSuffixClick: (...e) => {
+      console.log(e);
+      if (item.$formAttrs?.onSuffixClick) {
+        item.$formAttrs.onSuffixClick(item, tableData, ...e);
+      }
+    },
+    onDatePrev: (...e) => {
+      console.log(e);
+      if (item.$formAttrs?.onDatePrev) {
+        item.$formAttrs.onDatePrev(item, tableData, ...e);
+      }
+    },
+    onDateToday: (...e) => {
+      console.log(e);
+      if (item.$formAttrs?.onDateToday) {
+        item.$formAttrs.onDateToday(item, tableData, ...e);
+      }
+    },
+    onDateNext: (...e) => {
+      console.log(e);
+      if (item.$formAttrs?.onDateNext) {
+        item.$formAttrs.onDateNext(item, tableData, ...e);
+      }
+    },
+  }
+};
+
+
+
 
 
 

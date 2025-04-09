@@ -1,6 +1,6 @@
 {
   "name": "antdv-crud",
-  "version": "2.0.6",
+  "version": "2.0.7",
   "type": "module",
   "files": [
     "dist/*",
@@ -13,7 +13,7 @@
   "homepage": "https://github.com/chendimao/antdv-crud.git",
   "publishConfig": {
     "registry": "https://registry.npmjs.org"
-  },    
+  },
   "scripts": {
     "dev": "vite --host",
     "build": "vite build",
@@ -28,7 +28,8 @@
     "@ant-design/icons-vue": "^7.0.1",
     "@vitejs/plugin-vue": "^2.3.1",
     "@vitejs/plugin-vue-jsx": "^3.1.0",
-    "ant-design-vue": "3.2.20",
+    "@vxe-ui/plugin-render-antd": "^4.0.12",
+    "ant-design-vue": "4",
     "axios": "^1.6.8",
     "dayjs": "^1.11.10",
     "jspdf": "^2.5.1",

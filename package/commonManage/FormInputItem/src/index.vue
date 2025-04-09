@@ -1,9 +1,9 @@
 <template>
   <a-form class="aCardFormItem" :model="Data" labelWrap name="basic" ref="formRef" :rules="Validate" :label-col="labelCol" :wrapper-col="wrapperCol" autocomplete="off">
     <a-row  style="width: 100%;">
-      <template v-for="item in Data.values()"> 
+      <template v-for="item in Data.values()">
         <template v-if="item.type && (typeof item.show === 'function' ? item.show(formState, item, type)??true : item.show??true)">
-          <a-col :span="item.span"  v-if="item.type != 'grid'">
+          <a-col :span="item.span"  v-if="!['grid', 'tabs'].includes(item.type)">
           <a-form-item   v-bind="validateInfos[item.name]" :label="item.text" :name="item.name" :label-col="item.labelCol" :wrapper-col="item.wrapperCol??{style: {width: '100%'}}"
            >
             <InputItem v-model:value="formState[item.name]"
@@ -19,10 +19,10 @@
 
           </a-form-item>
         </a-col>
-          <template v-else>
+          <template v-if="item.type == 'grid'">
               <a-col :span="item.span" > 
                 <a-row>
-                  <a-col :span="colItem.span" v-for="colItem in item.column">
+                  <a-col :span="colItem.span" v-for="colItem in item.columns">
                 
                 <template  v-for="cItem in colItem.children">
                   <a-col  :span="cItem.span"  v-if="(typeof cItem?.show === 'function' ? cItem?.show(formState, cItem, type)??true : cItem?.show??true)">
@@ -50,6 +50,31 @@
             
         </template>
         </template>
+          <template v-if="item.type == 'tabs'">
+            <a-tabs  v-model:activeKey="item.activeKey" style="width: 100%;" v-bind="item.$attrs">
+                  <a-tab-pane :key="colItem.key" :tab="colItem.title" v-for="colItem in item.columns">
+
+                <template  v-for="cItem in colItem.children">
+                  <a-col  :span="cItem.span"  v-if="(typeof cItem?.show === 'function' ? cItem?.show(formState, cItem, type)??true : cItem?.show??true)">
+                    <a-form-item  v-bind="validateInfos[cItem.name]" :label="cItem.text" :name="cItem.name" :label-col="cItem?.labelCol" :wrapper-col="cItem?.wrapperCol??{style: {width: '100%'}}" >
+                          <InputItem v-model:value="formState[cItem.name]"
+                                  :formData="colItem.children"
+                                    :isDisabled=" (type == 'show' || (typeof cItem?.disabled === 'function' ? cItem?.disabled(formState, cItem, type)??isDisabled : cItem?.disabled??isDisabled))"
+                                    :form-state="formState"
+                                    :validateFun="validate"
+                                    @change="inputChange" :item="cItem" >
+                            <template v-for="(_, name) in $slots" #[name]="{data}">
+                              <slot :name="name" :data="data"    ></slot>
+                            </template>
+                          </InputItem>
+                        </a-form-item>
+                    </a-col>
+                </template>
+
+              </a-tab-pane>
+            </a-tabs>
+
+        </template>
       
       </template>
 
@@ -62,7 +87,7 @@
 </template>
 
 <script lang="ts" setup >
-import {reactive, defineProps, ref, watch, getCurrentInstance, onMounted} from "vue";
+import {reactive, defineProps, ref, watch, getCurrentInstance, onMounted, useSlots} from "vue";
 import InputItem from  '../../InputItem';
 import { Form } from "ant-design-vue";
 import {isArray, isObject, isString} from "../../../utils/is";
@@ -87,7 +112,7 @@ const labelCol = reactive(props.labelCol);
 const wrapperCol = reactive(props.wrapperCol);
 const formState = ref(props.formState);
 const useForm = Form.useForm;
-const { validate, validateInfos, clearValidate , resetFields} = useForm(
+const { validate, validateInfos, clearValidate , scrollToField, resetFields} = useForm(
   formState,
   Validate,
 
@@ -98,12 +123,13 @@ defineExpose({
   submit,
   clear,
   formRef,
+  toField,
   validateFields
 })
-
+const slots = useSlots();
 onMounted(() => {
   // initFun();
-
+  console.log(slots, 131)
 })
 
 
@@ -283,6 +309,10 @@ async function clear() {
 }
 async function validateFields(field) {
   return formRef.value.validateFields(field);
+}
+
+async function toField(field) {
+  return scrollToField(field);
 }
 
 

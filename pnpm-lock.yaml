@@ -20,6 +20,9 @@ importers:
       '@vitejs/plugin-vue-jsx':
         specifier: ^3.1.0
         version: 3.1.0(vite@6.2.0(less@4.2.2))(vue@3.5.13(typescript@5.7.3))
+      '@vxe-ui/plugin-render-antd':
+        specifier: ^4.0.12
+        version: 4.0.12
       ant-design-vue:
         specifier: 3.2.20
         version: 3.2.20(vue@3.5.13(typescript@5.7.3))
@@ -921,6 +924,9 @@ packages:
     resolution: {integrity: sha512-TZS4CuIQ60Q5hmaglKP2+BC5/4Gc9exnRt5rMhDx9hY2f7DUMOpnfeVV70cevN0Ik+2T8hw38SP7sfNGUCmwgA==}
     peerDependencies:
       vue: ^3.2.0
+
+  '@vxe-ui/plugin-render-antd@4.0.12':
+    resolution: {integrity: sha512-ZOE8GEBaImJKLWhVUYikplAAFvvBVBdkSU6zlrr0vA7fClps8iRZ5gMOXmDYAB8RSKxtAJKWRXRDCfWp29GP3A==}
 
   algoliasearch@5.20.3:
     resolution: {integrity: sha512-iNC6BGvipaalFfDfDnXUje8GUlW5asj0cTMsZJwO/0rhsyLx1L7GZFAY8wW+eQ6AM4Yge2p5GSE5hrBlfSD90Q==}
@@ -2460,6 +2466,8 @@ snapshots:
       dom-zindex: 1.0.6
       vue: 3.5.13(typescript@5.7.3)
       xe-utils: 3.7.2
+
+  '@vxe-ui/plugin-render-antd@4.0.12': {}
 
   algoliasearch@5.20.3:
     dependencies:

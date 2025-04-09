@@ -71,13 +71,13 @@ const search = [
     name: 'subjectName3',
     span: 10,
     $attrs: {
+      buttonStyle:"solid",
       onOpenChange: (...data) => {
         console.log(...data);
         
       }
     },
     value: [],
-    $attrs: {buttonStyle:"solid"},
     optionType: 'button',
     style: 'width: 560px;',
     labelCol: { style: { width: '90px' } },

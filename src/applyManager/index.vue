@@ -76,15 +76,16 @@
     </template>
     <a-row>
       <a-col :span="24">
+        字典弹窗单独使用：
         <a-crud-dict style="width:200px;" :immediate="false" @change="changeDict" :api="GetDiagnosis" :params='{"page":1,"rows":30,"limit":30,"code":1}' searchField="dmmc" />
         <div class="mr-0 overflow-hidden bg-white vben-basic-table vben-basic-table-form-container">
           <a-crud-table
             @register="testUseTable.register"
             ref="crudTableRef"
           >
-            <template #buttons>
+            <template #buttons="data">
               <a-button
-                  @click="handleAddShow('insert')"
+                  @click="handleAddShow('insert', data)"
                   type="primary"
                   style="float: left; magin-top: 10px"
                   size="middle"
@@ -94,22 +95,15 @@
                   <PlusOutlined />
                 </template>
                 新增</a-button>
-              <a-button
-                  @click="handleAddShow2('insert')"
-                  type="primary"
-                  style="float: left; magin-top: 10px"
-                  size="middle"
-                  class="!px-2"
-              >
-                <template #icon>
-                  <PlusOutlined />
-                </template>
-                新增2</a-button
-              >
+
             </template>
             <template #default="{row}">
               <a-button   @click="handleUpdateShow(row)">编辑</a-button>
               <a-button v-if="row.pid != 0" @click="handleAddShow('insert')">新建下级</a-button>
+            </template>
+
+            <template #bz="data">test bz
+<!--              <a-input v-model:value="data.formState.bz"  @blur="data.validateFun(data.item.name, { trigger: 'blur' }).catch(() => {})"/>-->
             </template>
 
 
@@ -122,16 +116,41 @@
   </a-card>
   <div>
     <a-crud-form @register="testUseForm.register" ref="cardFormRef">
+      <template #buttons="{data}" >
+        <a-button type="primary" @click="handleAddTable(data)">新增</a-button>
 
-      <template #testSlot="{data}">
-        <a-input v-model:value="data.formState.testSlot"  @blur="data.validateFun(data.item.name, { trigger: 'blur' }).catch(() => {})"/>
+      </template>
+      <template #testSlot="{data}"> testslot
+      </template>
+      <template #testSlot2="{data}"> testslot2
+      </template>
+      <template #testSlot3="{data}"> testslot3asdfas
       </template>
       <template #default="{formState, loading}">
         <a-button @click="handleSave(formState)">保存</a-button>
       </template>
+      <template #opera="{data}">
+        <a-button @click="handleDeleteTable(data)">删除</a-button>
+      </template>
 
     </a-crud-form>
+    <a-crud-form @register="testUseForm2.register" ref="cardFormRef">
+      <template #buttons="{data}" >
+        <a-button type="primary" @click="handleAddTable(data)">新增</a-button>
+        <a-button type="primary" @click="handleValidateTable(data)">校验</a-button>
+      </template>
+      <template #testSlot="{data}"> testslot
+      </template>
+      <template #testSlot2="{data}"> testslot2
+      </template>
+      <template #testSlot3="{data}"> testslot3asdfas
+      </template>
+      <template #opera="{data}">
+        <a-button @click="handleDeleteTable2(data)">删除</a-button>
+      </template>
 
+    </a-crud-form>
+    <a-button @click="handleFormSave()" type="primary">保存form</a-button>
     <!-- <a-crud-form @register="testUseForm2.registerForm" ref="cardFormRef">
       <template #testSlot="{data}">
         <a-input v-model:value="data.formState.testSlot"  @blur="data.validateFun(data.item.name, { trigger: 'blur' }).catch(() => {})"/>
@@ -214,14 +233,26 @@ const crudTableRef = ref();
       updateApi: web_alterationApply_insertOrUpdate,
       requestCallback: handleRequestCallback,
       name: 'bmgl', 
-      modalType: 'modal',
+
       /// visible: true,
        
+    });
+  const formProps2 =  ref({
+      title: '用户管理',
+      formData: retireData,
+      insertApi: web_alterationApply_insertOrUpdate,
+      updateApi: web_alterationApply_insertOrUpdate,
+      requestCallback: handleRequestCallback,
+      name: 'bmgl',
+    modalType: 'form',
+      /// visible: true,
+
     });
     const searchProps =  {
       formData: searchData,
     } ; 
     const testUseForm = new antdCrud.useForm(formProps.value);
+    const testUseForm2 = new antdCrud.useForm(formProps2.value);
     const testUseTable = new antdCrud.useTable(tableProps.value);
     const testUseSearch = new antdCrud.useSearch(searchProps );
     console.log(testUseForm, testUseTable.tableMethods, testUseSearch);
@@ -240,7 +271,8 @@ function handleDataCallback(res) {
     return await api(params, handleData.value);
   }
 
-   function handleAddShow(t) {
+   function handleAddShow(t, data) {
+     console.log(data)
    methods.value.handleFormShow(t)
  } 
 
@@ -248,14 +280,19 @@ function handleDataCallback(res) {
     // let zkmcData = formMethods.value.getFormDataValue('zkmc');
     // formMethods.value.setFormDataValue('zkmc', {...zkmcData, text: 'test'})
     // console.log(formMethods.value.getFormDataValue('zkmc'));
-    console.log(methods.value);
-    
-    methods.value.setFormPropsValue('visible',  !methods.value.getFormPropsValue('visible'));
+    console.log(methods.value,  testUseForm2.methods.value.setFormPropsValue);
+
+    testUseForm2.methods.value.setFormPropsValue('visible',  !testUseForm2.methods.value.getFormPropsValue('visible'));
   }
+
+  function handleFormSave() {
+    console.log( testUseForm2.methods.value);
+    testUseForm2.methods.value.handleFormSubmit();
+  }
+
 
  function handleSave(formState) {
    console.log(formState);
-   formState.abccdefg = 'tset';
    methods.value.handleFormSubmit({eee: 1});
  }
 
@@ -287,8 +324,46 @@ function handleDataCallback(res) {
     methods.value.getData(params);
   }
 
+  async function handleValidateTable(data) {
+    console.log(data, data.tableRef.validate);
+    const res  = await data.tableRef.validate(true);
+    console.log(res);
+  }
 
 
+ async function handleAddTable(data) {
+   console.log(data);
+   data.tableData.push({
+
+     "zkbm": "1",
+     "bmbm": "BA00.Y",
+     "zhbm": "B04.02.01.04.02.01",
+     "ysbm": "Z01",
+     "ysmc": "头痛234",
+     "checkbox": ['1','2', 3],
+     "date": "2025-04-03",
+     'switch': '1',
+     'radio': '1',
+     'rate': '1',
+     'slider': '12',
+     'textarea': 'textarea1',
+     'upload': [
+       { name: 'fj577.jpg', url: 'https://vxeui.com/resource/img/fj577.jpg' },
+       { name: 'fj581.jpeg', url: 'https://vxeui.com/resource/img/fj581.jpeg' }
+     ],
+   })
+  }
+
+  function handleDeleteTable(data) {
+    console.log(data);
+    data.tableData = data.tableRef.getTableData().tableData;
+    console.log( data.tableRef.getTableData(), data.tableData)
+  }
+  function handleDeleteTable2(data) {
+    data.tableRef.remove(data.row);
+    testUseForm2.methods.value.setFormStateValue('table', data.tableRef.getTableData().tableData);
+    console.log( data.tableRef.getTableData(), testUseForm2.methods.value.getFormStateValue('table'))
+  }
 
   function handleTest(e) {
     var doc = new jsPDF();

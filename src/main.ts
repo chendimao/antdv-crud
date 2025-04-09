@@ -15,7 +15,8 @@ import 'vxe-pc-ui/lib/style.css'
 import antd from 'ant-design-vue';
 import VXETablePluginExportPDF from 'vxe-table-plugin-export-pdf';
 import { jsPDF } from 'jspdf';
-import 'ant-design-vue/dist/antd.css';
+import 'ant-design-vue/dist/reset.css';
+
 
 VXETable.use(VXETablePluginExportPDF, {
     jsPDF
@@ -62,7 +63,6 @@ antdCrud.config(app, {
         isToolBox: true,
         toolBox: {
             showType: 'button',
-            showExport: false,
         },
         },
     formConfig: {FooterCancelText: '退出', FooterSubmitText: '确定', },

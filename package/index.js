@@ -9,7 +9,6 @@ import useSearch from './hooks/useSearch.ts';
 import useCrud from './hooks/useCrud.ts';
 import aCrudDict from "./commonManage/aCrudDict.vue";
 import { render } from "vue";
-
 const components = [
     aCrudForm,
     aCrudTable,
@@ -34,19 +33,25 @@ const install = function(Vue, config = undefined) {
             console.log(result);
           if (result) {
             el.innerHTML = '';
-            render(result, el);
+              setTimeout(() => {
+                  render(result, el);
+              })
           }
         }
       },
-      updated: async (el, binding) => {
-        if (typeof binding.value === 'function' && el) {
-          const result = await binding.value();
-          if (result) {
-            el.innerHTML = '';
-            render(result, el);
-          }
-        }
-      }
+      // updated: async (el, binding) => {
+      //
+      //   if (typeof binding.value === 'function' && el) {
+      //     const result = await binding.value();
+      //       console.log(result);
+      //     if (result) {
+      //       el.innerHTML = '';
+      //      setTimeout(() => {
+      //       render(result, el);
+      //      })
+      //     }
+      //   }
+      // }
     });
   components.forEach(component => {
     Vue.component(component.name, component);

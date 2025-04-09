@@ -51,7 +51,16 @@
                                               @register="formTable.register"
                                               @change="handleTableChange"
                                 >
+                                  <template v-for="(slot, name) in item?.$slots??[]" v-slot:[name]="data">
+                                        <div v-render="() => slot(item, formState, formData,  data)"></div>
+                                      </template>
+                                 <template v-for="_ in item.columns.filter(cItem => cItem.type == 'slot')" #[_.name]="{data}">
 
+                                  <slot    :name="_.name" :data="data"></slot>
+                                </template>
+                                  <template #buttons="{data}" >
+                                     <slot    name="buttons" :data="data"></slot>
+                                  </template>
                                 </a-crud-table>
                               </template>
               </div>
@@ -73,6 +82,7 @@ import {
   defineProps,
   getCurrentInstance,
   onUnmounted,
+    useSlots,
   defineAsyncComponent
 } from "vue";
 import {isArray, isDate, isFunction, isNull, isNumber, isObject, isString} from "../../../utils/is";
@@ -222,13 +232,20 @@ const componentMap = {
 
 };
 
+const slots = useSlots();
+
 watch(() => props.item, async (data) => {
   inputItem.value = data;
-
   // 如果是table
   if (inputItem.value.type === 'table') {
-    console.log( inputItem.value, 224);
-      formTable.value = new useTable({...inputItem.value, isToolBox: false, isForm: true, pagination: {isPagination: false } });
+    const isFormParams = inputItem.value.isForm === true ? { isToolBox: true,
+          toolBox: {showExport: false,showPrint: false,showRefresh: false,showSetting: false},
+          isForm: true,
+          pagination: {isPagination: false } } : {};
+        formTable.value = new useTable({
+        ...inputItem.value,
+        ...isFormParams
+      });
   }
 
 

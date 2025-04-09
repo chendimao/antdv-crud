@@ -125,9 +125,11 @@ const eventHandlers = {
   },
   onBlur: (e: Event) => {
     if (props.validateFun && props.item?.name) {
-      props.validateFun(props.item.name, { trigger: 'blur' }).catch(() => {
-        // 处理错误
-      });
+      setTimeout(() => {
+        props.validateFun(props.item.name, { trigger: 'blur' }).catch((err) => {
+
+        });
+      }, 100);
     }
     if (props.item.$attrs?.onBlur) {
       props.item.$attrs.onBlur(props.item, props.formState, props.formData, e);

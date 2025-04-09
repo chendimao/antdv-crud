@@ -1,7 +1,7 @@
 import type { App, Plugin } from 'vue';
 
 import { unref, customRef} from 'vue';
-import { isObject } from './is';
+import {isArray, isObject} from './is';
 import {isNumber} from "./is";
 import {useGetTable} from "../hooks/useGetData";
 
@@ -166,11 +166,29 @@ export function deepCopy(obj, clones = new WeakMap()) {
 
 export const valueToName = (arr, value , targetKey, returnKey) => {
 
-  for (const arrElement of arr) {
-    if (arrElement[targetKey] == value) {
-      return arrElement[returnKey];
+  if (isArray(value)) {
+    let valueArr = [];
+
+    value.forEach(item => {
+      arr.some(cItem => {
+        const flag =  cItem[targetKey] === item
+        if (flag) {
+          valueArr.push(cItem[returnKey]);
+        }
+        return flag;
+      });
+
+    })
+    return valueArr;
+  } else {
+    for (const arrElement of arr) {
+      if (arrElement[targetKey] == value) {
+        return arrElement[returnKey];
+      }
     }
   }
+
+
 }
 
 

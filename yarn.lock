@@ -177,15 +177,7 @@
   resolved "https://registry.yarnpkg.com/@ant-design/icons-svg/-/icons-svg-4.4.2.tgz#ed2be7fb4d82ac7e1d45a54a5b06d6cecf8be6f6"
   integrity sha512-vHbT+zJEVzllwP+CM+ul7reTEfBR0vgxFe7+lREAsAA7YGsYpboiq2sQNeQeRvh09GfQgs/GyFEvZpJ9cLXpXA==
 
-"@ant-design/icons-vue@^6.1.0":
-  version "6.1.0"
-  resolved "https://registry.yarnpkg.com/@ant-design/icons-vue/-/icons-vue-6.1.0.tgz#f9324fdc0eb4cea943cf626d2bf3db9a4ff4c074"
-  integrity sha512-EX6bYm56V+ZrKN7+3MT/ubDkvJ5rK/O2t380WFRflDcVFgsvl3NLH7Wxeau6R8DbrO5jWR6DSTC3B6gYFp77AA==
-  dependencies:
-    "@ant-design/colors" "^6.0.0"
-    "@ant-design/icons-svg" "^4.2.1"
-
-"@ant-design/icons-vue@^7.0.1":
+"@ant-design/icons-vue@^7.0.0", "@ant-design/icons-vue@^7.0.1":
   version "7.0.1"
   resolved "https://registry.yarnpkg.com/@ant-design/icons-vue/-/icons-vue-7.0.1.tgz#83de301771fadd03f3890e627314102405c31c22"
   integrity sha512-eCqY2unfZK6Fe02AwFlDHLfoyEFreP6rBwAZMIJ1LugmfMiVgwWDYlp1YsRugaPtICYOabV1iWxXdP12u9U43Q==
@@ -475,7 +467,7 @@
     "@babel/helper-validator-identifier" "^7.22.20"
     to-fast-properties "^2.0.0"
 
-"@ctrl/tinycolor@^3.4.0", "@ctrl/tinycolor@^3.6.1":
+"@ctrl/tinycolor@^3.4.0", "@ctrl/tinycolor@^3.5.0", "@ctrl/tinycolor@^3.6.1":
   version "3.6.1"
   resolved "https://registry.yarnpkg.com/@ctrl/tinycolor/-/tinycolor-3.6.1.tgz#b6c75a56a1947cc916ea058772d666a2c8932f31"
   integrity sha512-SITSV6aIXsuVNV3f3O0f2n/cgyEDWoSqtZMYiAmcsYHydcKrOz3gUxB/iXd/Qf08+IZX4KpgNbvUdMBmWz+kcA==
@@ -502,6 +494,16 @@
     "@algolia/autocomplete-preset-algolia" "1.9.3"
     "@docsearch/css" "3.6.0"
     algoliasearch "^4.19.1"
+
+"@emotion/hash@^0.9.0":
+  version "0.9.2"
+  resolved "https://registry.yarnpkg.com/@emotion/hash/-/hash-0.9.2.tgz#ff9221b9f58b4dfe61e619a7788734bd63f6898b"
+  integrity sha512-MyqliTZGuOm3+5ZRSaaBGP3USLw6+EGykkwZns2EPC5g8jJ4z9OrdZY9apkl3+UP9+sdz76YYkwCKP5gh8iY3g==
+
+"@emotion/unitless@^0.8.0":
+  version "0.8.1"
+  resolved "https://registry.yarnpkg.com/@emotion/unitless/-/unitless-0.8.1.tgz#182b5a4704ef8ad91bde93f7a860a88fd92c79a3"
+  integrity sha512-KOEGMu6dmJZtpadb476IsZBclKvILjopjUii3V+7MnXIQCYh8W3NgNcgwo21n9LXZX6EDIKvqfjYxXebDwxKmQ==
 
 "@esbuild/aix-ppc64@0.20.2":
   version "0.20.2"
@@ -1144,6 +1146,19 @@
     dom-zindex "^1.0.4"
     xe-utils "^3.5.28"
 
+"@vxe-ui/core@^4.0.39":
+  version "4.0.39"
+  resolved "https://registry.yarnpkg.com/@vxe-ui/core/-/core-4.0.39.tgz#0ecd689dbdccaf22f2b1cd3e3df923cb01989203"
+  integrity sha512-7lRfmnh6fAjbuKxQ1NcJVQ4Z8bXDYHtnTrzvUGREf3CsXu/PzUoyArHhOJH6yRmiNBfk29CCqVhiRsv4ngSViQ==
+  dependencies:
+    dom-zindex "^1.0.6"
+    xe-utils "^3.7.4"
+
+"@vxe-ui/plugin-render-antd@^4.0.12":
+  version "4.0.12"
+  resolved "https://registry.yarnpkg.com/@vxe-ui/plugin-render-antd/-/plugin-render-antd-4.0.12.tgz#f2130bf73f6d89c31d356256166a0c283b34c358"
+  integrity sha512-ZOE8GEBaImJKLWhVUYikplAAFvvBVBdkSU6zlrr0vA7fClps8iRZ5gMOXmDYAB8RSKxtAJKWRXRDCfWp29GP3A==
+
 algoliasearch@^4.19.1:
   version "4.23.3"
   resolved "https://registry.yarnpkg.com/algoliasearch/-/algoliasearch-4.23.3.tgz#e09011d0a3b0651444916a3e6bbcba064ec44b60"
@@ -1172,18 +1187,21 @@ ansi-styles@^3.2.1:
   dependencies:
     color-convert "^1.9.0"
 
-ant-design-vue@3.2.20:
-  version "3.2.20"
-  resolved "https://registry.yarnpkg.com/ant-design-vue/-/ant-design-vue-3.2.20.tgz#552f5f08e2acbcc10bd4089145d4cc2b15d4cfec"
-  integrity sha512-YWpMfGaGoRastIXEYfCoJiaRiDHk4chqtYhlKQM5GqPt6NfvrM1Vg2e60yHtjxlZjed91wCMm0rAmyUr7Hwzdg==
+ant-design-vue@4:
+  version "4.2.6"
+  resolved "https://registry.yarnpkg.com/ant-design-vue/-/ant-design-vue-4.2.6.tgz#e4ce6944457cd1cd61d8b3fe52793ab58b94e337"
+  integrity sha512-t7eX13Yj3i9+i5g9lqFyYneoIb3OzTvQjq9Tts1i+eiOd3Eva/6GagxBSXM1fOCjqemIu0FYVE1ByZ/38epR3Q==
   dependencies:
     "@ant-design/colors" "^6.0.0"
-    "@ant-design/icons-vue" "^6.1.0"
+    "@ant-design/icons-vue" "^7.0.0"
     "@babel/runtime" "^7.10.5"
-    "@ctrl/tinycolor" "^3.4.0"
+    "@ctrl/tinycolor" "^3.5.0"
+    "@emotion/hash" "^0.9.0"
+    "@emotion/unitless" "^0.8.0"
     "@simonwep/pickr" "~1.8.0"
     array-tree-filter "^2.1.0"
     async-validator "^4.0.0"
+    csstype "^3.1.1"
     dayjs "^1.10.5"
     dom-align "^1.12.1"
     dom-scroll-into-view "^2.0.0"
@@ -1192,6 +1210,8 @@ ant-design-vue@3.2.20:
     resize-observer-polyfill "^1.5.1"
     scroll-into-view-if-needed "^2.2.25"
     shallow-equal "^1.0.0"
+    stylis "^4.1.3"
+    throttle-debounce "^5.0.0"
     vue-types "^3.0.0"
     warning "^4.0.0"
 
@@ -1347,7 +1367,7 @@ css-line-break@^2.1.0:
   dependencies:
     utrie "^1.0.2"
 
-csstype@^3.1.3:
+csstype@^3.1.1, csstype@^3.1.3:
   version "3.1.3"
   resolved "https://registry.yarnpkg.com/csstype/-/csstype-3.1.3.tgz#d80ff294d114fb0e6ac500fbf85b60137d7eff81"
   integrity sha512-M1uQkMl8rQK/szD0LNhtqxIPLpimGm8sOBwU7lLnCpSbTyY3yeU1Vc7l4KT5zT4s/yOxHH5O7tIuuLOCnLADRw==
@@ -1388,6 +1408,11 @@ dom-zindex@^1.0.4:
   version "1.0.4"
   resolved "https://registry.npmmirror.com/dom-zindex/-/dom-zindex-1.0.4.tgz#c5a21153dc85962c8d4831ea42db898cc536eb26"
   integrity sha512-PNk7u71TJ1C9Lwjjp5nNuQcVWuECFMmr9kZAwi2UbgWUM7jXdTCe4O4x5bhLUa07jpcZUVA5Du3ho7/FXzS9Ng==
+
+dom-zindex@^1.0.6:
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/dom-zindex/-/dom-zindex-1.0.6.tgz#0f911b39d3e542232ad91307638dbb869643f89e"
+  integrity sha512-FKWIhiU96bi3xpP9ewRMgANsoVmMUBnMnmpCT6dPMZOunVYJQmJhSRruoI0XSPoHeIif3kyEuiHbFrOJwEJaEA==
 
 dompurify@^2.2.0:
   version "2.5.4"
@@ -1891,6 +1916,11 @@ stackblur-canvas@^2.0.0:
   resolved "https://registry.yarnpkg.com/stackblur-canvas/-/stackblur-canvas-2.7.0.tgz#af931277d0b5096df55e1f91c530043e066989b6"
   integrity sha512-yf7OENo23AGJhBriGx0QivY5JP6Y1HbrrDI6WLt6C5auYZXlQrheoY8hD4ibekFKz1HOfE48Ww8kMWMnJD/zcQ==
 
+stylis@^4.1.3:
+  version "4.3.6"
+  resolved "https://registry.yarnpkg.com/stylis/-/stylis-4.3.6.tgz#7c7b97191cb4f195f03ecab7d52f7902ed378320"
+  integrity sha512-yQ3rwFWRfwNUY7H5vpU0wfdkNSnvnJinhF9830Swlaxl03zsOjCfmX0ugac+3LtK0lYSgwL/KXc8oYL3mG4YFQ==
+
 supports-color@^5.3.0:
   version "5.5.0"
   resolved "https://registry.yarnpkg.com/supports-color/-/supports-color-5.5.0.tgz#e2e69a44ac8772f78a1ec0b35b689df6530efc8f"
@@ -1919,6 +1949,11 @@ text-segmentation@^1.0.3:
   integrity sha512-iOiPUo/BGnZ6+54OsWxZidGCsdU8YbE4PSpdPinp7DeMtUJNJBoJ/ouUSTJjHkh1KntHaltHl/gDs2FC4i5+Nw==
   dependencies:
     utrie "^1.0.2"
+
+throttle-debounce@^5.0.0:
+  version "5.0.2"
+  resolved "https://registry.yarnpkg.com/throttle-debounce/-/throttle-debounce-5.0.2.tgz#ec5549d84e053f043c9fd0f2a6dd892ff84456b1"
+  integrity sha512-B71/4oyj61iNH0KeCamLuE2rmKuTO5byTOSVwECM5FA7TiAiAW+UqTKZ9ERueC4qvgSttUhdmq1mXC3kJqGX7A==
 
 to-fast-properties@^2.0.0:
   version "2.0.0"
@@ -2053,6 +2088,13 @@ vxe-pc-ui@^4.0.70:
   dependencies:
     "@vxe-ui/core" "^1.0.12"
 
+vxe-pc-ui@^4.3.99:
+  version "4.5.15"
+  resolved "https://registry.yarnpkg.com/vxe-pc-ui/-/vxe-pc-ui-4.5.15.tgz#307626d540db7bf1ded9c1534bd4a1896ec52209"
+  integrity sha512-l14jGpTdrQS/sltmmlpjYkPX8i3twXJd13L1Zt9Hq4mEFKnYiyDLlK6HvLsHa870MtWjuG9BT9OgtQpfTNr3ZA==
+  dependencies:
+    "@vxe-ui/core" "^4.0.39"
+
 vxe-table-plugin-export-pdf@^4.0.2:
   version "4.0.2"
   resolved "https://registry.yarnpkg.com/vxe-table-plugin-export-pdf/-/vxe-table-plugin-export-pdf-4.0.2.tgz#8d21e83cbde84578d4bf651b86f287835be681dc"
@@ -2076,6 +2118,11 @@ xe-utils@^3.5.28:
   version "3.5.28"
   resolved "https://registry.npmmirror.com/xe-utils/-/xe-utils-3.5.28.tgz#f6fa54f43ca2ec8f13c35f4b5691e5b32f365bb9"
   integrity sha512-oeLLJ0b54QdOSSgYQ9TiKW/xAGrc9r0weCA/5UfyGdm3n3js4cNOuuf9Tml7UwgBQpl4uWMbMwUZKLh2yqPF3A==
+
+xe-utils@^3.7.4:
+  version "3.7.4"
+  resolved "https://registry.yarnpkg.com/xe-utils/-/xe-utils-3.7.4.tgz#9e787b026d3b8ffbd62742d9f47236bf1df0c06b"
+  integrity sha512-9yuCHLOU+og4OEkPWWtzrYk1Zt1hgN66U/NCJ0+vYJSx1MplBtoQRz8aEA+2RmCr3leLru98vQxNpw/vJsu/sg==
 
 yallist@^3.0.2:
   version "3.1.1"

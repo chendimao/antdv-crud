@@ -1,7 +1,7 @@
 import { ref } from "vue";
 
 export default class useTable {
-    private methods: any = ref();
+    public methods: any = ref();
     private tableProps: any;
     private _tableRef = ref();
 

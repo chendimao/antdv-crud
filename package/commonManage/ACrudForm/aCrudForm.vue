@@ -31,9 +31,10 @@
                 :labelCol="aCardFormRef?.labelCol??{ span: 8 }"
                 :wrapperCol="aCardFormRef?.labelCol??{ span: 16 }"
             >
-              <template v-for="(_, name) in $slots" #[name]="{data}">
-                  <slot v-if="name != 'default'" :name="name" :data="data"></slot>
+              <template v-for="(_, name) in slots"   #[name]="{data}" >
+                        <slot v-if="name != 'default' && name != 'footer' && name != 'extra'"   :name="name" :data="data"></slot>
               </template>
+
             </FormInputItem>
 
           </div>
@@ -45,8 +46,11 @@
             <!--          show 默认不显示确认取消按钮，除非手动配置显示-->
           <aCrudFormFooter :loading="loading" :aCardFormRef="aCardFormRef" @handleFormSubmit="handleFormSubmit" @handleFormCancel="handleFormCancel"/>
           </slot>
+
         </div>
       </template>
+
+
     </a-modal>
 
     <a-drawer
@@ -77,7 +81,11 @@
                 :type="aCardFormRef.type"
                 :formValidate="validateList"
 
-            />
+            >
+              <template v-for="(_, name) in slots"   #[name]="{data}" >
+                <slot v-if="name != 'default' && name != 'footer' && name != 'extra'"   :name="name" :data="data"></slot>
+              </template>
+            </FormInputItem>
 
           </div>
         </div>
@@ -109,7 +117,7 @@
 
       <div
 
-          :style="{ maxHeight: 'calc(100vh - 210px)', height: aCardFormRef.height ? aCardFormRef.height : 'calc(100vh - 210px)', width: aCardFormRef.width ? aCardFormRef.width : '100%' }"
+          :style="{ height: aCardFormRef.height ? aCardFormRef.height : '100%', width: aCardFormRef.width ? aCardFormRef.width : '100%' }"
           style="overflow: auto"
       >
         <div class="mb-2 form-card" v-if="aCardFormRef.formData?.length > 0">
@@ -150,6 +158,7 @@ import {
   defineExpose,
   toRaw, unref,
   watch,
+  useSlots
 } from 'vue';
   import { Form, message } from 'ant-design-vue';
   import FormInputItem from '../FormInputItem/';
@@ -195,7 +204,7 @@ import { isFunction } from '../../utils/is';
   const props = defineProps({
     formProps: {},
   });
-
+  const slots = useSlots();
   const loading = ref(false);
   const validateList = ref({});
   const isTableDisabled = computed(() => {
@@ -207,7 +216,7 @@ import { isFunction } from '../../utils/is';
 
 
 
-  function initForm() { 
+  function initForm() {
     // for (const ref of itemRefs.value) {
     //   //ref && ref.clear();
     // }
@@ -254,7 +263,7 @@ import { isFunction } from '../../utils/is';
          // ruleItem.cardForm = aCardFormRef;
          // ruleItem.refs = itemRefs;
         // ruleItem.validator = (aCardFormRef, itemRefs) => ruleItem.validator({cardForm: aCardFormRef, refs: itemRefs});
-       
+
          ruleItem.validator = ruleItem.validator.bind(null, {cardForm: aCardFormRef, refs: formItemRef});
         //ruleItem.validator = ruleItem.validator.bind(undefined,{...this, cardForm: aCardFormRef, refs: itemRefs.value});
        }
@@ -274,8 +283,12 @@ import { isFunction } from '../../utils/is';
     aCardFormRef.value = null;
     
     formTransferPropsRef.value = props;
-      aCardFormRef.value = {...aCardDefaultFormRef.value, ...props}; 
-    initForm();
+      aCardFormRef.value = {...aCardDefaultFormRef.value, ...props};
+
+        if (aCardFormRef.value.modalType === 'form') {
+          setFormVisible(true);
+        }
+
   }
 
 
@@ -286,9 +299,12 @@ import { isFunction } from '../../utils/is';
 
   function setFormPropsValue(key, value){
     aCardFormRef.value[key] = value;
-    initForm();
+    setTimeout(() => {
+      initForm();
+    }, 100);
   }
   function getFormPropsValue(key){
+    console.log(aCardFormRef.value);
     return aCardFormRef.value[key];
   }
 
@@ -423,8 +439,19 @@ watch(() => props.formProps, (data) => {
   formTransferPropsRef.value = {...formTransferPropsRef.value, ...data};
   console.log(data, formTransferPropsRef, 425);
 }, {deep: true })
-  function getFormState() {
+
+
+
+
+
+function getFormState() {
     return aCardFormRef.value.formState;
+  }
+function getFormStateValue(key) {
+    return aCardFormRef.value.formState[key];
+  }
+function setFormStateValue(key, value) {
+    aCardFormRef.value.formState[key] = value;
   }
 
   function getFormRefData() {
@@ -444,8 +471,10 @@ watch(() => props.formProps, (data) => {
   }
 
   function setFormVisible(visible) {
-    console.log(visible, aCardFormRef.value);
     aCardFormRef.value.visible = visible;
+    if (visible) {
+      initForm();
+    }
   }
 
 
@@ -459,7 +488,9 @@ watch(() => props.formProps, (data) => {
     handleFormCancel,
     mergeResetFormData,
     getFormRefData,
+    getFormStateValue,
     setFormData,
+    setFormStateValue,
     setFormPropsValue,
     setFormDataValue,
     getFormPropsValue,
