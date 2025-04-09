@@ -30,7 +30,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue';
+import {computed, onMounted} from 'vue';
 import type { ComponentCustomProperties } from 'vue';
 
 // 定义全局配置接口
@@ -95,7 +95,12 @@ const inputValue = computed({
     eventHandlers.onInput(val);
   }
 });
+onMounted(() => {
+  if (props.item?.$attrs?.onMounted) {
+    props.item?.$attrs?.onMounted(props.item, props.formState, props.formData,);
+  }
 
+});
 // 事件处理函数
 const eventHandlers = {
   onFocus: (e: Event) => {

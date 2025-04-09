@@ -369,7 +369,6 @@ import inputItem from "../InputItem";
     {
       let flag = true;
       const res = await formItemRef.value.submit();
-      console.log(res, !res);
         if (res && res.length > 0) {
           flag = false;
         }

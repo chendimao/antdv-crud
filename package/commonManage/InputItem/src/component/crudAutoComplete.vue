@@ -26,7 +26,7 @@
 </template>
 
 <script lang="ts" setup>
-import {computed, render} from 'vue';
+import {computed, onMounted, render} from 'vue';
 import type { ComponentCustomProperties } from 'vue';
 
 // 定义全局配置接口
@@ -105,7 +105,12 @@ const inputValue = computed({
   }
 });
 
+onMounted(() => {
+  if (props.item?.$attrs?.onMounted) {
+    props.item?.$attrs?.onMounted(props.item, props.formState, props.formData,);
+  }
 
+});
 
 // 事件处理函数
 const eventHandlers = {

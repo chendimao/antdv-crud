@@ -33,7 +33,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, render, getCurrentInstance } from 'vue'; 
+import {computed, render, getCurrentInstance, onMounted} from 'vue';
 import type { ComponentCustomProperties } from 'vue';
 
 const app = getCurrentInstance()?.appContext.app;
@@ -143,7 +143,12 @@ const inputValue = computed({
   }
 });
 
+onMounted(() => {
+  if (props.item?.$attrs?.onMounted) {
+    props.item?.$attrs?.onMounted(props.item, props.formState, props.formData,);
+  }
 
+});
 
 // 原生事件处理函数
 const eventHandlers = {

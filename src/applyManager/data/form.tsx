@@ -134,6 +134,12 @@ const base: inputFormModel[] = [
     disabled: (data, form, type) => {
       return false;
     },
+    $attrs: {
+      onMounted: (...data) => {
+        console.log(data);
+      },
+
+    },
     labelCol: { style: { width: '100px' } },
     wrapperCol: {  },
     rules:[

@@ -21,7 +21,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue'; 
+import {computed, onMounted} from 'vue';
 import type { ComponentCustomProperties } from 'vue';
 
 // 定义全局配置接口
@@ -113,7 +113,12 @@ const inputValue = computed({
 const filterOption = (input: string, option: any) => {
   return option.name.toLowerCase().indexOf(input.toLowerCase()) >= 0;
 };
+onMounted(() => {
+  if (props.item?.$attrs?.onMounted) {
+    props.item?.$attrs?.onMounted(props.item, props.formState, props.formData,);
+  }
 
+});
 // 原生事件处理函数
 const eventHandlers = {
   onFocus: (e: Event) => {

@@ -103,6 +103,11 @@ onMounted(() => {
   inputValue.value =  props.item.initFun(props.formState);
       console.log( props.item, inputValue.value, 123);
     }
+
+    if (props.item?.$attrs?.onMounted) {
+      props.item?.$attrs?.onMounted(props.item, props.formState, props.formData,);
+    }
+
 })
 // 事件处理函数
 const eventHandlers = {

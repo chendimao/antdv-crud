@@ -18,7 +18,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, watch, getCurrentInstance, computed } from 'vue';
+import {ref, watch, getCurrentInstance, computed, onMounted, onUnmounted} from 'vue';
 import type { ComponentCustomProperties } from 'vue';
 
 const { proxy } = getCurrentInstance();
@@ -100,6 +100,15 @@ const inputValue = computed({
     emit('update:modelValue', val); 
   }
 });
+
+onMounted(() => {
+  console.log('onmounted', props.item?.$attrs, 105);
+  if (props.item?.$attrs?.onMounted) {
+    props.item?.$attrs?.onMounted(props.item, props.formState, props.formData,);
+  }
+
+});
+
 
 // 原生事件处理函数
 const eventHandlers = {
