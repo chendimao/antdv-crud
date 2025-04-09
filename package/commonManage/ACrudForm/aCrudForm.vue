@@ -8,7 +8,7 @@
         v-model:visible="aCardFormRef.visible"
         :title="title"
         :wrap-class-name="!aCardFormRef.width ? 'full-modal' : ''"
-        :confirmLoading="loading" 
+        :confirmLoading="loading"
         @ok.prevent="handleFormSubmit"
         @cancel="handleFormCancel"
         :width="aCardFormRef.width??'100%'"
@@ -165,6 +165,7 @@ import {
   import {deepCopy} from "../../utils";
   import aCrudFormFooter from './component/aCrudFormFooter.vue';
 import { isFunction } from '../../utils/is';
+import inputItem from "../InputItem";
 
   const { proxy } = getCurrentInstance();
  
@@ -367,11 +368,11 @@ import { isFunction } from '../../utils/is';
     else
     {
       let flag = true;
-       //  console.log( 176, ref.submit()); // 提交两次 
-        if (!(await formItemRef.value.submit())) {
+      const res = await formItemRef.value.submit();
+      console.log(res, !res);
+        if (res && res.length > 0) {
           flag = false;
         }
-  
 
       // 校验通过
       if (flag) {

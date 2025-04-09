@@ -119,8 +119,8 @@ const base: inputFormModel[] = [
   onInput: (...data) => {
     console.log(...data);
   },
-  onChange:(...data) => {
-    console.log(data);
+  onChange:( item, formState, formData, value) => {
+    console.log(item, formState, formData, value);
   }
  }
 },
@@ -180,7 +180,6 @@ const base: inputFormModel[] = [
     ],
     rules:[
       { required: true, message: '请输入select'},
-      {  validator: testSlot, trigger: 'blur'}
     ],
     labelCol: { style: { width: '100px' } },
   },
@@ -196,7 +195,6 @@ const base: inputFormModel[] = [
     
     rules:[
       { required: true, message: '请输入select'},
-      {  validator: testSlot, trigger: 'blur'}
     ],
     labelCol: { style: { width: '130px' } },
   }, {
@@ -485,7 +483,8 @@ const base: inputFormModel[] = [
      title: 'tset 统计数值',
     labelCol: { style: { width: '130px' } },
 
-  },{
+  },
+  {
     text: '可编辑表格',
     type: 'table',
     name: 'table',
@@ -657,7 +656,7 @@ const base: inputFormModel[] = [
         ],
       },{
 
-        "zkbm": "ZXY-6",
+        "zkbm": "",
         "bmbm": "BA00.Y",
         "zhbm": "B04.02.01.04.02.01",
         "ysbm": "Z01",
@@ -685,7 +684,207 @@ const base: inputFormModel[] = [
          { required: true, message: '请选择质控编码' },
        ],
      },
-     editConfig: { trigger: 'dblclick', mode: 'cell'},
+     editConfig: { trigger: 'click', mode: 'cell'},
+     validConfig: {
+       msgMode: 'full'
+     },
+   },
+    // $slots: {
+    //   testSlot: (...data) => {
+    //     console.log('zheshi   table slot ')
+    //     return (<div>这是table slot测试</div>);
+    //   }
+    // },
+    span: 24,
+    labelCol: { style: { width: '130px' } },
+
+  },
+  {
+    text: '可编辑表格2',
+    type: 'table',
+    name: 'table2',
+    isForm: true,
+
+    columns: [
+        {
+      text: '下拉选',
+      type: 'select',
+      name: 'zkbm',
+      option: [
+        {name:"选项1", value: '1'},
+        {name:"选项2", value: '2'},
+        {name:"选项3", value: '3'},
+        {name:"选项4", value: '4'},
+      ],
+      $attrs: { minWidth: '200px', showOverflow: true,   editRender: {} },
+    }, {
+      text: '多选',
+      type: 'formCheckbox',
+      name: 'checkbox',
+        split: '，',
+      option: [
+        {name:"选项1", value: '1'},
+        {name:"选项2", value: '2'},
+        {name:"选项3", value: '3'},
+        {name:"选项4", value: '4'},
+      ],
+      $attrs: { minWidth: '100px', showOverflow: true,   editRender: {} },
+    },{
+      text: '单选',
+      type: 'formRadio',
+      name: 'radio',
+        split: '，',
+      option: [
+        {name:"选项1", value: '1'},
+        {name:"选项2", value: '2'},
+        {name:"选项3", value: '3'},
+        {name:"选项4", value: '4'},
+      ],
+      $attrs: { minWidth: '100px', showOverflow: true,   editRender: {} },
+    },
+
+      {
+        text: '文字输入',
+        type: 'text',
+        name: 'bmbm',
+        $attrs: { minWidth: '100px', showOverflow: true,   editRender: {} },
+      },
+      {
+        text: 'switch',
+        type: 'switch',
+        name: 'switch',
+        openLabel: '启用',
+        closeLabel: '禁用',
+        openValue: '1',
+        closeValue: '0',
+        $attrs: { minWidth: '100px', showOverflow: true,   editRender: {} },
+      },
+
+      {
+        text: 'rate',
+        type: 'rate',
+        name: 'rate',
+        $attrs: { minWidth: '100px', showOverflow: true,   editRender: {} },
+      },
+      {
+        text: 'slider',
+        type: 'slider',
+        name: 'slider',
+        $attrs: { minWidth: '100px', showOverflow: true,   editRender: {} },
+      },
+      {
+        text: 'textarea',
+        type: 'textarea',
+        name: 'textarea',
+        $attrs: { minWidth: '100px', showOverflow: true,   editRender: {} },
+      },
+      {
+        text: '病名名称',
+        type: 'text',
+        name: 'ysmc',
+        $attrs: { minWidth: '100px', showOverflow: true,   editRender: {} },
+      },{
+        text: '日期',
+        type: 'date',
+        name: 'date',
+        $attrs: { minWidth: '100px', showOverflow: true , editRender: {} },
+        $formAttrs: {
+          clearable: true,
+          labelFormat: 'yyyy-MM-dd',
+          valueFormat: 'yyyy-MM-dd',
+          onChange: (...data) => {
+            console.log(data);
+          },
+          onDateToday: (...data) => {
+            console.log(data);
+          }
+        },
+      },{
+        text: '文件上传',
+        type: 'upload',
+        name: 'upload',
+
+        $attrs: { minWidth: '200px', height: '200px',  showOverflow: true , editRender: {} },
+        $formAttrs: {
+          uploadMethod: (e) => {
+            console.log(e);
+          },
+          downloadMethod: (e) => {
+            console.log(e);
+          },
+          onChange: (...data) => {
+            console.log(data);
+          },
+        },
+      },
+      {
+        text: 'table插槽',
+        type: 'slot',
+        name: 'testSlot3',
+        $attrs: { minWidth: '200px', },
+
+      },
+      {
+        text: '操作',
+        type: 'slot',
+        name: 'opera',
+        $attrs: { minWidth: '200px', },
+
+      },
+      ],
+    value: [
+      {
+
+        "zkbm": "",
+        "bmbm": "BA00.Y",
+        "zhbm": "B04.02.01.04.02.01",
+        "ysbm": "Z01",
+        "ysmc": "头痛",
+        "checkbox": ['1','2', 3],
+        "date": "2025-04-03",
+        'switch': '1',
+        'radio': '1',
+        'rate': '1',
+        'slider': '12',
+        'textarea': 'textarea1',
+        'upload': [
+          { name: 'fj577.jpg', url: 'https://vxeui.com/resource/img/fj577.jpg' },
+          { name: 'fj581.jpeg', url: 'https://vxeui.com/resource/img/fj581.jpeg' }
+        ],
+      },{
+
+        "zkbm": "2",
+        "bmbm": "BA00.Y",
+        "zhbm": "B04.02.01.04.02.01",
+        "ysbm": "Z01",
+        "ysmc": "头痛",
+        "checkbox": ['1','2', 3],
+        "date": "2025-04-03",
+        'switch': '1',
+        'radio': '1',
+        'rate': '2',
+        'slider': '22',
+        'textarea': 'textarea2',
+        'upload': [
+          { name: 'fj577.jpg', url: 'https://vxeui.com/resource/img/fj577.jpg' },
+          { name: 'fj581.jpeg', url: 'https://vxeui.com/resource/img/fj581.jpeg' }
+        ],
+      },
+    ],
+   $attrs: {
+     beforeEditMethod: (...e) => {
+       console.log(e);
+       return true;
+     },
+     editRules: {
+       "zkbm": [
+         { required: true, message: '请选择质控编码' },
+       ],
+     },
+     editConfig: { trigger: 'click', mode: 'cell'},
+     validConfig: {
+       msgMode: 'full'
+     },
    },
     // $slots: {
     //   testSlot: (...data) => {
@@ -768,10 +967,7 @@ const base: inputFormModel[] = [
     style: '',
     class: '',
     labelCol: { style: { width: '130px' } },
-    rules:[
-      { required: true, message: '请输入slot'},
-      {  validator: testSlot, trigger: 'blur'}
-    ],
+
   },
   {
     text: '插槽2',
@@ -782,10 +978,7 @@ const base: inputFormModel[] = [
     style: '',
     class: '',
     labelCol: { style: { width: '130px' } },
-    rules:[
-      { required: true, message: '请输入slot'},
-      {  validator: testSlot, trigger: 'blur'}
-    ],
+
   },
   {text: '文件上传',
     type: 'upload',

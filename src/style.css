@@ -82,3 +82,32 @@ button:focus-visible {
 .unitClassName {
   padding: 1px 0 !important;
 }
+
+
+.full-modal {
+   .ant-modal {
+     max-width: 100%;
+     top: 0;
+     padding-bottom: 0;
+     margin: 0;
+   }
+   .ant-modal-content {
+     display: flex;
+     flex-direction: column;
+     height: calc(100vh);
+   }
+   .ant-modal-body {
+     flex: 1;
+   }
+ }
+
+pre code {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  max-height: 100%;
+  overflow: auto !important;
+}
+
+.ant-modal-body {
+  overflow: hidden;
+}

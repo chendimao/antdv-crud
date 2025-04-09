@@ -7,6 +7,7 @@
           <a-form-item   v-bind="validateInfos[item.name]" :label="item.text" :name="item.name" :label-col="item.labelCol" :wrapper-col="item.wrapperCol??{style: {width: '100%'}}"
            >
             <InputItem v-model:value="formState[item.name]"
+                       :ref="setRef(item.name)"
                        :isDisabled=" (type == 'show' || (typeof item?.disabled === 'function' ? item?.disabled(formState, item, type)??isDisabled : item?.disabled??isDisabled))"
                        :form-state="formState"
                        :formData="Data"
@@ -29,6 +30,7 @@
                     <a-form-item  v-bind="validateInfos[cItem.name]" :label="cItem.text" :name="cItem.name" :label-col="cItem?.labelCol" :wrapper-col="cItem?.wrapperCol??{style: {width: '100%'}}" >
                           <InputItem v-model:value="formState[cItem.name]"
                                   :formData="colItem.children"
+                                     :ref="setRef(item.name)"
                                     :isDisabled=" (type == 'show' || (typeof cItem?.disabled === 'function' ? cItem?.disabled(formState, cItem, type)??isDisabled : cItem?.disabled??isDisabled))"
                                     :form-state="formState"
                                     :validateFun="validate"
@@ -58,6 +60,7 @@
                   <a-col  :span="cItem.span"  v-if="(typeof cItem?.show === 'function' ? cItem?.show(formState, cItem, type)??true : cItem?.show??true)">
                     <a-form-item  v-bind="validateInfos[cItem.name]" :label="cItem.text" :name="cItem.name" :label-col="cItem?.labelCol" :wrapper-col="cItem?.wrapperCol??{style: {width: '100%'}}" >
                           <InputItem v-model:value="formState[cItem.name]"
+                                     :ref="setRef(item.name)"
                                   :formData="colItem.children"
                                     :isDisabled=" (type == 'show' || (typeof cItem?.disabled === 'function' ? cItem?.disabled(formState, cItem, type)??isDisabled : cItem?.disabled??isDisabled))"
                                     :form-state="formState"
@@ -153,7 +156,15 @@ watch(() => props.formData, (d) => {
 }, { deep: true, immediate: true });
 
 
+// 定义 ref 对象
+const elementRefs = ref({});
 
+// 设置 ref 的函数
+const setRef = (key) => {
+  return (el) => {
+    elementRefs.value[key + 'Ref'] = el;
+  };
+};
 function initFun() {
   // 运行item初始化方法
   console.log(Data.value.values(), 133);
@@ -291,15 +302,30 @@ const treeToArr = (_tree: any[], _parent: any['options'] = [], selectData = []) 
 
 
 async function submit() {
-  console.log(formState,
-      Validate,)
+  let errList = [];
   const res = await validate().catch(err => {
-    console.log(err, 135);
+    errList = [...errList, ...err.errorFields]
     return err.errorFields.length == 0;
   })
   //onst res2 = await formRef.value.validate();
-  console.log(res, 138);
- return !!res;
+  const tableFormData = Array.from(Data.value.values()).filter(item => {
+    return item.type == 'table';
+  })
+  let errObj;
+  for (const tableFormDatum of tableFormData) {
+    let errMap;
+
+    if(tableFormDatum?.$attrs?.validConfig?.msgMode == 'full') {
+      errMap = await elementRefs.value[tableFormDatum.name +'Ref'].inputItemRef.aCardTable.fullValidate(true);
+    } else {
+      errMap = await elementRefs.value[tableFormDatum.name +'Ref'].inputItemRef.aCardTable.validate(true);
+    }
+    if (errMap && Object.keys(errMap).length > 0) {
+      errList.push({name: tableFormDatum.name, errors: errMap});
+    }
+  }
+  console.log(  errList, res);
+ return errList;
 
 }
 

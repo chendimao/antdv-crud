@@ -86,7 +86,7 @@ export const validateEndTime = async (anyData: Object) => {
 
 export const testSlot = (data) => {
     console.log(data, 23);
-      return Promise.reject('请输入testSlot');
+      return Promise.resolve();
 }
 
 export const testTableOption = (item, currentItem, data) => {

@@ -71,6 +71,29 @@
           切换form</a-button
         >
 
+        <a-button
+            @click="getFormData"
+            type="primary"
+            style="float: left; margin : 10px"
+            size="middle"
+            class="!px-2"
+        >
+
+          查看form formData</a-button
+        >
+
+
+        <a-button
+            @click="getTableFormData"
+            type="primary"
+            style="float: left; margin : 10px"
+            size="middle"
+            class="!px-2"
+        >
+
+          查看table formData</a-button
+        >
+
 
       </a-crud-search>
     </template>
@@ -156,6 +179,12 @@
         <a-input v-model:value="data.formState.testSlot"  @blur="data.validateFun(data.item.name, { trigger: 'blur' }).catch(() => {})"/>
       </template>
     </a-crud-form> -->
+
+    <a-modal  width="100%" wrap-class-name="full-modal"  v-model:open="openModal" title="formData" @ok="openMOdal = false">
+        <highlightjs style="width: 100%;height: 100%;" lang="json" :code="jsonFormData"></highlightjs>
+    </a-modal>
+
+
   </div>
   <!-- </PageWrapper> -->
 </template>
@@ -189,6 +218,8 @@ const {proxy } = getCurrentInstance() as any;
 
   const cardFormRef = ref();
   const methods = ref();
+  const openModal = ref(false);
+  const jsonFormData = ref('');
 
 const crudTableRef = ref();
   const test = ref(123);
@@ -325,8 +356,7 @@ function handleDataCallback(res) {
   }
 
   async function handleValidateTable(data) {
-    console.log(data, data.tableRef.validate);
-    const res  = await data.tableRef.validate(true);
+    const res  = await data.tableRef.fullValidate(true);
     console.log(res);
   }
 
@@ -400,6 +430,17 @@ await methods.value.mergeTableProps({api: web_alterationApply_getByList});
    methods.value.getSearch({...params, test234: 23424});
     //getData();
   }
+
+  function getTableFormData() {
+    jsonFormData.value = JSON.stringify(tableData);
+    openModal.value = true;
+  }
+
+  function getFormData() {
+    jsonFormData.value = JSON.stringify(retireData);
+    openModal.value = true;
+  }
+
 
 
 </script>

@@ -31,11 +31,13 @@ export default defineConfig({
         }
       },
     },
-    lib: {
-      entry: 'package/index.js',
-      name: 'antdv-crud',
-      fileName: (format) => `antdv-crud.${format}.js`,
-    },
+    lib: [
+      {
+        entry: 'package/index.js',
+        name: 'antdv-crud',
+        fileName: (format) => `antdv-crud.${format}.js`,
+      },
+    ],
     sourcemap: false,
   },
   resolve: {

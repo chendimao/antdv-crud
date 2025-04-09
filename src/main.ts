@@ -17,6 +17,15 @@ import VXETablePluginExportPDF from 'vxe-table-plugin-export-pdf';
 import { jsPDF } from 'jspdf';
 import 'ant-design-vue/dist/reset.css';
 
+import hljs from 'highlight.js/lib/core';
+import   'highlight.js/styles/atom-one-dark.css';
+import   'highlight.js/lib/common';
+import hljsVuePlugin from '@highlightjs/vue-plugin';
+
+import json from 'highlight.js/lib/languages/json';
+hljs.registerLanguage('json', json);
+// or
+// components: {JsonViewer}
 
 VXETable.use(VXETablePluginExportPDF, {
     jsPDF
@@ -73,4 +82,5 @@ antdCrud.config(app, {
 
 app.use(useTable);
 app.use(router);
+app.use(hljsVuePlugin)
 app.mount('#app');

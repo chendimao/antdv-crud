@@ -6,17 +6,18 @@
  
               <div class="input-content" >
 
-                            <component
-     :is="componentMap[props.item.type]"
-     v-if="componentMap[props.item.type]"
-     v-model="inputValue"
-     :item="props.item"
-     :form-state="props.formState"
-     :form-data="props.formData"
-     :is-disabled="isDisabled"
-     :validate-fun="validateFun"
-     :id="id"
- />
+                                <component
+                                      ref="inputItemRef"
+                                     :is="componentMap[props.item.type]"
+                                     v-if="componentMap[props.item.type]"
+                                     v-model="inputValue"
+                                     :item="props.item"
+                                     :form-state="props.formState"
+                                     :form-data="props.formData"
+                                     :is-disabled="isDisabled"
+                                     :validate-fun="validateFun"
+                                     :id="id"
+                                 />
 
                               <template v-else-if="item.type == 'origin'">
                                 {{inputValue}}
@@ -27,6 +28,7 @@
                               </template>
                               <template v-else-if="item.type == 'dict'">
                                 <a-crud-dict :api="item.api"
+                                             ref="inputItemRef"
                                              :params="item.params"
                                              :is-disabled="isDisabled"
                                              :sizeField="item.sizeField"
@@ -48,6 +50,7 @@
                               <template v-else-if="item.type == 'table'">
                                 <a-crud-table :isForm="true"
                                               v-if="formTable"
+                                              ref="inputItemRef"
                                               @register="formTable.register"
                                               @change="handleTableChange"
                                 >
@@ -182,6 +185,8 @@ const radioStyle = ref({
 });
 
 const formTable = ref();
+const inputItemRef = ref();
+
 
 const componentMap = {
   // 基础输入组件
@@ -327,6 +332,9 @@ const handleDictChange = (value, data) => {
 const handleTableChange = (value) => {
   emit('change', inputItem.value, value);
 }
+
+
+defineExpose({inputItemRef})
 
 
 </script>
