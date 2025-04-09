@@ -110,7 +110,8 @@ const base: inputFormModel[] = [
 
   { text: '数字输入框', name: 'szsrk', type: 'number',
     span: 12,
-    labelCol: { style: { width: '100px' } },
+    colStyle: {'color': 'red'},
+    labelCol: { style: { width: '100px'  } },
     rules: [  
      { required: true, message: '请输入单位名称'},
    {  validator: testValidate, trigger: 'blur'}

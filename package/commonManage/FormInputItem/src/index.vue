@@ -3,7 +3,7 @@
     <a-row  style="width: 100%;">
       <template v-for="item in Data.values()">
         <template v-if="item.type && (typeof item.show === 'function' ? item.show(formState, item, type)??true : item.show??true)">
-          <a-col :span="item.span"  v-if="!['grid', 'tabs'].includes(item.type)">
+          <a-col :span="item.span" :style="item?.colStyle??{}" :class="item?.colClass??{}" v-if="!['grid', 'tabs'].includes(item.type)">
           <a-form-item   v-bind="validateInfos[item.name]" :label="item.text" :name="item.name" :label-col="item.labelCol" :wrapper-col="item.wrapperCol??{style: {width: '100%'}}"
            >
             <InputItem v-model:value="formState[item.name]"
@@ -90,17 +90,19 @@
 </template>
 
 <script lang="ts" setup >
-import {reactive, defineProps, ref, watch, getCurrentInstance, onMounted, useSlots} from "vue";
+import {reactive, defineProps, ref, watch, getCurrentInstance, onMounted, useSlots, onUnmounted} from "vue";
 import InputItem from  '../../InputItem';
 import { Form } from "ant-design-vue";
 import {isArray, isObject, isString} from "../../../utils/is";
-
+import { loadStyle, removeStyle } from '../../../utils/loadStyle';
 const { proxy } = getCurrentInstance();
 const formRef = ref();
 const props = defineProps({
   isDisabled: { type: Boolean, default: false },
   visible: { type: Boolean },
   type: {type: String, default: ''},
+  css: {type: String, default: ''},
+  cssId: {type: String, default: 'form-css'},
   formData: { type: Object, default: () => { return {} } },
   formValidate: { type: Object, default: () => { return {} } },
   labelCol: { type: Object, default: () => { return {} } },
@@ -130,11 +132,19 @@ defineExpose({
   validateFields
 })
 const slots = useSlots();
+ 
+
+
 onMounted(() => {
   // initFun();
   console.log(slots, 131)
+  const css = ` .aCardFormItem {
+    ${props.css}
+  }`;
+  loadStyle(css, props.cssId);
 })
 
+ 
 
 watch(() => props.visible, (data) => {
   if (data) {
@@ -340,6 +350,13 @@ async function validateFields(field) {
 async function toField(field) {
   return scrollToField(field);
 }
+
+onUnmounted(() => {
+  if (props.css) {
+    removeStyle(props.cssId);
+  }
+ 
+})
 
 
 </script>

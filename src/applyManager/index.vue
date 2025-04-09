@@ -271,6 +271,16 @@ const crudTableRef = ref();
   const formProps2 =  ref({
       title: '用户管理',
       formData: retireData,
+      css: `
+
+
+         .ant-form-item-label >label  {
+          background:red;
+          color: white;
+          }
+
+
+      `,
       insertApi: web_alterationApply_insertOrUpdate,
       updateApi: web_alterationApply_insertOrUpdate,
       requestCallback: handleRequestCallback,
