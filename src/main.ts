@@ -1,8 +1,8 @@
 import { createApp } from 'vue'
 import './style.css'
 import App from './App.vue'
- import antdCrud from '../package/index.js';
- //import antdCrud from '../dist/antdv-crud.es.js';
+ import antdFormDesign from '../package/index.js';
+ import antdCrud from '../package/crud.js';
 import VXETable from "vxe-table";
 import 'vxe-table/lib/style.css';
 
@@ -50,27 +50,19 @@ app.use(antd);
 
 antdCrud.config(app, {
     tableConfig: {
-        pageSizeField: 'size',
-        pageField: 'page',
-        pagination: {
-            isPagination: true,
-            pageSizeField: 'size',
-            pageSizeOptions: ['10', '20', '30', '40', '50'],
-            showQuickJumper: true,
-            showSizeChanger: true,
-        },
         isToolBox: true,
         toolBox: {
             showType: 'button',
-            showExport: false,
         },
-        },
-    formConfig: {FooterCancelText: '退出', FooterSubmitText: '确定', },
-    searchConfig: {searchText: '搜索', resetText: '重载234'},
-    inputConfig: {showSearch: true, allowClear: true}
+    },
+    inputConfig: { showSearch: true, allowClear: true, isTrim: true }
+
 });
- app.use(antdCrud);
+app.use(antdCrud);
+
+ app.use(antdFormDesign);
 
 app.use(useTable);
 app.use(router);
 app.mount('#app');
+

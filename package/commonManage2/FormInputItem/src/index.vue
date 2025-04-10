@@ -1,10 +1,9 @@
 <template>
   <a-form class="aCardFormItem" :model="Data" labelWrap name="basic" ref="formRef" :rules="Validate" :label-col="labelCol" :wrapper-col="wrapperCol" autocomplete="off">
     <a-row :gutter="24">
-      <template v-for="item in Data"> 
-        <template v-if="item.type && (typeof item.show === 'function' ? item.show(formState, item, type)??true : item.show??true)">
-          <a-col :span="item.span"  v-if="item.type != 'grid'">
-          <a-form-item   v-bind="validateInfos[item.name]" :label="item.text" :name="item.name" :label-col="item.labelCol" :wrapper-col="item.wrapperCol??{style: {width: '100%'}}"
+      <template v-for="item in Data.values()">
+        <a-col :span="item.span" v-if="item.type && (typeof item.show === 'function' ? item.show(formState, item, type)??true : item.show??true)">
+          <a-form-item  v-bind="validateInfos[item.name]" :label="item.text" :name="item.name" :label-col="item.labelCol" :wrapper-col="item.wrapperCol??{style: {width: '100%'}}"
            >
             <InputItem v-model:value="formState[item.name]"
                        :isDisabled=" (type == 'show' || (typeof item?.disabled === 'function' ? item?.disabled(formState, item, type)??isDisabled : item?.disabled??isDisabled))"
@@ -18,38 +17,6 @@
 
           </a-form-item>
         </a-col>
-          <template v-else>
-              <a-col :span="item.span" > 
-                <a-row>
-                  <a-col :span="colItem.span" v-for="colItem in item.column">
-                
-                <template  v-for="cItem in colItem.children">
-                  <a-col  :span="cItem.span"  v-if="(typeof cItem?.show === 'function' ? cItem?.show(formState, cItem, type)??true : cItem?.show??true)">
-                    <a-form-item  v-bind="validateInfos[cItem.name]" :label="cItem.text" :name="cItem.name" :label-col="cItem?.labelCol" :wrapper-col="cItem?.wrapperCol??{style: {width: '100%'}}" >
-                          <InputItem v-model:value="formState[cItem.name]"
-                                  
-                                    :isDisabled=" (type == 'show' || (typeof cItem?.disabled === 'function' ? cItem?.disabled(formState, cItem, type)??isDisabled : cItem?.disabled??isDisabled))"
-                                    :form-state="formState"
-                                    :validateFun="validate"
-                                    @change="inputChange" :item="cItem" >
-                            <template v-for="(_, name) in $slots" #[name]="{data}">
-                              <slot :name="name" :data="data"    ></slot>
-                            </template>
-                          </InputItem>
-                        </a-form-item>      
-                    </a-col>
-                </template>
-                
-            
-              
-                </a-col>
-                </a-row>
-              </a-col>
-             
-            
-        </template>
-        </template>
-      
       </template>
 
       <slot></slot>
@@ -60,7 +27,7 @@
   </a-form>
 </template>
 
-<script lang="ts" setup >
+<script lang="ts" setup name="formInputItem">
 import {reactive, defineProps, ref, watch, getCurrentInstance, onMounted} from "vue";
 import InputItem from  '../../InputItem';
 import { Form } from "ant-design-vue";
@@ -96,7 +63,6 @@ const { validate, validateInfos, clearValidate , resetFields} = useForm(
 defineExpose({
   submit,
   clear,
-  formRef,
   validateFields
 })
 
@@ -128,8 +94,6 @@ watch(() => props.formData, (d) => {
 
 function initFun() {
   // 运行item初始化方法
-  console.log(Data.value);
-  
   Data.value.forEach(item => {
 
     if (item.computedFun) {
@@ -204,13 +168,6 @@ async function validateFields(field) {
 
 
 </script>
-
-<script lang="ts">
-export default {
-  name: 'aFormInputItem'
-}
-</script>
-
 
 <style lang="less"  >
  .aCardFormItem {

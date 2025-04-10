@@ -103,6 +103,8 @@
 
   import retireData from './data/form.tsx';
   import searchData from './data/search';
+  import jsonData from './data/test.js';
+  import antdCrud from 'antdv-crud';
   import {
     PlusOutlined,
 
@@ -112,7 +114,6 @@
 const {proxy } = getCurrentInstance() as any;
 
   import tableData from "./data/table";
-  import antdCrud from '../../package/index.js';
   import {formatDate} from "../../package/utils";
   import { jsPDF } from 'jspdf';
   const checkboxConfig = ref({
@@ -189,7 +190,7 @@ const crudTableRef = ref();
         form: {
           title: retireData.title,
           typeInfo: retireData.typeInfo,
-          formData: retireData.formData,
+          formData: [{formList:   (() => new Map(JSON.parse(jsonData).formData.map(item => [item.name, item]))), title: ''}],
           dataCallback: handleDataCallback,
           requestCallback: handleRequestCallback,
           name: 'bmgl',
@@ -211,7 +212,7 @@ function handleDataCallback(res) {
   }
 
  function handleAddShow(t) {
-
+   console.log([{formList:    new Map(JSON.parse(jsonData).formData.map(item => [item.name, item])), title: '测试数据'}], retireData.formData);
    mergeFormResetParams({ page: 234234});
    handleFormShow(t);
  }

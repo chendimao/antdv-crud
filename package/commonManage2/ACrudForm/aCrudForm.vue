@@ -6,9 +6,9 @@
         class="aCardForm"
         v-if="aCardFormRef.modalType == 'modal'"
         v-model:visible="aCardFormRef.visible"
-        :title="aCardFormRef?.title"
+        :title="aCardFormRef?.typeInfo[aCardFormRef?.type]?.title??aCardFormRef.title"
         :wrap-class-name="!aCardFormRef.width ? 'full-modal' : ''"
-        :confirmLoading="loading" 
+        :confirmLoading="loading"
         @ok.prevent="handleFormSubmit"
         @cancel="handleFormCancel"
         :width="aCardFormRef.width || '100%'"
@@ -18,18 +18,22 @@
           :style="{ maxHeight: 'calc(100vh - 210px)', height: aCardFormRef.height ? aCardFormRef.height : 'calc(100vh - 210px)' }"
           style="overflow: auto"
       >
-        <div class="mb-2 form-card"  > 
-          <a-card  :bordered="false"> 
+        <div class="mb-2 form-card" v-if="aCardFormRef.formData?.length > 0">
+          <a-card v-for="item in aCardFormRef.formData" :bordered="false">
+            <template #title v-if="item.title">
+              <div >{{ item.title }}</div>
+
+            </template>
             <FormInputItem
-                ref="formDataRef"
+                :ref="(el) => setItemRefs(el, item)"
                 :visible="aCardFormRef.visible"
                 v-model:formState="aCardFormRef.formState"
                 :is-disabled="isTableDisabled"
-                :formData="aCardFormRef.formData"
+                :formData="item.formList()"
                 :type="aCardFormRef.type"
                 :formValidate="validateList"
-                :labelCol="aCardFormRef?.labelCol??{ span: 8 }"
-                :wrapperCol="aCardFormRef?.labelCol??{ span: 16 }"
+                :labelCol="{ span: 8 }"
+                :wrapperCol="{ span: 16 }"
             >
               <template v-for="(_, name) in $slots" #[name]="{data}">
                   <slot v-if="name != 'default'" :name="name" :data="data"></slot>
@@ -52,9 +56,14 @@
       </div>
       <template #footer>
         <div :style="{ textAlign: aCardFormRef.footerPosition }">
+
+
           <slot :formState="aCardFormRef.formState" :loading="loading" :type="aCardFormRef.type">
             <!--          show 默认不显示确认取消按钮，除非手动配置显示-->
           <aCrudFormFooter :loading="loading" :aCardFormRef="aCardFormRef" @handleFormSubmit="handleFormSubmit" @handleFormCancel="handleFormCancel"/>
+
+
+
           </slot>
         </div>
       </template>
@@ -64,7 +73,7 @@
         class="aCardForm"
         :mask="aCardFormRef.mask"
         v-if="aCardFormRef.modalType == 'drawer'"
-          :title="aCardFormRef?.title"
+        :title="aCardFormRef?.typeInfo[aCardFormRef?.type]?.title??aCardFormRef.title"
         :width="aCardFormRef.width || '100%'"
         :visible="aCardFormRef.visible"
         :body-style="{ paddingBottom: '80px' }"
@@ -77,17 +86,17 @@
           style="overflow: auto"
       >
         <div class="mb-2 form-card" v-if="aCardFormRef.formData?.length > 0">
-          <a-card v-for="(item, index) in aCardFormRef.formData" :bordered="false">
+          <a-card v-for="item in aCardFormRef.formData" :bordered="false">
             <template #title v-if="item.title">
               <div >{{ item.title }}</div>
 
             </template>
             <FormInputItem
-                :ref="(el) => setItemRefs(el, item, index)"
+                :ref="(el) => setItemRefs(el, item)"
                 :visible="aCardFormRef.visible"
                 v-model:formState="aCardFormRef.formState"
                 :is-disabled="isTableDisabled"
-                :formData="item"
+                :formData="item.formList()"
                 :type="aCardFormRef.type"
                 :formValidate="validateList"
 
@@ -137,17 +146,17 @@
           style="overflow: auto"
       >
         <div class="mb-2 form-card" v-if="aCardFormRef.formData?.length > 0">
-          <a-card v-for="(item, index) in aCardFormRef.formData" :bordered="false">
+          <a-card v-for="item in aCardFormRef.formData" :bordered="false">
             <template #title v-if="item.title">
               <div >{{ item.title }}</div>
 
             </template>
             <FormInputItem
-                :ref="(el) => setItemRefs(el, item, index)"
+                :ref="(el) => setItemRefs(el, item)"
                 :visible="aCardFormRef.visible"
                 v-model:formState="aCardFormRef.formState"
                 :is-disabled="isTableDisabled"
-                :formData="item"
+                :formData="item.formList()"
                 :type="aCardFormRef.type"
                 :formValidate="validateList"
                 :labelCol="{ span: 8 }"
@@ -249,49 +258,30 @@ import {
 
     let formList = [];
     validateList.value = {};
-    console.log(aCardFormRef.value.formData);
+    aCardFormRef.value.formData.forEach((item) => {
+      formList = [...item.formList()];
+    });
+    ;
 
-    const flatFormData = (formData) => {
-      formData.forEach(item => {
-        if (item.type == 'grid' && item.column.length > 0) {
-          item.column.forEach(colItem => {
-            flatFormData(colItem.children);
-          })
-        } else {
-          formList.push(item);
-        }
-      })
-    }
-
-    flatFormData(aCardFormRef.value.formData);
-    // aCardFormRef.value.formData.forEach((item) => {
-    //   console.log(item);
-    //   formList.push(item);
-    // });
-    console.log(formList);
-    
     formList.forEach((item) => {
       //  初始化默认数据
-      resetForm.value[item['name']] = item?.value??'';
+      resetForm.value[item[0]] = item[1]?.value??'';
     });
     // 初始化数据
     aCardFormRef.value.formState = deepCopy(resetForm.value);
 
-    console.log(aCardFormRef.value, formList, itemRefs.value);
+    console.log(aCardFormRef.value, formList);
 
       formList.forEach((item) => {
      // 自定义validator的 传入当前表单值以便动态校验
-     item.rules ? validateList.value[item['name']] = item.rules.map(ruleItem => {
+     item[1].rules ? validateList.value[item[0]] = item[1].rules.map(ruleItem => {
        if (ruleItem.validator) {
          //console.log(aCardFormRef.value,ruleItem.validator, typeof ruleItem.validator);
-         // ruleItem.cardForm = aCardFormRef;
-         // ruleItem.refs = itemRefs;
-        // ruleItem.validator = (aCardFormRef, itemRefs) => ruleItem.validator({cardForm: aCardFormRef, refs: itemRefs});
-         console.log(ruleItem.validator);
-         ruleItem.validator = ruleItem.validator.bind(null, {cardForm: aCardFormRef, refs: itemRefs});
+         ruleItem.cardForm = aCardFormRef;
+         ruleItem.refs = itemRefs.value;
         //ruleItem.validator = ruleItem.validator.bind(undefined,{...this, cardForm: aCardFormRef, refs: itemRefs.value});
        }
-
+       console.log(ruleItem);
        return ruleItem;
      }) : '';
 
@@ -320,9 +310,9 @@ import {
     initForm();
   }
 
-  function setItemRefs(el, item, index) {
+  function setItemRefs(el, item) {
+    console.log(el);
     el && itemRefs.value.push(el);
-    console.log(el, item, index, itemRefs);
   }
 
 
@@ -337,8 +327,6 @@ import {
 
     itemRefs.value = [];
     setFormVisible(true);
-    console.log(aCardFormRef.value.visible);
-    
     aCardFormRef.value.type = t;
     if (t == 'insert') {
       aCardFormRef.value.formState = deepCopy(resetForm.value);

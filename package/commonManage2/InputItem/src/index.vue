@@ -15,7 +15,7 @@
 
                   <a-input
                       :disabled="isDisabled"
-                      size="default"
+                      :size="item.size??'default'"
                       :allowClear="item.allowClear??$crudGlobalInputConfig?.allowClear"
                       v-model:value="inputValue"
                       v-bind="item.$attrs"
@@ -32,11 +32,12 @@
                   <a-input-number
                       style="width: 100%;"
                       :disabled="isDisabled"
+                      :size="item.size??'default'"
                       :allowClear="item.allowClear??$crudGlobalInputConfig?.allowClear"
                       v-model:value="inputValue"
                       @blur="validateFun(item.name, { trigger: 'blur' }).catch(() => {})"
                       v-bind="item.$attrs"
-                        >
+                  >
                   <template #addonAfter v-if="item.afterText">
                       {{item.afterText}}
                   </template>
@@ -45,15 +46,15 @@
                 </template>
                 <template v-else-if="item.type == 'textarea'">
                   <a-textarea    :allowClear="item.allowClear??$crudGlobalInputConfig?.allowClear"  v-bind="item.$attrs" :disabled="isDisabled"
-                                size="default"
+                                 :size="item.size??'default'"
                                  @blur="validateFun(item.name, { trigger: 'blur' }).catch(() => {})"
-                                v-model:value="inputValue" :rows="item.rows" />
+                                 v-model:value="inputValue" :rows="item.rows" />
                 </template>
                 <template v-else-if="item.type == 'select'">
 
                   <a-select
 
-                      size="default"
+                      :size="item.size??'default'"
                       v-model:value="inputValue"
                       :allowClear="item.allowClear??$crudGlobalInputConfig?.allowClear"
                       :show-search="$crudGlobalInputConfig?.showSearch"
@@ -78,6 +79,7 @@
                       :allowClear="item.allowClear??$crudGlobalInputConfig?.allowClear"
                       :show-search="$crudGlobalInputConfig?.showSearch"
                       :disabled="isDisabled"
+                      :size="item.size??'default'"
                       :tree-data="item.option"
                       @change="handleTreeSelectChange"
                       @blur="validateFun(item.name, { trigger: 'blur' }).catch(() => {})"
@@ -91,7 +93,7 @@
                 <template v-else-if="item.type == 'cascader'">
                   <a-cascader
 
-                      size="default"
+                      :size="item.size??'default'"
                       v-model:value="inputValue"
                       :allowClear="item.allowClear??$crudGlobalInputConfig?.allowClear"
                       :show-search="$crudGlobalInputConfig?.showSearch ? {filter: cascaderFilterOption} : false"
@@ -116,7 +118,7 @@
                 <template v-else-if="item.type == 'checkbox'">
                   <a-select
 
-                      size="default"
+                      :size="item.size??'default'"
                       mode="multiple"
                       v-model:value="inputValue"
                       :disabled="isDisabled"
@@ -130,13 +132,13 @@
 
                 </template>
                 <template v-else-if="item.type == 'datetime'">
-                  <a-date-picker    
-                      style="width: 100%;" 
+                  <a-date-picker
+                      style="width: 100%;"
                       v-model:value="inputValue"
                       valueFormat="YYYY-MM-DD HH:mm:ss"
                       show-time format="YYYY-MM-DD HH:mm:ss"
                       :disabled="isDisabled"
-                      size="default"
+                      :size="item.size??'default'"
                       @blur="validateFun(item.name, { trigger: 'blur' }).catch(() => {})"
                       :allowClear="item.allowClear??$crudGlobalInputConfig?.allowClear"
                       v-bind="item.$attrs"/>
@@ -148,7 +150,7 @@
                       valueFormat="YYYY-MM-DD"
                       format="YYYY-MM-DD"
                       :disabled="isDisabled"
-                      size="default"
+                      :size="item.size??'default'"
                       @blur="validateFun(item.name, { trigger: 'blur' }).catch(() => {})"
                       :allowClear="item.allowClear??$crudGlobalInputConfig?.allowClear"
                       v-bind="item.$attrs"/>
@@ -161,7 +163,7 @@
                       format="YYYY"
                       picker="year"
                       :disabled="isDisabled"
-                      size="default"
+                      :size="item.size??'default'"
                       @blur="validateFun(item.name, { trigger: 'blur' }).catch(() => {})"
                       :allowClear="item.allowClear??$crudGlobalInputConfig?.allowClear"
                       v-bind="item.$attrs"/>
@@ -174,7 +176,7 @@
                       format="MM"
                       picker="month"
                       :disabled="isDisabled"
-                      size="default"
+                      :size="item.size??'default'"
                       @blur="validateFun(item.name, { trigger: 'blur' }).catch(() => {})"
                       :allowClear="item.allowClear??$crudGlobalInputConfig?.allowClear"
                       v-bind="item.$attrs"
@@ -186,7 +188,7 @@
                       :picker="item.picker"
                       v-model:value="inputValue"
                       :disabled="isDisabled"
-                      size="default"
+                      :size="item.size??'default'"
                       @blur="validateFun(item.name, { trigger: 'blur' }).catch(() => {})"
                       :format="item?.format??item.picker == 'year' ? 'YYYY' :item.picker == 'month' || item.picker == 'quarter' ? 'YYYY-MM' : 'YYYY-MM-DD' "
                       :valueFormat="item?.valueFormat??item.picker == 'year' ? 'YYYY' :item.picker == 'month' || item.picker == 'quarter' ? 'YYYY-MM' : 'YYYY-MM-DD' "
@@ -213,10 +215,10 @@
                 </template>
 
                 <template v-else-if="item.type == 'switch'">
-                  <a-switch      v-model:checked="inputValue"  :disabled="isDisabled"  :unCheckedValue="item.unCheckedValue" :checkedValue="item.checkedValue" :checked-children="item.checkedChildren" :un-checked-children="item.unCheckedChildren" v-bind="item.$attrs"/>
+                  <a-switch      v-model:checked="inputValue" :size="item.size??'default'" :disabled="isDisabled"  :unCheckedValue="item.unCheckedValue" :checkedValue="item.checkedValue" :checked-children="item.checkedChildren" :un-checked-children="item.unCheckedChildren" v-bind="item.$attrs"/>
                 </template>
                 <template v-else-if="item.type == 'radio'">
-                     <a-radio-group v-model:value="inputValue" :disabled="isDisabled"   v-bind="item.$attrs">
+                     <a-radio-group v-model:value="inputValue" :disabled="isDisabled" :size="item.size??'default'"  v-bind="item.$attrs">
 
                       <a-radio-button v-if="item.optionType == 'button'" :value="radio.value"   v-for="radio in item.option">{{ radio.name }}</a-radio-button>
                       <a-radio v-else :value="radio.value" :style="item.vertical === true ? radioStyle : {}" v-for="radio in item.option">{{ radio.name }}</a-radio>
@@ -234,6 +236,7 @@
                       show-overflow
                       :data="inputValue"
                       ref="xTable"
+                      :size="item.size??'default'"
                       :column-config="{resizable: true}"
                       :edit-config="!isDisabled ? {trigger: 'click', mode: 'cell'} : {}"
                       v-bind="item.$attrs"
@@ -441,14 +444,14 @@ const filterOption = (input: string, option: any, fieldNames: any) => {
 };
 const cascaderFilterOption = (inputValue, path) => {
 
-    return path.some(option => {
-      if (option.name) {
-        return option.name.toLowerCase().indexOf(inputValue.toLowerCase()) > -1
-      } else {
-        return false;
-      }
+  return path.some(option => {
+    if (option.name) {
+      return option.name.toLowerCase().indexOf(inputValue.toLowerCase()) > -1
+    } else {
+      return false;
+    }
 
-    });
+  });
 
 };
 
@@ -472,22 +475,22 @@ onMounted(() => {
 const handleDictChange = (value, data) => {
   console.log(value, data, 'dictchange')
 
-    emit('change', inputItem.value, value,  data);
-    return;
+  emit('change', inputItem.value, value,  data);
+  return;
 
 }
 const handleTreeSelectChange = (value, label, extra) => {
   console.log(value, label,  extra, 'tree change')
 
-    emit('change', inputItem.value, value,  extra.triggerNode?extra.triggerNode.props:extra);
-    return;
+  emit('change', inputItem.value, value,  extra.triggerNode?extra.triggerNode.props:extra);
+  return;
 
 }
 
 const handleSelectChange = (value, label) => {
   console.log(value, label, 'select change')
-    emit('change', inputItem.value, value, label);
-    return;
+  emit('change', inputItem.value, value, label);
+  return;
 
 }
 
@@ -571,7 +574,7 @@ function handleTableSelectChange(ev,op,  re) {
 </script>
 <script lang="ts">
 export default {
-  name: 'aCrudFormItem',
+  name: 'aFormItemInput',
 };
 </script>
 <style scoped lang="less">

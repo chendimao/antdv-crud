@@ -11,7 +11,8 @@
     "ant-design-vue": "^3",  
     "less": "^4.2.0",
     "vite": ">=2.9.1",
-    "vxe-table": "^4"
+    "vxe-table": "^4",
+    "antdv-crud": ">=0.0.99"
   }
   ```
 **npm**
