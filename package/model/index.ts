@@ -97,7 +97,7 @@ export function assertIsFunction(item: computedFun<'function'>): asserts item is
 }
 // 自定义类型断言 判断type为option时 必须参数是否存在
 export function assertIsOption(item: computedFun<'option'>): asserts item is computedFun<'option'> & { api: Function, params: object, relationField: { name: string, value: string }} {
-  if (!item.api || !item.params || !item.relationField) {
-    throw new Error( "type等于option时，必须要有api,params,relationField参数。");
+  if (!item.api || !item.params || !item.relationField || !item.field) {
+    throw new Error( "type等于option时，必须要有api,params, field参数。");
   }
 }

@@ -62,31 +62,44 @@ export default  [
         $attrs: { minWidth: '120px', showOverflow: true },
         option: [
           {
-            name: '主要症状',
+            label: '主要症状',
             value: 0,
           },
           {
-            name: '次要症状',
+            label: '次要症状',
             value: 1,
           },
         ],
       },
-      {
-        text: '权重',
-        type: 'text',
-        name: 'qq',
-        $attrs: { minWidth: '80px', showOverflow: true },
-      },
+    
       {
         text: '辨证要素积分量表体系分类编码',
         type: 'text',
         name: 'bm',
         $attrs: { minWidth: '250px', showOverflow: true },
+      },  {
+        text: '分组表头',
+        type: 'colgroup',
+        name: 'bm',
+        $attrs: { minWidth: '450px', showOverflow: true },
+        children: [
+          {
+            text: '分组表头1',
+            name: 'qq',
+            type: 'text',
+            $attrs: { minWidth: '100px', showOverflow: true },
+          }, {
+            text: '分组表头2',
+            name: 'bt2',
+            type: 'text',
+            $attrs: { minWidth: '100px', showOverflow: true },
+          },
+        ],
       },
       // {
       //   text: 'render',
       //   type: 'h',
-      //   h: (...data) => { 
+      //   h: (...data) => {
       //     return h('div', {style: {color: 'red'}},'render');
       //   },
       //   name: 'render',

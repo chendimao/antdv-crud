@@ -201,17 +201,17 @@ export const valueToName = (arr, value , targetKey, returnKey) => {
  * @param childrenField 树结构列表参数
  */
 
-export const getOptionList = async (api, params, relationField, childrenField = {field: 'children', name: 'name', value: 'value'}) => {
+export const getOptionList = async (api, params, relationField, childrenField = {field: 'children', label: 'label', value: 'value'}) => {
   console.log(api);
   const data = await useGetTable(api, params);
   return data.map((item) => {
     const returnValue = {};
     if (relationField) {
-      returnValue['name'] = item[relationField.name];
+      returnValue['label'] = item[relationField.label];
       returnValue['value'] = item[relationField.value];
 
       for (const relationFieldKey in relationField) {
-        if (relationFieldKey !== 'name' && relationFieldKey !== 'value') {
+        if (relationFieldKey !== 'label' && relationFieldKey !== 'label') {
           returnValue[relationFieldKey] = item[relationField[relationFieldKey]];
         }
       }
@@ -220,7 +220,7 @@ export const getOptionList = async (api, params, relationField, childrenField = 
       if (childrenField && item[childrenField['field']]) {
         returnValue[childrenField['field']] = item[childrenField['field']]?.map(child => {
           return {
-            name: child[childrenField['name']],
+            label: child[childrenField['label']],
             value: child[childrenField['value']]
           }
         })

@@ -59,148 +59,38 @@
                 :loading="tableLoading"
                v-bind="tablePropsRef"
                :data="tableData">
+      <table-column
+        :columns="tableColumn"
+        :table-data="tableData"
+        :table-methods="tableMethods"
+        :table-ref="aCardTable"
+        :is-sortable="tableTransferPropsRef.isSortable"
+        :size="tablePropsRef?.size"
+        :slot-type="slotType"
+      >
+        <template v-for="(_, name) in $slots" #[name]="slotData">
+          <slot :name="name" v-bind="slotData"></slot>
+        </template>
+      </table-column>
 
-          <template v-for="(item, index) in tableColumn.values()" :key="index" >
-            <vxe-column v-if="item.type === 'seq'"    v-bind="item.$attrs" :type="'seq'"  ></vxe-column>
-            <vxe-column v-else-if="item.type === 'checkbox'"    v-bind="item.$attrs"  :type="'checkbox'"   ></vxe-column>
-            <vxe-column v-else-if="item.type === 'radio'"  v-bind="item.$attrs"  :type="'radio'" ></vxe-column>
-            <vxe-column v-else-if="item.type === 'expand'"    v-bind="item.$attrs"   :type="'expand'" ></vxe-column>
-            <vxe-column  v-else   :sortable="tableTransferPropsRef.isSortable !== false && item.sortable !== false"   :field="item.name" :title="item.text" :width="item.width" v-bind="item.$attrs" >
-              <template #header>
-                <span>{{item.fun ? item.fun( tableColumn, tableData) : item.text}}</span>
-              </template>
-
-
-              <template v-if="slotType !== 'default'" #default="{ row, $rowIndex }">
-                <span v-if="['text', 'search', 'number', 'textarea', 'integer', 'float', 'password', 'date', 'time', 'datetime', 'week', 'month', 'quarter', 'year'].includes(item.type)">{{ row[item.name] }}</span>
-                <span v-else-if="item.type == 'select'">
-                    <span v-if="item.option">{{
-                        valueToName(item.option, row[item.name], 'value', 'name')
-                      }}</span>
-                    <span v-else>{{ row[item.name] }}</span>
-                  </span>
-                <span v-else-if="item.type == 'formCheckbox'">
-                    <span v-if="item.option">{{
-                        valueToName(item.option, row[item.name], 'value', 'name').join(item?.split??',')
-                      }}</span>
-                    <span v-else>{{ row[item.name] }}</span>
-                  </span>
-                <span v-else-if="item.type == 'formRadio'">
-                    <span v-if="item.option">{{
-                        valueToName(item.option, row[item.name], 'value', 'name')
-                      }}</span>
-                    <span v-else>{{ row[item.name] }}</span>
-                  </span>
-                <span v-else-if="item.type == 'switch'">
-                    <span  >{{
-                        row[item.name] === item.openValue ?
-                            item.openLabel :
-                            row[item.name] === item.closeValue ? item.closeLabel: ''
-                      }}</span>
-
-                  </span>
-                <span v-else-if="item.type == 'h'">
-                    <div v-render="() => item.h(row, item, tableMethods, this)">
-                    </div>
-                </span>
-
-                <span v-else-if="item.type == 'slot'">
-                     <slot   :name="item.name" :row="row" :data="{row, rowIndex: $rowIndex, tableData, tableRef: aCardTable}"></slot>
-
-
-                </span>
-                <span v-else-if="item.type == 'rate'">
-                     {{row[item.name]}}
-                </span>
-                <span v-else-if="item.type == 'slider'">
-                     {{row[item.name]}}
-                </span>
-                <span v-else-if="item.type == 'textarea'">
-                     {{row[item.textarea]}}
-                </span>
-                <span v-else-if="item.type == 'upload'">
-                    <vxe-upload
-                        show-download-button
-                        readonly
-                        v-model="row[item.name]"
-                        :download-method="item.$formAttrs.downloadMethod">
-                      </vxe-upload>
-                </span>
-              </template>
-              <template #[slotType]="{row, $rowIndex}">
-                <vxe-input
-                    v-if="['text', 'search', 'number', 'textarea', 'integer', 'float', 'password', 'date', 'time', 'datetime', 'week', 'month', 'quarter', 'year'].includes(item.type)"
-                    v-model="row[item.name]" :type="item.type" :size="tablePropsRef?.size??'mini'"   v-bind="{...item.$formAttrs, ...eventHandlers(item)}"></vxe-input>
-
-                <vxe-select
-                    v-else-if="item.type == 'select'"
-                    v-model="row[item.name]" transfer :size="tablePropsRef?.size??'mini'"  v-bind="item.$formAttrs">
-                  <vxe-option v-for="oItem in item.option" :key="oItem.value" :value="oItem.value" :label="oItem.name"></vxe-option>
-                </vxe-select>
-
-                <vxe-checkbox-group
-                    v-else-if="item.type == 'formCheckbox'"
-                    v-model="row[item.name]" v-bind="item.$formAttrs">
-                  <vxe-checkbox  v-for="oItem in item.option" :key="oItem.value" :label="oItem.value" :content="oItem.name"></vxe-checkbox>
-                </vxe-checkbox-group>
-
-
-                <vxe-radio-group
-                    v-else-if="item.type == 'formRadio'"
-                    v-model="row[item.name]" v-bind="item.$formAttrs">
-                  <vxe-radio  v-for="oItem in item.option" :key="oItem.value" :label="oItem.value" :content="oItem.name"></vxe-radio>
-                </vxe-radio-group>
-
-                <vxe-switch
-                    v-else-if="item.type == 'switch'"
-                    v-model="row[item.name]"
-                    :open-label="item?.openLabel??'开启'"
-                    :close-label="item?.closeLabel??'关闭'"
-                    :open-value="item?.openValue??1"
-                    :close-value="item?.closeValue??0"
-                    v-bind="item.$formAttrs"
-                ></vxe-switch>
-                <vxe-rate v-else-if="item.type == 'rate'"  v-model="row[item.name]"  v-bind="item.$formAttrs"></vxe-rate>
-                <vxe-slider  v-else-if="item.type == 'slider'"  v-model="row[item.name]"  v-bind="item.$formAttrs"></vxe-slider>
-                <vxe-textarea  v-else-if="item.type == 'textarea'"  v-model="row[item.name]"  v-bind="item.$formAttrs"></vxe-textarea>
-                <vxe-upload  v-else-if="item.type == 'upload'"  v-model="row[item.name]"  v-bind="item.$formAttrs"></vxe-upload>
-
-                <span v-else-if="item.type == 'slot'">
-                    <slot   :name="item.name" :row="row" :data="{row, rowIndex: $rowIndex, tableData, tableRef: aCardTable}"></slot>
-
-                </span>
-              </template>
-
-            </vxe-column>
-
-          </template>
-
-
-      <vxe-column field="a" title="操作" fixed="right" v-if="tableTransferPropsRef.isMenu"    :width="tableTransferPropsRef.menuWidth" >
+      <table-operation-column
+        v-if="tableTransferPropsRef.isMenu"
+        :is-menu="tableTransferPropsRef.isMenu"
+        :menu-width="tableTransferPropsRef.menuWidth"
+        :is-view="tableTransferPropsRef.isView"
+        :is-edit="tableTransferPropsRef.isEdit"
+        :view-icon="tableTransferPropsRef.viewIcon"
+        :edit-icon="tableTransferPropsRef.editIcon"
+        :view-text="tableTransferPropsRef.viewText"
+        :edit-text="tableTransferPropsRef.editText"
+        :form-methods="tableTransferPropsRef.formMethods"
+        @view="handleFormShow('show', $event)"
+        @edit="handleFormShow('update', $event)"
+      >
         <template #default="{ row }">
-          <a-button type="link" v-if="tableTransferPropsRef.isView" @click="handleFormShow('show', row)">
-            <template #icon v-if="tableTransferPropsRef.viewIcon !== undefined">
-              <component v-if="tableTransferPropsRef.viewIcon !== false && typeof tableTransferPropsRef.editIcon === 'function'" :is="tableTransferPropsRef.viewIcon"></component>
-            </template>
-            <template #icon v-else>
-             <EyeOutlined />
-            </template>
-            {{ tableTransferPropsRef?.viewText??'查看' }}</a-button>
-          <a-button type="link" v-if="tableTransferPropsRef.isEdit" @click="handleFormShow('update', row)">
-            <template #icon v-if="tableTransferPropsRef.editIcon !== undefined">
-              <component v-if="tableTransferPropsRef.editIcon !== false && typeof tableTransferPropsRef.editIcon === 'function'" :is="tableTransferPropsRef.editIcon"></component>
-            </template>
-            <template #icon v-else>
-              <EditOutlined />
-            </template>
-            {{ tableTransferPropsRef?.editText??'编辑' }}
-          </a-button>
-
           <slot :row="row"></slot>
         </template>
-
-
-      </vxe-column>
+      </table-operation-column>
     </vxe-table>
     <div style="text-align: right;padding: 10px 0px;"   v-if="tableTransferPropsRef?.pagination?.isPagination !== false  ">
       <a-pagination
@@ -227,6 +117,8 @@ import {
   EditOutlined, DownloadOutlined, PrinterOutlined, ReloadOutlined, SettingOutlined
 } from '@ant-design/icons-vue';
 import {assertIsFunction, assertIsOption, computedFun, isComputedFunction} from "../model";
+import TableOperationColumn from './components/TableOperationColumn.vue';
+import TableColumn from './components/TableColumn.vue';
 const { proxy } = getCurrentInstance();
 
  const emits = defineEmits([ 'register', 'change']);
@@ -325,7 +217,7 @@ function initFun() {
           assertIsFunction(item);
           item.fun( tableColumn.value, item, tableData);
         } else  {
-          assertIsOption(item);
+        
 
             let params = item.params;
             if(item.dynamicParams) {
@@ -927,7 +819,7 @@ export default {
   name: 'aCrudTable',
 };
 </script>
-<style  lang="less">
+<style lang="less">
 .vxeTableData {
   .headerCellClassName {
     background-color: #f7f7f7;
@@ -937,9 +829,5 @@ export default {
   .cellClassName {
     color: black;
   }
-
-
 }
-
-
 </style>

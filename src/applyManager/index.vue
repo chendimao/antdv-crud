@@ -100,7 +100,13 @@
     <a-row>
       <a-col :span="24">
         字典弹窗单独使用：
-        <a-crud-dict style="width:200px;" :immediate="false" @change="changeDict" :api="GetDiagnosis" :params='{"page":1,"rows":30,"limit":30,"code":1}' searchField="dmmc" />
+        <a-crud-dict style="width:200px;" :immediate="false" @change="changeDict" :api="GetDiagnosis"
+                     :tableField="[
+                 { field: 'a3', title: '名称', width: 150 },
+                  { field: 'a1', title: '编码', width: 150 },
+                  ]"
+                     :params="{ page: 1, rows: 30, limit: 30, field: '', tableName: 'generate1' }"
+                     searchField="field" selectField="a1"/>
         <div class="mr-0 overflow-hidden bg-white vben-basic-table vben-basic-table-form-container">
           <a-crud-table
             @register="testUseTable.register"
@@ -231,7 +237,7 @@ const crudTableRef = ref();
      mockData: mockData,
     isMenu: true,
     menuWidth: 300,
-    isView: true, 
+    isView: true,
     isEdit: false,
     beforeCallback: (props) => {
       props.params.userId = 'sfadfas';
@@ -256,17 +262,17 @@ const crudTableRef = ref();
     },
   });
 
-  
+
   const formProps =  ref({
-      title: '用户管理', 
+      title: '用户管理',
       formData: retireData,
       insertApi: web_alterationApply_insertOrUpdate,
       updateApi: web_alterationApply_insertOrUpdate,
       requestCallback: handleRequestCallback,
-      name: 'bmgl', 
+      name: 'bmgl',
 
       /// visible: true,
-       
+
     });
   const formProps2 =  ref({
       title: '用户管理',
@@ -274,9 +280,13 @@ const crudTableRef = ref();
       css: `
 
 
-         .ant-form-item-label >label  {
+         .szsrk .ant-form-item-label >label  {
           background:red;
           color: white;
+          }
+          .table tr  {
+            background: rgba(255,0,0,0.5) !important;
+            color: white;
           }
 
 
@@ -291,13 +301,13 @@ const crudTableRef = ref();
     });
     const searchProps =  {
       formData: searchData,
-    } ; 
+    } ;
     const testUseForm = new antdCrud.useForm(formProps.value);
     const testUseForm2 = new antdCrud.useForm(formProps2.value);
     const testUseTable = new antdCrud.useTable(tableProps.value);
     const testUseSearch = new antdCrud.useSearch(searchProps );
     console.log(testUseForm, testUseTable.tableMethods, testUseSearch);
-    
+
 onMounted(async () => {
   methods.value  = new antdCrud.useCrud({form: testUseForm, table: testUseTable, search: testUseSearch}).methods;
   console.log(methods, 240);

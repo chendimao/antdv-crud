@@ -23,3 +23,26 @@ features:
     details: 插件提供了多样化的配置选项，允许开发人员根据实际需求进行定制，满足不同项目的需求。
 ---
 
+---
+title: Antdv-Crud
+---
+
+# Antdv-Crud
+
+基于 Ant Design Vue 的 CRUD 组件库
+
+## 文档版本
+
+- [V2 文档](/v2/) (推荐)
+- [V1 文档](/v1/)
+
+## 快速开始
+
+```bash
+npm install antdv-crud
+# 或
+yarn add antdv-crud
+```
+
+[查看完整文档](/v2/)
+

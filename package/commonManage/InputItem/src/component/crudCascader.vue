@@ -7,7 +7,7 @@
         :show-search="$crudGlobalInputConfig?.showSearch ? {filter: cascaderFilterOption} : false"
         :disabled="isDisabled"
         :multiple="!!item.multiple"
-        :options="item.option"
+        :options="item?.$attrs?.options??item?.option"
         style="width: 100%;border: 0;"
         :fieldNames="item.fieldNames??{label: 'name', value: 'value'}"
         v-bind="{
@@ -106,8 +106,8 @@
 const cascaderFilterOption = (inputValue, path) => {
 
 return path.some(option => {
-  if (option.name) {
-    return option.name.toLowerCase().indexOf(inputValue.toLowerCase()) > -1
+  if (option.label) {
+    return option.label.toLowerCase().indexOf(inputValue.toLowerCase()) > -1
   } else {
     return false;
   }

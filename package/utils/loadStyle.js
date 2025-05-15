@@ -1,5 +1,3 @@
-import less from 'less';
-
 /**
  * 动态加载 CSS 样式
  * @param {string} cssText - CSS 或 Less 样式字符串
@@ -10,14 +8,17 @@ import less from 'less';
 export async function loadStyle(cssText, id, isLess = false) {
   let finalCssText = cssText;
 
-  // 如果是 Less，先编译
+  // 如果是 Less，尝试编译
   if (isLess) {
     try {
+      // 动态导入 less
+      const less = await import('less');
       const result = await less.render(cssText);
       finalCssText = result.css;
     } catch (error) {
-      console.error('Less 编译错误:', error);
-      throw error;
+    //  console.warn('Less 编译失败，将使用原始 CSS 样式:', error);
+      // 如果 Less 编译失败，使用原始 CSS
+      finalCssText = cssText;
     }
   }
 

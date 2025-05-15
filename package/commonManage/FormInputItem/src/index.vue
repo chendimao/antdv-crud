@@ -3,7 +3,7 @@
     <a-row  style="width: 100%;">
       <template v-for="item in Data.values()">
         <template v-if="item.type && (typeof item.show === 'function' ? item.show(formState, item, type)??true : item.show??true)">
-          <a-col :span="item.span" :style="item?.colStyle??{}" :class="item?.colClass??{}" v-if="!['grid', 'tabs'].includes(item.type)">
+          <a-col :span="item.span"   :class="item.name" v-if="!['grid', 'tabs'].includes(item.type)">
           <a-form-item   v-bind="validateInfos[item.name]" :label="item.text" :name="item.name" :label-col="item.labelCol" :wrapper-col="item.wrapperCol??{style: {width: '100%'}}"
            >
             <InputItem v-model:value="formState[item.name]"
@@ -20,11 +20,11 @@
 
           </a-form-item>
         </a-col>
-          <template v-if="item.type == 'grid'">
-              <a-col :span="item.span" > 
+          <template v-else-if="item.type == 'grid'">
+              <a-col :span="item.span" >
                 <a-row>
                   <a-col :span="colItem.span" v-for="colItem in item.columns">
-                
+
                 <template  v-for="cItem in colItem.children">
                   <a-col  :span="cItem.span"  v-if="(typeof cItem?.show === 'function' ? cItem?.show(formState, cItem, type)??true : cItem?.show??true)">
                     <a-form-item  v-bind="validateInfos[cItem.name]" :label="cItem.text" :name="cItem.name" :label-col="cItem?.labelCol" :wrapper-col="cItem?.wrapperCol??{style: {width: '100%'}}" >
@@ -39,20 +39,20 @@
                               <slot :name="name" :data="data"    ></slot>
                             </template>
                           </InputItem>
-                        </a-form-item>      
+                        </a-form-item>
                     </a-col>
                 </template>
-                
-            
-              
+
+
+
                 </a-col>
                 </a-row>
               </a-col>
-             
-            
+
+
         </template>
         </template>
-          <template v-if="item.type == 'tabs'">
+          <template v-else-if="item.type == 'tabs'">
             <a-tabs  v-model:activeKey="item.activeKey" style="width: 100%;" v-bind="item.$attrs">
                   <a-tab-pane :key="colItem.key" :tab="colItem.title" v-for="colItem in item.columns">
 
@@ -78,7 +78,7 @@
             </a-tabs>
 
         </template>
-      
+
       </template>
 
       <slot></slot>
@@ -141,7 +141,7 @@ onMounted(() => {
   const css = ` .aCardFormItem {
     ${props.css}
   }`;
-  loadStyle(css, props.cssId);
+  loadStyle(css, props.cssId, true);
 })
 
  
@@ -160,9 +160,13 @@ watch(() => props.formState, (data) => {
 }, { deep: true, immediate: true });
 
 
-watch(() => props.formData, (d) => { 
-  Data.value = new Map(d.map(item => [item.name, item]));
-    
+watch(() => props.formData, (d) => {
+  console.log(d);
+  Data.value = new Map(d.map(item => {
+    const id = `${item.type}_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+    return [item.name, {...item, id}]
+  }));
+
 }, { deep: true, immediate: true });
 
 

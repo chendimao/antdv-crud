@@ -1,15 +1,14 @@
 <template>
   <a-auto-complete
     :disabled="isDisabled"
-    :allowClear="item.allowClear??$crudGlobalInputConfig?.allowClear"
     :autofocus="item.autofocus"
     :backfill="item.backfill"
     :default-active-first-option="item.defaultActiveFirstOption"
     :default-open="item.defaultOpen"
     :dropdown-match-select-width="item.dropdownMatchSelectWidth"
     :filter-option="item.filterOption"
-    :options="item.option"
-    :placeholder="item.placeholder"
+    :options="item?.$attrs?.options??item?.option"
+    :placeholder="item?.placeholder"
     :size="item.size"
     v-model:value="inputValue"
     v-bind="{

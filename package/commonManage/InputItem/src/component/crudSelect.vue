@@ -4,9 +4,8 @@
     :disabled="isDisabled"
     :allowClear="item.allowClear??$crudGlobalInputConfig?.allowClear"
     :show-search="$crudGlobalInputConfig?.showSearch"
-    :options="item.option"
+    :options="item?.$attrs?.options??item?.option"
     :filter-option="filterOption"
-    :fieldNames="{label: 'name', value: 'value'}"
     v-model:value="inputValue"
     v-bind="{
       ...item.$attrs,
@@ -111,7 +110,7 @@ const inputValue = computed({
 });
 
 const filterOption = (input: string, option: any) => {
-  return option.name.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+  return option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
 };
 onMounted(() => {
   if (props.item?.$attrs?.onMounted) {

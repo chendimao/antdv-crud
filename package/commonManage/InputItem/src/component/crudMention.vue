@@ -5,7 +5,7 @@
     :prefix="item.prefix"
     :split="item.split"
     :placement="item.placement"
-    :options="item.option"
+    :options="item?.$attrs?.options??item?.option"
     :loading="item.loading"
     :rows="item.rows"
     :get-popup-container="item.getPopupContainer"

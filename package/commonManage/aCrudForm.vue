@@ -167,11 +167,11 @@ import {
   useSlots
 } from 'vue';
   import { Form, message } from 'ant-design-vue';
-  import FormInputItem from '../FormInputItem/';
-  import {deepCopy} from "../../utils";
-  import aCrudFormFooter from './component/aCrudFormFooter.vue';
-import { isFunction } from '../../utils/is';
-import inputItem from "../InputItem";
+  import FormInputItem from './FormInputItem';
+  import {deepCopy} from "../utils";
+  import aCrudFormFooter from './components/aCrudFormFooter.vue';
+import { isFunction } from '../utils/is';
+import inputItem from "./InputItem";
 
   const { proxy } = getCurrentInstance();
  
@@ -238,8 +238,8 @@ import inputItem from "../InputItem";
 
     const flatFormData = (formData) => { 
       formData.forEach(item => {
-        if (item.type == 'grid' && item.column.length > 0) {
-          item.column.forEach(colItem => {
+        if ((item.type == 'grid' || item.type == 'tabs') && item.columns.length > 0) {
+          item.columns.forEach(colItem => {
             flatFormData(colItem.children);
           })
         } else {
@@ -260,11 +260,9 @@ import inputItem from "../InputItem";
     });
     // 初始化数据
     aCardFormRef.value.formState = deepCopy(resetForm.value);
-
-
       formList.forEach((item) => {
-     // 自定义validator的 传入当前表单值以便动态校验
-     item.rules ? validateList.value[item['name']] = item.rules.map(ruleItem => {
+     // 自定义validator的 传入当前表单值以便动态校验 item.rules有值
+     item.rules && (typeof item.show === 'function' ? item.show(aCardFormRef.value.formState, item, aCardFormRef.value.type)??true : item.show??true) ? validateList.value[item['name']] = item.rules.map(ruleItem => {
        if (ruleItem.validator) {
          //console.log(aCardFormRef.value,ruleItem.validator, typeof ruleItem.validator);
          // ruleItem.cardForm = aCardFormRef;

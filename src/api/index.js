@@ -12,6 +12,10 @@ export const ywwjPageList = function (params) {
 export const summaryPageList = function (params) {
     return http.post({url: '/web/zybzysbm/getZybzysbmList', params})
 }
+// 定期总结
+export const getSortName = function (params) {
+    return http.post({url: '/aprescription/getSortName', params})
+}
 
 // Copy的代码作参考
 // 保存都是post
@@ -33,5 +37,5 @@ export const web_archivesManagement_getByGb147 = function (params) {
     return http.post( {url: '/web/archivesManagement/getByGb147', params})
 }
 export const GetDiagnosis = function (params) {
-    return http.post( {url: '/syndromeDifferentiation/getGb17List', params})
+    return http.post( {url: '/web/tableManagement/getByTableName', params})
 }

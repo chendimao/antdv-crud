@@ -1,26 +1,28 @@
 <template>
-  <vxe-pulldown ref="pulldownRef"  style="width: 100%;"  popup-class-name="dropdown-table" transfer>
-    <template #default>
-      <a-input v-model:value="searchName"
-               autocomplete="off"
-               :disabled="isDisabled"
-               @keydown="handleKeydown"
-                @blur="blurEvent"
-               allow-clear
-               @change="handleChange"
-               @focus="focusEvent"
-               v-bind="dictProps"
-      ></a-input>
-    </template>
 
-    <template #dropdown>
-      <div class="dropdown-table-body">
+    <vxe-pulldown ref="pulldownRef" id="dictPulldown"  style="width: 100%;"   popup-class-name="dropdown-table" :transfer="transfer" v-bind="attrs">
+      <template #default>
+        <a-input v-model:value="searchName"
+                 autocomplete="off"
+                 id="dictInput"
+                 :disabled="isDisabled"
+                 @keydown="handleKeydown"
+                 @blur="blurEvent"
+                 allow-clear
+                 @change="handleChange"
+                 @focus="focusEvent"
+                 v-bind="dictProps"
+        ></a-input>
+      </template>
+
+      <template #dropdown>
+        <div class="dropdown-table-body" id="dictTable" style="z-index: 999;">
           <vxe-table
               border
               show-overflow
               :header-cell-class-name="() => 'headerCellClassName'"
               :cell-class-name="() => 'cellClassName unitClassName'"
-              
+
               resizable
               size="mini"
               ref="xTable1"
@@ -39,19 +41,19 @@
 
 
           </vxe-table>
-        <div style="text-align: right;padding: 10px;border-bottom: 1px solid #eee;"  v-if="showPage"  >
-          <a-pagination
-              size="small"   :show-size-changer="false"
-              show-less-items
-              :showTotal="total => `共${total}条`"
-              v-model:current="currentPage"
-              :total="tableTotal"
-              :defaultPageSize="pageSize"
-              v-model:pageSize="pageSize"
-              @change="pageChangeEvent"
-          />
-        </div>
-        <div style="padding: 10px;font-size: 12px;"  v-if="showHistory && historyData.length > 0"  >
+          <div style="text-align: right;padding: 10px;border-bottom: 1px solid #eee;"  v-if="showPage"  >
+            <a-pagination
+                size="small"   :show-size-changer="false"
+                show-less-items
+                :showTotal="total => `共${total}条`"
+                v-model:current="currentPage"
+                :total="tableTotal"
+                :defaultPageSize="pageSize"
+                v-model:pageSize="pageSize"
+                @change="pageChangeEvent"
+            />
+          </div>
+          <div style="padding: 10px;font-size: 12px;"  v-if="showHistory && historyData.length > 0"  >
             <span>查询历史：</span>
             <span style="cursor: pointer; width: 100px;">
               <span style="color: dodgerblue; " v-for="(item, index) in historyData" @click="handleHistoryData(item)" >
@@ -59,10 +61,11 @@
                 <span v-if="index != historyData.length -1">&nbsp;|&nbsp;</span>
               </span>
             </span>
+          </div>
         </div>
-      </div>
-    </template>
-  </vxe-pulldown>
+      </template>
+    </vxe-pulldown>
+
 
 </template>
 
@@ -77,14 +80,17 @@ const props = defineProps({
   params: {required: true, type: Object},
   showPage: {type: Boolean, default: true},
   isDisabled: {type: Boolean, default: false},
+  transfer: {type: Boolean, default: false},
   immediate: {type: Boolean, default: true},
   showHistory: {type: Boolean, default: true},
    pageField: {type: String, default: 'page'},
    sizeField: {type: String, default: 'limit'},
   name: {type: String, default: 'dmmc'},
+  attrs: {type: Object, default: () => ({})},
   defaultValue: {type: String, default: ''},
   debounceTime: {type: String, default: '200'},
   searchField: {type: String, default: 'dmmc'},
+  selectField: {type: String, default: 'dmmc'}, // 主要用于复杂的回显字段，输入框的回显字段优先级：  selectField > searchField > name
 
   callbackFun: {},
   tableField: {type: Array, default: () => [{field: 'dmmc', title: '名称', width: 100}, {field: 'dm', title: '代码', width: 100}, {field: 'icd10', title: 'icd10', width: 120}]},
@@ -100,8 +106,17 @@ onMounted(()=>{
   searchNameTmp.value =  searchName.value = props.modelValue;
   if (props.immediate) {
     getData();
+  }
 
-  } 
+  // Add click event listener to document to handle clicks outside the component
+  window.addEventListener('click', (ev) => {
+    const pulldown = pulldownRef.value;
+    const target = ev.target as HTMLElement;
+    // Check if click is outside the component
+    if (pulldown && !pulldown.$el.contains(target)) {
+      pulldown.hidePanel();
+    }
+  });
 })
 
 
@@ -133,20 +148,15 @@ const focusEvent = () => {
     if (tableData.value.length === 0 && searchName.value?.length > 0) {
       getData();
     }
+
   }   
 }
 const blurEvent = () => {
   const $pulldown = pulldownRef.value
-  console.log($pulldown);
  if (!$pulldown.isPanelVisible()) {
   searchName.value = searchNameTmp.value;
  }
-  console.log(searchNameTmp.value);
-  
-  // if ($pulldown && $pulldown.isPanelVisible()) {
-  //   $pulldown.hidePanel();
 
-  // }
 }
 watch(() => props.modelValue, (data) => { 
    searchName.value = data; 
@@ -212,16 +222,19 @@ const pageChangeEvent = (ev) => {
 
 function handleSubmit(ev) {
   pulldownRef.value.togglePanel();
-  searchName.value = ev.row[props.searchField??props.name];
+  searchName.value = ev.row[props.selectField??props.searchField??props.name];
   currentData.value = ev;
   if (!historyData.value.includes(searchName.value)) {
     historyData.value.push(searchName.value);
     historyData.value = historyData.value.splice(-3);
   }
   searchNameTmp.value = searchName.value;
+  console.log(ev, searchName.value, currentData.value, tableData)
   emits('change',  searchName.value, currentData.value, tableData);
 
 }
+
+
 
 function handleChange(ev) {
   console.log(ev);

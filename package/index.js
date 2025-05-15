@@ -1,8 +1,8 @@
-import aCrudForm from "./commonManage/ACrudForm/aCrudForm.vue";
+import aCrudForm from "./commonManage/aCrudForm.vue";
 import aCrudTable from "./commonManage/aCrudTable.vue";
 import aCrudSearch from "./commonManage/aCrudSearch.vue";
  import crudUtil from "./utils/index.ts";
-import './utils/common.less'; 
+import './utils/common.css';
 import useForm from './hooks/useForm.ts';
 import useTable from './hooks/useTable.ts';
 import useSearch from './hooks/useSearch.ts';
@@ -30,7 +30,7 @@ const install = function(Vue, config = undefined) {
       mounted: async (el, binding) => {
         if (typeof binding.value === 'function' && el) {
           const result = await binding.value();
-            console.log(result);
+            console.log(result, el);
           if (result) {
             el.innerHTML = '';
               setTimeout(() => {

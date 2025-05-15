@@ -1,4 +1,5 @@
 <template>
+  <a-form-item-rest>
   <a-calendar
     :disabled="isDisabled"
     :fullscreen="item.fullscreen"
@@ -21,6 +22,7 @@
       <div v-render="() => slot(item, formState, formData,  data)"></div>
     </template>
   </a-calendar>
+  </a-form-item-rest>
 </template>
 
 <script lang="ts" setup>

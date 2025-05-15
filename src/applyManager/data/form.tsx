@@ -1,6 +1,6 @@
 // 用户管理
 import {h} from 'vue';
-import { web_alterationApply_insertOrUpdate,GetDiagnosis, web_alterationApply_getByList, web_archivesManagement_getManagement_details } from '../../api/index';
+import { web_alterationApply_insertOrUpdate,GetDiagnosis, getSortName, web_alterationApply_getByList, web_archivesManagement_getManagement_details } from '../../api/';
 import http from '../../util/http';
 import {getOptionList, valueToName} from "../../../package/utils";
 import {web_archivesManagement_getByGb25, web_archivesManagement_getByGb147} from '../../api/index';
@@ -78,15 +78,15 @@ export const sexList = [
 ];
 
 export const stateList = [
-  { name: '待提交', value: '0' , type: 'type0'},
-  { name: '科室主任待审核', value: '1' , type: 'type1'},
-  { name: '科室主任已通过/医务处待审核', value: '3' , type: 'type3'},
-  { name: '科室主任未通过', value: '2' },
-  { name: '医务处未通过', value: '5' },
-  { name: '医务处已通过', value: '4' },
-  { name: '医务处主任待审核', value: '6' },
-  { name: '医务处主任审核通过', value: '7' },
-  { name: '医务处主任审核未通过', value: '8' },
+  { label: '待提交', value: '0' , type: 'type0'},
+  { label: '科室主任待审核', value: '1' , type: 'type1'},
+  { label: '科室主任已通过/医务处待审核', value: '3' , type: 'type3'},
+  { label: '科室主任未通过', value: '2' },
+  { label: '医务处未通过', value: '5' },
+  { label: '医务处已通过', value: '4' },
+  { label: '医务处主任待审核', value: '6' },
+  { label: '医务处主任审核通过', value: '7' },
+  { label: '医务处主任审核未通过', value: '8' },
 ];
 
 export const autoCompleteList = [
@@ -174,7 +174,7 @@ const base: inputFormModel[] = [
   {
     text: '下拉框',
     type: 'select',
-    name: 'select',
+    name: 'select1',
     span: 12,
     value: '',
     style: '',
@@ -185,6 +185,28 @@ const base: inputFormModel[] = [
           console.log(formState, otherData);
         }}
     ],
+
+    rules:[
+      { required: true, message: '请输入select'},
+    ],
+    labelCol: { style: { width: '100px' } },
+  },{
+    text: '下拉框远程获取option',
+    type: 'select',
+    name: 'select',
+    span: 12,
+    value: '',
+    style: '',
+    class: '',
+     option: stateList,
+    computedFun: [
+      {type: 'option', api: getSortName, params: {sortSort: 3}, field: {labels: 'sortname', value: 'sortname'}}
+    ],
+    $attrs: {
+      onChange: (...data) => {
+        console.log(data);
+      }
+    },
     rules:[
       { required: true, message: '请输入select'},
     ],
@@ -210,10 +232,8 @@ const base: inputFormModel[] = [
     name: 'radio',
     span: 12,
     value: '',
-    style: '',
-    class: '',
      option: stateList,
-    
+
     rules:[
       { required: true, message: '请选择单选'},
       {  validator: testSlot, trigger: 'blur'}
@@ -326,22 +346,48 @@ const base: inputFormModel[] = [
   {
     text: '字典选择',
     type: 'dict',
-    name: 'dmmc',
+    name: 'zkbm',
     api: GetDiagnosis,
-    params: {"page":1,"rows":30,"limit":30,"code":1},
-    span: 12,
-    value: '123555',
+    params: { page: 1, rows: 30, limit: 30, field: '', tableName: 'generate1' },
+    span: 24,
+    value: '',
     style: '',
     class: '',
-    searchField: 'dmmc',
-    valueField: {dmmc: 'dmmc', dm: 'dm1'},
-    tableField: [ {field: 'dmmc', title: '名称', width: 100}, {field: 'dm', title: '代码', width: 100}],
-    labelCol: { style: { width: '130px' } },
-    computedFun: [
-      {type: 'function', fun: (formState, Data, inputItem, value, type, otherData ) => {
-          console.log(otherData);
-        }}
+    rules: [
+      {
+        required: true,
+        message: '请选择专科编码',
+      },
     ],
+    searchField: 'field',
+    selectField: 'a1',
+    valueField: { a1: 'zkbm' },
+    callbackFun: function (res, tableData, tableTotal) {
+      if (res.code == 0) {
+        tableData.value = [];
+        if (res.data.length > 0) {
+          tableData.value = res.data.map((item) => ({
+            ...item,
+            zkbm: item.a1,
+          }));
+        }
+      }
+    },
+    showPage: false,
+    tableField: [
+      { field: 'a3', title: '名称', width: 150 },
+      { field: 'a1', title: '编码', width: 150 },
+    ],
+    computedFun: [
+      {
+        type: 'function',
+        fun: (formState) => {
+          console.log(formState);
+          formState.value.bm = `${formState.value.zkbm}.${formState.value.bmbm}.${formState.value.zhbm}.${formState.value.ysbm}`;
+        },
+      },
+    ],
+    labelCol: { style: { width: '130px' } },
   },
   {
     text: '自动完成输入框',
@@ -353,6 +399,7 @@ const base: inputFormModel[] = [
     class: '',
     option: [],
     $attrs: {
+      allowClear: true,
       onSearch: (...data) => {
         data[0].option = autoCompleteList.filter(item => item.value.includes(data[3]))
       }
@@ -361,11 +408,13 @@ const base: inputFormModel[] = [
       clearIcon: (...data) => {
         console.log(data);
         return (
-            <UserOutlined/>
+           <div>test</div>
         )
       },
       placeholder: (...data) => {
-        return 'test';
+        return (
+            <div>test placeholder</div>
+        )
       }
     },
 
@@ -571,10 +620,23 @@ const base: inputFormModel[] = [
         $attrs: { minWidth: '100px', showOverflow: true,   editRender: {} },
       },
       {
-        text: '病名名称',
-        type: 'text',
-        name: 'ysmc',
-        $attrs: { minWidth: '100px', showOverflow: true,   editRender: {} },
+        text: '分组表头',
+        type: 'colgroup',
+        name: 'bm',
+        $attrs: { minWidth: '450px', showOverflow: true },
+        children: [
+          {
+            text: '分组表头1',
+            name: 'ysmc',
+            type: 'text',
+            $attrs: { minWidth: '120px', showOverflow: true , editRender: {}},
+          }, {
+            text: '分组表头2',
+            name: 'bt2',
+            type: 'text',
+            $attrs: { minWidth: '100px', showOverflow: true },
+          },
+        ],
       },{
         text: '日期',
         type: 'date',
@@ -740,7 +802,7 @@ const base: inputFormModel[] = [
       text: '单选',
       type: 'formRadio',
       name: 'radio',
-        split: '，',
+      split: '，',
       option: [
         {name:"选项1", value: '1'},
         {name:"选项2", value: '2'},

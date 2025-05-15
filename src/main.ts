@@ -21,6 +21,7 @@ import hljs from 'highlight.js/lib/core';
 import   'highlight.js/styles/atom-one-dark.css';
 import   'highlight.js/lib/common';
 import hljsVuePlugin from '@highlightjs/vue-plugin';
+ 
 
 import json from 'highlight.js/lib/languages/json';
 hljs.registerLanguage('json', json);
@@ -84,3 +85,4 @@ app.use(useTable);
 app.use(router);
 app.use(hljsVuePlugin)
 app.mount('#app');
+

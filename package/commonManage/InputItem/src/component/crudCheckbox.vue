@@ -7,8 +7,8 @@
       ...eventHandlers
     }"
   >
-    <a-checkbox v-for="option in item.option" :value="option.value">
-      {{ option.name }}
+    <a-checkbox v-for="option in item?.$attrs?.options??item?.option" :value="option.value">
+      {{ option.label }}
     </a-checkbox>
 
     <template v-for="(slot, name) in item?.$slots??[]" v-slot:[name]="data">

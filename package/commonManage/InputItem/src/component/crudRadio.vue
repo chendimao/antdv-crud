@@ -1,7 +1,7 @@
 <template>
  <div>
   <a-radio-group
-    :disabled="isDisabled" 
+    :disabled="isDisabled"
     :button-style="item.buttonStyle"
     :size="item.size"
     :name="item.name"
@@ -11,21 +11,12 @@
       ...eventHandlers
     }"
   >
-    <template v-if="item.optionType === 'button'">
-      <a-radio-button v-for="option in item.option" :key="option.value" :value="option.value">
-        {{ option.name }}
-      </a-radio-button>
-    </template>
-    <template v-else>
-      <a-radio v-for="option in item.option" :key="option.value" :value="option.value">
-        {{ option.name }}
-      </a-radio>
-    </template>
+      <a-radio v-for="option in item?.$attrs?.options??item?.option" :value="option.value">{{ option.label }}</a-radio>
 
     <template v-for="(slot, name) in item?.$slots??[]" v-slot:[name]="data">
       <div v-render="() => slot(item, formState, formData,  data)"></div>
     </template>
-  </a-radio-group> 
+  </a-radio-group>
  </div>
 </template>
 

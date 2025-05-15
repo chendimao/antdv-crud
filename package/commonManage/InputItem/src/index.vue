@@ -34,17 +34,17 @@
                                              :sizeField="item.sizeField"
                                              :tableField="item.tableField"
                                              :valueField="item.valueField"
+                                             :selectField="item.selectField"
                                              :callbackFun="item.callbackFun"
                                              :pageField="item.pageField"
                                              :name="item.name"
+                                             :transfer="item.transfer"
                                              :debounceTime="item.debounceTime"
                                              :showPage="item.showPage"
-                                             v-model="inputValue"
+                                             v-model="inputValue" 
                                              :searchField="item.searchField"
                                              @change="handleDictChange"
-                                             v-bind="{
-                                              ...item.$attrs,
-                                              }"
+                                             :attrs="item.$attrs"
                                 />
                               </template>
                               <template v-else-if="item.type == 'table'">
@@ -95,7 +95,7 @@ import type {inputFormModel} from "../../../model";
 import ACrudDict from "../../aCrudDict.vue";
 import ACrudTable from "../../aCrudTable.vue";
 import useTable from "../../../hooks/useTable";
-
+import { loadStyle, removeStyle } from '../../../utils/loadStyle';
 
 // 定义全局配置接口
 interface CrudGlobalConfig {
@@ -239,6 +239,17 @@ const componentMap = {
 
 const slots = useSlots();
 
+// 加载自定义css
+const handleLoadStyle = () => {
+ 
+  const css = ` .aCardFormItem .${inputItem.value.name} {
+    ${inputItem.value.css}
+  }`;
+  loadStyle(css, inputItem.value.cssId??inputItem.value.name, true);
+}
+
+
+
 watch(() => props.item, async (data) => {
   inputItem.value = data;
   // 如果是table
@@ -262,8 +273,8 @@ watch(() => props.item, async (data) => {
         if(item.dynamicParams) {
           params = {...params, ...item.dynamicParams(props.formState)};
         }
-        if(item.api && item.field) {
-          inputItem.value.option = await getOptionList(item.api, params, { field: item.field, name: item.field, value: item.field }, item.childrenField);
+        if(item.api && (item.field || item.relationField)) {
+          inputItem.value.option = await getOptionList(item.api, params, item.field??item.relationField??{   label: 'label', value: 'value' }, item.childrenField);
         }
       } else if (item.type == 'function') {
         // 处理函数类型
@@ -272,6 +283,8 @@ watch(() => props.item, async (data) => {
   }
 
 
+  // 执行自定义css
+  handleLoadStyle();
 
 
 
@@ -332,6 +345,18 @@ const handleDictChange = (value, data) => {
 const handleTableChange = (value) => {
   emit('change', inputItem.value, value);
 }
+
+
+
+
+
+onUnmounted(() => {
+  if (inputItem.value.css) {
+    removeStyle(inputItem.value.cssId??inputItem.value.name);
+  }
+
+})
+
 
 
 defineExpose({inputItemRef})
