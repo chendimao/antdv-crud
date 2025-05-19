@@ -85,7 +85,7 @@
             v-for="oItem in item?.$attrs?.options??item?.option" 
             :key="oItem.value" 
             :value="oItem.value" 
-            :label="oItem.name">
+            :label="oItem.label">
           </vxe-option>
         </vxe-select>
 
@@ -97,7 +97,7 @@
             v-for="oItem in item?.$attrs?.options??item?.option" 
             :key="oItem.value" 
             :label="oItem.value" 
-            :content="oItem.name">
+            :content="oItem.label">
           </vxe-checkbox>
         </vxe-checkbox-group>
 
@@ -109,7 +109,7 @@
             v-for="oItem in item?.$attrs?.options??item?.option" 
             :key="oItem.value" 
             :label="oItem.value" 
-            :content="oItem.name">
+            :content="oItem.label">
           </vxe-radio>
         </vxe-radio-group>
 

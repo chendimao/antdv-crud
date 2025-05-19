@@ -6,6 +6,7 @@
           custom
           print
           export
+          
           v-if="tableTransferPropsRef?.toolBox?.showType !== 'button' && tablePropsRef?.toolBox?.showType !== 'button'"
           ref="toolbarRef"
           v-bind="tableTransferPropsRef?.toolBox??tablePropsRef.toolBox"
@@ -76,6 +77,7 @@
       <table-operation-column
         v-if="tableTransferPropsRef.isMenu"
         :is-menu="tableTransferPropsRef.isMenu"
+        :menu="tableTransferPropsRef.menu"
         :menu-width="tableTransferPropsRef.menuWidth"
         :is-view="tableTransferPropsRef.isView"
         :is-edit="tableTransferPropsRef.isEdit"
@@ -319,10 +321,16 @@ function setTableProps(props) {
     tableTransferPropsRef.value.params =  tableTransferPropsRef.value.params??{};
 
 
+
+    
+
     // isform 是否是在form表单中使用的，可编辑状态
   if (tableTransferPropsRef.value.isForm) {
     tableData.value = tableTransferPropsRef.value.value;
-    return;
+    if (tableData.value?.length == 0) {
+      return;
+    }
+  
   }
 
 
@@ -506,6 +514,7 @@ const searchEvent = () => {
    getSearch,
    getTableData,
    reset,
+   getTableRef,
    setTableColumns,
    setTableParams,
    setTableProps,

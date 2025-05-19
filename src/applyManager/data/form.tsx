@@ -544,18 +544,18 @@ const base: inputFormModel[] = [
     text: '可编辑表格',
     type: 'table',
     name: 'table',
-    isForm: true,
-
+    isForm: true, 
+    slotType: 'edit',
     columns: [
         {
       text: '下拉选',
       type: 'select',
       name: 'zkbm',
       option: [
-        {name:"选项1", value: '1'},
-        {name:"选项2", value: '2'},
-        {name:"选项3", value: '3'},
-        {name:"选项4", value: '4'},
+        {label:"选项1", value: '1'},
+        {label:"选项2", value: '2'},
+        {label:"选项3", value: '3'},
+        {label:"选项4", value: '4'},
       ],
       $attrs: { minWidth: '200px', showOverflow: true,   editRender: {} },
     }, {
@@ -564,10 +564,10 @@ const base: inputFormModel[] = [
       name: 'checkbox',
         split: '，',
       option: [
-        {name:"选项1", value: '1'},
-        {name:"选项2", value: '2'},
-        {name:"选项3", value: '3'},
-        {name:"选项4", value: '4'},
+        {label:"选项1", value: '1'},
+        {label:"选项2", value: '2'},
+        {label:"选项3", value: '3'},
+        {label:"选项4", value: '4'},
       ],
       $attrs: { minWidth: '100px', showOverflow: true,   editRender: {} },
     },{
@@ -576,10 +576,10 @@ const base: inputFormModel[] = [
       name: 'radio',
         split: '，',
       option: [
-        {name:"选项1", value: '1'},
-        {name:"选项2", value: '2'},
-        {name:"选项3", value: '3'},
-        {name:"选项4", value: '4'},
+        {label:"选项1", value: '1'},
+        {label:"选项2", value: '2'},
+        {label:"选项3", value: '3'},
+        {label:"选项4", value: '4'},
       ],
       $attrs: { minWidth: '100px', showOverflow: true,   editRender: {} },
     },

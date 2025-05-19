@@ -259,8 +259,8 @@ watch(() => props.item, async (data) => {
           isForm: true,
           pagination: {isPagination: false } } : {};
         formTable.value = new useTable({
+          ...isFormParams,
         ...inputItem.value,
-        ...isFormParams
       });
   }
 
