@@ -46,7 +46,12 @@ export const baseComponent  = [
         name: 'radioInput',
         span: 24,
         show: true,
-        option: [{name: '单选1', value: 1}],
+        $attrs: {
+            options: [
+                { label: '选项1', value: 1 },
+                { label: '选项2', value: 2 }
+              ],
+        },
         value: '',
         disabled: (data, form, type) => {
             console.log(data, form, type);
@@ -73,7 +78,7 @@ export const gridComponent  = [
         span: 24,
         show: true,
         value: '',
-        column: [
+        columns: [
             { span: 12, children: [] },
             { span: 12, children: [] },
         ],
@@ -85,7 +90,7 @@ export const gridComponent  = [
         span: 24,
         show: true,
         value: '',
-        column: [
+        columns: [
             { span: 8, children: [] },
             { span: 8, children: [] },
             { span: 8, children: [] },
@@ -97,45 +102,13 @@ export const gridComponent  = [
         span: 24,
         show: true,
         value: '',
-        column: [
+        columns: [
             { span: 6, children: [] },
             { span: 6, children: [] },
             { span: 6, children: [] },
             { span: 6, children: [] },
         ],
-    } , {
-        text: '6列栅格',
-        type: 'grid',
-        name: 'grid',
-        span: 24,
-        show: true,
-        value: '',
-        column: [
-            { span: 4, children: [] },
-            { span: 4, children: [] },
-            { span: 4, children: [] },
-            { span: 4, children: [] },
-            { span: 4, children: [] },
-            { span: 4, children: [] },
-        ],
-    },  {
-        text: '8列栅格',
-        type: 'grid',
-        name: 'grid',
-        span: 24,
-        show: true,
-        value: '',
-        column: [
-            { span: 3, children: [] },
-            { span: 3, children: [] },
-            { span: 3, children: [] },
-            { span: 3, children: [] },
-            { span: 3, children: [] },
-            { span: 3, children: [] },
-            { span: 3, children: [] },
-            { span: 3, children: [] },
-        ],
-    } 
+    } ,  
 ];
 
 export const otherComponent = [

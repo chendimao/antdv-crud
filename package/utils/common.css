@@ -9,7 +9,7 @@
 .mb-2{margin-bottom:.5rem}
 
 
-.aCardForm.full-modal {
+.full-modal {
         .ant-modal {
             width: 100%;
             top: 0;
@@ -49,6 +49,14 @@
 .aCardForm.ant-drawer-header {
         padding: 10px !important;
     }
+
+
+    .form-design .ant-tabs-content-holder {
+        height:calc(100vh - 70px);
+        overflow: auto;
+    }
+
+
 
 
 

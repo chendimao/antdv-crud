@@ -1,6 +1,6 @@
 <template>
   <!--  查询共用组件-->
-  <div class="search-form aCardSearch">
+  <div class="search-form aCardSearch" v-if="aCardSearchRef">
     <FormInputItem ref="searchFormRef" v-model:formState="aCardSearchRef.params"
       :labelCol="{ span: 8 }" :wrapperCol="{ span: 16 }" :formData="aCardSearchRef.formData" :formValidate="searchValidate"  >
       <a-col   v-if="aCardSearchRef.showSearch !== false">
@@ -57,9 +57,7 @@ const props = defineProps({
 
 const mySlot = ref();
 
-
-const tableRef = ref();
-const formRef = ref();
+ 
 
 const searchFormRef = ref();
 const aCardSearchRef = ref();
@@ -78,41 +76,39 @@ async function submit() {
    return await submit();
 }
 
-function setSearchProps(props, ref) {
+function setSearchProps(props) { 
+  console.log(props);
   // 配置优先级  手动配置 >  全局配置 >  默认配置
   aCardSearchRef.value = {...aCardSearchDefaultRef.value, ...proxy.$crudGlobalSearchConfig??{},  ...props,};
-  tableRef.value = ref.tableRef;
-  formRef.value = ref.formRef;
-
+   
   initForm();
 }
-watch(() => props.searchProps, (data) => {
+watch(() => props.searchProps, (data: any) => {
   aCardSearchRef.value = {...aCardSearchRef.value, ...data};
   console.log(data, aCardSearchRef, 121);
 }, {deep: true })
 
 
 function initForm() {
-  searchValidate.value = {};
-
+  searchValidate.value = {}; 
+  
   aCardSearchRef.value.formData.forEach((item, key) => {
     //  初始化默认数据
-    resetForm.value[key] = item?.value??'';
-  });
-  console.log(resetForm.value);
+    resetForm.value[item.name] = item?.value??'';
+  }); 
   aCardSearchRef.value.params = deepCopy(resetForm.value);
   searchValidate.value = {};
   aCardSearchRef.value.formData.forEach((item) => {
     // 自定义validator的 传入当前表单值以便动态校验
     item.rules ? searchValidate.value[item.name] = item.rules.map(ruleItem => {
-      if (ruleItem.validator) {
-        ruleItem.validator = ruleItem.validator.bind(undefined,{ formState: aCardSearchRef, refs: [searchFormRef]});
+      if (ruleItem.validator) { 
+        ruleItem.validator = ruleItem.validator.bind(null, {cardForm: aCardSearchRef, refs: searchFormRef});
       }
       return ruleItem;
     }) : '';
   });
 
-  watch(() => props.searchProps, (data) => {
+  watch(() => props.searchProps, (data: any) => {
     aCardSearchRef.value = {...aCardSearchRef.value, ...data};
     console.log(data, aCardSearchRef, 256);
   }, {deep: true })
@@ -126,6 +122,13 @@ function initForm() {
 function getSearchParams() {
   return aCardSearchRef.value.params;
 }
+
+
+/**
+ * 
+ * 设置当前查询参数
+ */
+
 function setSearchParams(params) {
   aCardSearchRef.value.params = deepCopy(params);
   return aCardSearchRef.value.params;
@@ -166,15 +169,16 @@ async function getData(type: 'reset' | 'search') {
 
   const typeList = {reset: [getResetParams, emitResetParams], search: [getSearchParams, emitSearchParams]}
 
-  // 如果使用了table组件，则直接调用table组件的getSearch方法
-  if (tableRef.value._value && aCardSearchRef.value.isTable !== false) {
+  // 如果使用了table组件，则直接调用table组件的getSearch方法 
+  if (aCardSearchRef.value?.tableMethods) { 
    // tableRef.value._value.getSearch( typeList[type][0]());
     const validateRes = await validateSearch();
     console.log(validateRes);
     if(validateRes){
       setSearchParams(typeList[type][0]());
-      await tableRef.value._value.setTableParams(typeList[type][0]());
-      return   tableRef.value._value.getData();
+      await aCardSearchRef.value.tableMethods.setTableParams(typeList[type][0]());
+       
+      return  await aCardSearchRef.value.tableMethods.getData();
     } else {
       return false;
     }
@@ -190,6 +194,29 @@ async function getData(type: 'reset' | 'search') {
   initForm();
 }
 
+function setSearchPropsValue(key, value){
+  aCardSearchRef.value[key] = value;
+    initForm();
+  }
+  function getSearchPropsValue(key){
+    return aCardSearchRef.value[key];
+  }
+
+  function setSearchDataValue(key, value) { 
+    for (let index = 0; index < aCardSearchRef.value.formData.length; index++) {
+      if ( aCardSearchRef.value.formData[index].name == key) {
+        aCardSearchRef.value.formData[index] = value;
+      }
+    }
+    initForm();
+  }
+  
+  function getSearchDataValue(key) {
+    return aCardSearchRef.value.formData.find(item => item.name == key);
+  }
+
+
+
  function resetSearch() {
    getData('reset');
 }
@@ -202,6 +229,10 @@ const searchMethods = {
   setSearchProps,
   mergeResetParams,
   mergeSearchParams,
+  setSearchPropsValue,
+  getSearchPropsValue,
+  setSearchDataValue,
+  getSearchDataValue,
   getResetParams,
   setSearchFormData,
   resetSearch
@@ -209,7 +240,7 @@ const searchMethods = {
 
 defineExpose({searchMethods, aCardSearchRef, submit})
 
-emits('register', searchMethods);
+emits('register', searchMethods, searchFormRef);
 
 
 </script>

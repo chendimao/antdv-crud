@@ -21,14 +21,20 @@ importers:
         specifier: ^4.1.1
         version: 4.1.1(vite@5.4.11(less@4.2.1))(vue@3.5.13(typescript@5.7.2))
       ant-design-vue:
-        specifier: 3.2.20
+        specifier: '3'
         version: 3.2.20(vue@3.5.13(typescript@5.7.2))
       antdv-crud:
-        specifier: 0.0.99
-        version: 0.0.99
+        specifier: 2.0.32
+        version: 2.0.32
       axios:
         specifier: ^1.6.8
         version: 1.7.9
+      codemirror:
+        specifier: ^5
+        version: 5.65.19
+      codemirror-editor-vue3:
+        specifier: ^2.8.0
+        version: 2.8.0(codemirror@5.65.19)(diff-match-patch@1.0.5)(vue@3.5.13(typescript@5.7.2))
       dayjs:
         specifier: ^1.11.10
         version: 1.11.13
@@ -41,6 +47,9 @@ importers:
       nanoid:
         specifier: ^5.0.9
         version: 5.0.9
+      prettier:
+        specifier: ^3.5.3
+        version: 3.5.3
       vite:
         specifier: ^5.4.11
         version: 5.4.11(less@4.2.1)
@@ -787,8 +796,8 @@ packages:
     peerDependencies:
       vue: '>=3.2.0'
 
-  antdv-crud@0.0.99:
-    resolution: {integrity: sha512-pVPdrplyjdx1AK3xX97+bV9Q0gG4WjUMc9qAyRYZuereXrC2eaSSuFp+M/FWCATckXhNSBaDNbnoU2EZI6zTVw==}
+  antdv-crud@2.0.32:
+    resolution: {integrity: sha512-9R1qRALSqytgA7zZs1eGaHLBVZbdPFUZlMzzDmn67Xi6EQtpsNZNJKpmDBFpZanOTzAk5peZe0aLmk/h+295cg==}
 
   array-tree-filter@2.1.0:
     resolution: {integrity: sha512-4ROwICNlNw/Hqa9v+rk5h22KjmzB1JGTMVKP2AKJBOCgb0yL0ASf0+YvCcLNNwquOHNX48jkeZIJ3a+oOQqKcw==}
@@ -846,6 +855,16 @@ packages:
   character-entities-legacy@3.0.0:
     resolution: {integrity: sha512-RpPp0asT/6ufRm//AJVwpViZbGM/MkjQFxJccQRHmISF/22NBtsHqAWmL+/pmkPWoIUJdWyeVleTl1wydHATVQ==}
 
+  codemirror-editor-vue3@2.8.0:
+    resolution: {integrity: sha512-ebYGNhBpLmQNLguXzNyMMkn6K8v3lcS5/Ncvdn6YS4bLGEHE67MfsJIS/WV0L7I6WavUuFlY/Rs/AJKChIwSwg==}
+    peerDependencies:
+      codemirror: ^5
+      diff-match-patch: ^1.0.5
+      vue: ^3.x
+
+  codemirror@5.65.19:
+    resolution: {integrity: sha512-+aFkvqhaAVr1gferNMuN8vkTSrWIFvzlMV9I2KBLCWS2WpZ2+UAkZjlMZmEuT+gcXTi6RrGQCkWq1/bDtGqhIA==}
+
   combined-stream@1.0.8:
     resolution: {integrity: sha512-FQN4MRfuJeHf7cBbBMJFXhKSDq+2kAArBlmRBvcvFE5BB1HZKXtSFASDhdlz9zOYwxh8lDdnvmMOe/+5cdoEdg==}
     engines: {node: '>= 0.8'}
@@ -900,6 +919,9 @@ packages:
 
   devlop@1.1.0:
     resolution: {integrity: sha512-RWmIqhcFf1lRYBvNmr7qTNuyCt/7/ns2jbpp1+PalgE/rDQcBT0fioSMUpJ93irlUhC5hrg4cYqe6U+0ImW0rA==}
+
+  diff-match-patch@1.0.5:
+    resolution: {integrity: sha512-IayShXAgj/QMXgB0IWmKx+rOPuGMhqm5w6jvFxmVenXKIzRqTAAsbBPT3kWQeGANj3jGgvcvv4yK6SxqYmikgw==}
 
   dom-align@1.12.4:
     resolution: {integrity: sha512-R8LUSEay/68zE5c8/3BDxiTEvgb4xZTF0RKmAHfiEVN3klfIpXfi2/QCoiWPccVQ0J/ZGdz9OjzL4uJEP/MRAw==}
@@ -1159,6 +1181,11 @@ packages:
 
   preact@10.25.4:
     resolution: {integrity: sha512-jLdZDb+Q+odkHJ+MpW/9U5cODzqnB+fy2EiHSZES7ldV5LK7yjlVzTp7R8Xy6W6y75kfK8iWYtFVH7lvjwrCMA==}
+
+  prettier@3.5.3:
+    resolution: {integrity: sha512-QQtaxnoDJeAkDvDKWCLiwIXkTgRhwYDEQCghU9Z6q03iyek/rxRh/2lC3HB7P8sWT2xC/y5JDctPLBIGzHKbhw==}
+    engines: {node: '>=14'}
+    hasBin: true
 
   property-information@6.5.0:
     resolution: {integrity: sha512-PgTgs/BlvHxOu8QuEN7wi5A0OmXaBcHpmCSTehcs6Uuu9IkDIEo13Hy7n898RHfrQ49vKCoGeWZSaAK01nwVig==}
@@ -2202,7 +2229,7 @@ snapshots:
       vue-types: 3.0.2(vue@3.5.13(typescript@5.7.2))
       warning: 4.0.3
 
-  antdv-crud@0.0.99: {}
+  antdv-crud@2.0.32: {}
 
   array-tree-filter@2.1.0: {}
 
@@ -2260,6 +2287,14 @@ snapshots:
 
   character-entities-legacy@3.0.0: {}
 
+  codemirror-editor-vue3@2.8.0(codemirror@5.65.19)(diff-match-patch@1.0.5)(vue@3.5.13(typescript@5.7.2)):
+    dependencies:
+      codemirror: 5.65.19
+      diff-match-patch: 1.0.5
+      vue: 3.5.13(typescript@5.7.2)
+
+  codemirror@5.65.19: {}
+
   combined-stream@1.0.8:
     dependencies:
       delayed-stream: 1.0.0
@@ -2302,6 +2337,8 @@ snapshots:
   devlop@1.1.0:
     dependencies:
       dequal: 2.0.3
+
+  diff-match-patch@1.0.5: {}
 
   dom-align@1.12.4: {}
 
@@ -2570,6 +2607,8 @@ snapshots:
       source-map-js: 1.2.1
 
   preact@10.25.4: {}
+
+  prettier@3.5.3: {}
 
   property-information@6.5.0: {}
 

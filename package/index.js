@@ -2,7 +2,7 @@
 import aFormDesign from "./formDesign/index.vue";
 
 import aFormItemInput from "./commonManage/InputItem/index";
-import './utils/common.less';
+import './utils/common.css';
 const components = [
     aFormDesign,
     aFormItemInput

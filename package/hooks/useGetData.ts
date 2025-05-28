@@ -17,7 +17,6 @@ export const   useGetTable = async  (api, params, total = ref(), loading = ref()
     } else {
 
         if (res.code != 0) {
-            message.error('查询失败');
             return [];
         }
         if (res.data && isArray(res.data)) {

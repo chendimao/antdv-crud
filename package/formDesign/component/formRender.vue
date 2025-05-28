@@ -12,13 +12,13 @@
         @start="onDragStart" 
         v-bind="{
           group: { 
-            name: 'form-draggable' , 
-            pull: true, 
-            put: true 
+            name: 'form-draggable',
+            pull: true,    // 允许从目标容器拉出
+            put: true      // 允许放入目标容器
           },
           ghostClass: 'ghost',
           draggable: '.dragging',
-          animation: 500, 
+          animation: 500,
           handle: '.drag-handle'
         }"
         item-key="id"
@@ -35,14 +35,14 @@
           class="form-item-wrapper dragging"
         >
         
-          <template v-if="element.type == 'grid' && element?.column.length > 0">
+          <template v-if="element.type == 'grid' && element?.columns.length > 0">
             <div 
-              @click="handleSelectComponent(element, index)" 
+              @click.stop="emitSelectComponent(element)"
               :class="['grid-container', {'active-grid': _currentItem.id == element.id }]"
             >
               <a-row :gutter="10" class="grid-row"  >
                 <a-col 
-                  v-for="item in element.column" 
+                  v-for="item in element.columns" 
                   :span="item.span" 
                   :key="item.id"
                   class="grid-col"
@@ -52,8 +52,9 @@
                     v-model:formData="item.children"
                     :currentItem="_currentItem"
                     :isChildren="true"
-                    @handleSelectComponent="handleSelectComponent(element, index)"
+                    @selectComponent="emitSelectComponent"
                     @onDragChange="onDragChange"
+                    @selectAdded="(element, index) => emits('selectAdded', element, index)"
                   />
                 </a-col>
                
@@ -68,7 +69,7 @@
           
           <template v-else>
             <a-col class="form-field" :span="24" v-if="element.type && (element.show??true)">
-              <div class="drag-mas" @click="handleSelectComponent(element, index)"></div>
+              <div class="drag-mas" @click.stop="emitSelectComponent(element)"></div>
               <div :class="['field-container', {'active': _currentItem.id == element.id}]">
                 <a-form-item
                   :label="element.text"
@@ -124,7 +125,16 @@ const props = defineProps({
 });
 
 
-const emits = defineEmits(['update:formData','update:currentCom','update:currentIndex', 'handleSelectComponent', 'handleDeleteComponent', 'onDragChange']);
+const emits = defineEmits<{
+  (event: 'update:formData', value: any[]): void;
+  (event: 'update:currentCom', value: any): void;
+  (event: 'update:currentIndex', value: number | undefined): void;
+  (event: 'handleSelectComponent', element: any, index?: number): void;
+  (event: 'handleDeleteComponent', index: number): void;
+  (event: 'onDragChange', eventData: any): void;
+  (event: 'selectAdded', element: any, index: number): void;
+  (event: 'selectComponent', element: any): void;
+}>();
 
 
 
@@ -147,35 +157,36 @@ watch(() => props.currentIndex, (data) => {
 }, {deep: true});
 
 
-watch(() => _formData, (data) => {
+watch(() => _formData.value, (data) => {
+  console.log("formRender: _formData 变化", data);
   emits('update:formData', data);
 }, {deep: true });
 
 
-
-function handleSelectComponent(ele, index) {
-  console.log(ele);
-  
-    _currentItem.value = ele;
-  emits('handleSelectComponent', _currentItem.value, index)
-}
 
 function handleDeleteComponent(index) {
 _formData.value.splice(index, 1);
 }
 
 const onDragChange = (event) => {
-  console.log('目标容器:', event);
+  console.log('formRender: onDragChange', event);
   if (event.added) {
-
-    // _currentItem.value = event.added.element;
-    // _currentIndex.value = event.added.newIndex;
-  //  emits('handleSelectComponent', _currentItem.value, _currentIndex.value)
+    console.log('formRender: Added element', event.added);
+    
+    // 获取新添加的元素引用
+    const addedElement = _formData.value[event.added.newIndex];
+    
+    // 为新添加的元素生成唯一的 ID 和 name
+    // 这里复用 cloneItem 的逻辑，确保在添加到目标时 ID 唯一
+    addedElement.name = addedElement.id = `${addedElement.type}_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+    
+    console.log('formRender: New element with unique ID', addedElement);
+    
+    // 触发 selectAdded 事件，传递新添加的元素和它的索引
+    emits('selectAdded', addedElement, event.added.newIndex);
   }
-  if (event.moved) {
-
-  }
- // emits('onDragChange',event)
+  // 如果需要在拖动结束后也触发父组件的 onDragChange 事件，可以取消注释下面这行
+  // emits('onDragChange',event)
 };
 
 function onDragStart(event) {
@@ -186,6 +197,11 @@ function onDragStart(event) {
 function onDragEnd(event) {
   // 拖动结束后的一些处理逻辑
   console.log("拖动结束", event);
+}
+
+function emitSelectComponent(element) {
+  console.log("formRender: 触发选中事件", element);
+  emits('selectComponent', element);
 }
 
 </script>
@@ -297,25 +313,27 @@ export default {
 
  
 .empty-placeholder {
-  min-height: 60px;
+  min-height: 80px;
   width: 100%;
-  border-radius: 2px;
-  display: flex;           // 使用 flex 布局
-  align-items: center;     // 垂直居中
-  justify-content: center; // 水平居中
-  margin: 4px 0;
+  border: 2px dashed #b0bec5;
+  border-radius: 4px;
+  background-color: rgba(176, 190, 197, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 8px 0;
+  transition: all 0.3s ease;
   
   .placeholder-content {
-    color: #8c8c8c;
-    font-size: 14px;
-    text-align: center;    // 文字居中
-    line-height: 1;        // 调整行高
-    padding: 0;            // 移除内边距
+    color: #78909c;
+    font-size: 15px;
+    text-align: center;
+    line-height: 1.5;
   }
   
   &:hover {
-    border-color: #595959;
-    background: rgba(0, 0, 0, 0.02);
+    border-color: #90a4ae;
+    background: rgba(176, 190, 197, 0.15);
   }
 }
 // 恢复点击遮罩层
@@ -405,25 +423,14 @@ export default {
 
 .ghost {
   position: relative;
-  height: 5px !important;  // 减小高度使其更精致
-  background: transparent !important;  // 移除背景色
-  border: none !important;  // 移除边框
+  height: 8px !important;
+  background: transparent !important;
+  border: none !important;
   padding: 0 !important;
-  margin: 8px 0 !important;  // 增加上下间距使视觉效果更清晰
+  margin: 10px 0 !important;
   overflow: visible !important;
   
   &::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: -4px;  // 向上偏移以显示指示器
-    height: 10px;  // 增加可视区域
-    background: transparent;
-    border-radius: 4px;
-  }
-
-  &::after {
     content: '';
     position: absolute;
     left: 0;
@@ -433,13 +440,13 @@ export default {
     height: 2px;
     background: linear-gradient(
       90deg,
-      rgba(37, 99, 235, 0.5) 0%,
+      rgba(37, 99, 235, 0.3) 0%,
       rgba(37, 99, 235, 0.9) 50%,
-      rgba(37, 99, 235, 0.5) 100%
+      rgba(37, 99, 235, 0.3) 100%
     );
     border-radius: 4px;
-    box-shadow: 0 0 8px rgba(37, 99, 235, 0.3);
-    animation: ghostPulse 1.5s ease-in-out infinite;
+    box-shadow: 0 0 10px rgba(37, 99, 235, 0.4);
+    animation: ghostPulse 1.2s ease-in-out infinite;
   }
 }
 

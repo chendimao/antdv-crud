@@ -256,6 +256,32 @@ export function debounce(func, wait, immediate = false) {
     if (callNow) func.apply(context, args); // 如果满足立即调用条件，则立即执行函数
   };
 }
+
+export const customStringify = (obj) => {
+  if (typeof obj === 'function') {
+      return obj.toString();
+  }
+  if (Array.isArray(obj)) {
+      return `[${obj.map(item => customStringify(item)).join(',')}]`;
+  }
+  if (obj && typeof obj === 'object') {
+      const entries = Object.entries(obj).map(([key, value]) => {
+          return `${key}: ${customStringify(value)}`;
+      });
+      return `{${entries.join(',')}}`;
+  }
+  return JSON.stringify(obj);
+};
+
+export const customParse = (str) => {
+  try {
+      return new Function('return ' + str)();
+  } catch (e) {
+      console.error('解析失败:', e);
+      return null;
+  }
+};
+
 export default {
   valueToName,
   getOptionList

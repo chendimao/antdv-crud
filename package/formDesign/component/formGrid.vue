@@ -1,7 +1,7 @@
 <template>
   <div >
     <a-form :model="config"  v-if="current?.name"   layout="vertical" :labelAlign="'left'" :label-col="{style: {width: '100px'}}" name="basic"   autocomplete="off">
-      <a-form-item label="栅格数" style="padding: 10px;">
+      <a-form-item :label="`栅格数(${current.span})`" style="padding: 10px;">
         <a-slider id="test" v-model:value="current.span"  :max="24" :min="1" />
 
       </a-form-item>
@@ -38,7 +38,7 @@ watch(() => props.currentItem, (data) => {
   current.value = data;
 
 
-} ,{deep: true })
+} ,{deep: true, immediate: true })
 
 watch(() => config, (data) => {
   emits('update:formConfig', data.value);
