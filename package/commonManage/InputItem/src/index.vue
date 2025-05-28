@@ -48,7 +48,7 @@
                                 />
                               </template>
                               <template v-else-if="item.type == 'table'">
-                                <a-crud-table :isForm="true"
+                                <a-crud-table  
                                               v-if="formTable"
                                               ref="inputItemRef"
                                               @register="formTable.register"
@@ -254,12 +254,12 @@ watch(() => props.item, async (data) => {
   inputItem.value = data;
   // 如果是table
   if (inputItem.value.type === 'table') {
-    const isFormParams = inputItem.value.isForm === true ? { isToolBox: true,
-          toolBox: {showExport: false,showPrint: false,showRefresh: false,showSetting: false},
-          isForm: true,
-          pagination: {isPagination: false } } : {};
+    const isFormParams =     
         formTable.value = new useTable({
-          ...isFormParams,
+           isToolBox: true,
+          toolBox: {showExport: false,showPrint: false,showRefresh: false,showSetting: false},
+          editType: 'edit',
+          pagination: {isPagination: false } ,
         ...inputItem.value,
       });
   }

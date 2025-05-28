@@ -2,6 +2,10 @@
 
 export default  [
     {
+        
+        type: 'checkbox', 
+        name:'checkbox'
+      }, {
         text: '专科编码',
         type: 'text',
         name: 'zkbm',

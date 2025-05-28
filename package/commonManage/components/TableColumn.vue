@@ -9,7 +9,7 @@
           :table-ref="tableRef"
           :is-sortable="isSortable"
           :size="size"
-          :slot-type="slotType"
+          :edit-type="editType"
         >
           <template v-for="(_, name) in $slots" #[name]="slotData">
             <slot :name="name" v-bind="slotData"></slot>
@@ -26,7 +26,7 @@
         <span>{{item.fun ? item.fun(columns, tableData) : item.text}}</span>
       </template>
 
-      <template v-if="slotType !== 'default'" #default="{ row, $rowIndex }">
+      <template v-if="editType == 'default' || editType == 'edit'" #default="{ row, $rowIndex }">
         <span v-if="item.type === 'colgroup'">
           <vxe-column v-for="(colItem, colIndex) in item.children" :key="colIndex" v-bind="colItem.$attrs" :type="colItem.type" :field="colItem.name" :title="colItem.text" :width="colItem.width" ></vxe-column>
         </span>
@@ -65,8 +65,8 @@
           </vxe-upload>
         </span>
       </template>
-
-      <template #[slotType]="{row, $rowIndex}">
+    
+      <template v-if="editType == 'all'"  #default="{row, $rowIndex}">
         <vxe-input
           v-if="['text', 'search', 'number', 'textarea', 'integer', 'float', 'password', 'date', 'time', 'datetime', 'week', 'month', 'quarter', 'year'].includes(item.type)"
           v-model="row[item.name]" 
@@ -132,6 +132,73 @@
           <slot :name="item.name" :row="row" :data="{row, rowIndex: $rowIndex, tableData, tableRef}"></slot>
         </span>
       </template>
+      <template v-if="editType == 'all' || editType == 'edit'   "  #edit="{row, $rowIndex}">
+        <vxe-input
+          v-if="['text', 'search', 'number', 'textarea', 'integer', 'float', 'password', 'date', 'time', 'datetime', 'week', 'month', 'quarter', 'year'].includes(item.type)"
+          v-model="row[item.name]" 
+          :type="item.type" 
+          :size="size" 
+          v-bind="{...item.$formAttrs, ...eventHandlers(item)}">
+        </vxe-input>
+
+        <vxe-select
+          v-else-if="item.type == 'select'"
+          v-model="row[item.name]" 
+          transfer 
+          :size="size" 
+          v-bind="item.$formAttrs">
+          <vxe-option 
+            v-for="oItem in item?.$attrs?.options??item?.option" 
+            :key="oItem.value" 
+            :value="oItem.value" 
+            :label="oItem.label">
+          </vxe-option>
+        </vxe-select>
+
+        <vxe-checkbox-group
+          v-else-if="item.type == 'formCheckbox'"
+          v-model="row[item.name]" 
+          v-bind="item.$formAttrs">
+          <vxe-checkbox 
+            v-for="oItem in item?.$attrs?.options??item?.option" 
+            :key="oItem.value" 
+            :label="oItem.value" 
+            :content="oItem.label">
+          </vxe-checkbox>
+        </vxe-checkbox-group>
+
+        <vxe-radio-group
+          v-else-if="item.type == 'formRadio'"
+          v-model="row[item.name]" 
+          v-bind="item.$formAttrs">
+          <vxe-radio 
+            v-for="oItem in item?.$attrs?.options??item?.option" 
+            :key="oItem.value" 
+            :label="oItem.value" 
+            :content="oItem.label">
+          </vxe-radio>
+        </vxe-radio-group>
+
+        <vxe-switch
+          v-else-if="item.type == 'switch'"
+          v-model="row[item.name]"
+          :open-label="item?.openLabel??'开启'"
+          :close-label="item?.closeLabel??'关闭'"
+          :open-value="item?.openValue??1"
+          :close-value="item?.closeValue??0"
+          v-bind="item.$formAttrs">
+        </vxe-switch>
+
+        <vxe-rate v-else-if="item.type == 'rate'" v-model="row[item.name]" v-bind="item.$formAttrs"></vxe-rate>
+        <vxe-slider v-else-if="item.type == 'slider'" v-model="row[item.name]" v-bind="item.$formAttrs"></vxe-slider>
+        <vxe-textarea v-else-if="item.type == 'textarea'" v-model="row[item.name]" v-bind="item.$formAttrs"></vxe-textarea>
+        <vxe-upload v-else-if="item.type == 'upload'" v-model="row[item.name]" v-bind="item.$formAttrs"></vxe-upload>
+
+        <span v-else-if="item.type == 'slot'">
+          <slot :name="item.name" :row="row" :data="{row, rowIndex: $rowIndex, tableData, tableRef}"></slot>
+        </span>
+      </template>
+    
     </vxe-column>
   </template>
 </template>
@@ -147,13 +214,13 @@ interface Props {
   tableRef: any;
   isSortable?: boolean;
   size?: string;
-  slotType?: string;
+  editType?: string; 
 }
 
 const props = withDefaults(defineProps<Props>(), {
   isSortable: true,
   size: 'mini',
-  slotType: 'default'
+  editType: 'default', 
 });
 
 // 事件处理函数

@@ -126,10 +126,7 @@
                 新增</a-button>
 
             </template>
-            <template #default="{row}">
-              <a-button   @click="handleUpdateShow(row)">编辑</a-button>
-              <a-button v-if="row.pid != 0" @click="handleAddShow('insert')">新建下级</a-button>
-            </template>
+           
 
             <template #bz="data">test bz
 <!--              <a-input v-model:value="data.formState.bz"  @blur="data.validateFun(data.item.name, { trigger: 'blur' }).catch(() => {})"/>-->
@@ -217,9 +214,7 @@ const {proxy } = getCurrentInstance() as any;
     checkAll: true,
     checkAllText: '全选',
     checkAllField: 'id',
-    checkMethod: ()=>{
-      return false;
-    }
+     
   });
 
   const cardFormRef = ref();
@@ -247,6 +242,8 @@ const crudTableRef = ref();
     size: 'mini',
     isSortable: false, // 是否开启排序，这是总开关，这里开启后，如果column中设置sortable: false，则该字段也不会排序
     $attrs: {
+     currentRowBg: 'dodgerblue',
+     currentRowColor: 'green',
       stripe: false,
       exportConfig: {},
       sortConfig:  {defaultSort:  {field: 'medicalRecordNo', order: 'asc'} },
@@ -256,9 +253,7 @@ const crudTableRef = ref();
       checkboxConfig: checkboxConfig
     },
     toolBox: {
-      showType: 'button',
-      showExport: false,
-      showPrint: false
+      showType: 'button', 
     },
   });
 
@@ -281,7 +276,7 @@ const crudTableRef = ref();
 
 
          .szsrk .ant-form-item-label >label  {
-          background:red;
+          // background:red;
           color: white;
           }
           .table tr  {

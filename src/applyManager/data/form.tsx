@@ -543,9 +543,8 @@ const base: inputFormModel[] = [
   {
     text: '可编辑表格',
     type: 'table',
-    name: 'table',
-    isForm: true, 
-    slotType: 'edit',
+    name: 'table', 
+    editType: 'all',
     columns: [
         {
       text: '下拉选',
@@ -686,7 +685,7 @@ const base: inputFormModel[] = [
 
       },
       ],
-    value: [
+    tableData: [
       {
 
         "zkbm": "",
@@ -754,6 +753,7 @@ const base: inputFormModel[] = [
        ],
      },
      editConfig: { trigger: 'click', mode: 'cell'},
+     
      validConfig: {
        msgMode: 'full'
      },
@@ -771,43 +771,41 @@ const base: inputFormModel[] = [
   {
     text: '可编辑表格2',
     type: 'table',
-    name: 'table2',
-    isForm: true,
-
+    name: 'table2', 
     columns: [
         {
       text: '下拉选',
       type: 'select',
       name: 'zkbm',
       option: [
-        {name:"选项1", value: '1'},
-        {name:"选项2", value: '2'},
-        {name:"选项3", value: '3'},
-        {name:"选项4", value: '4'},
+        {label:"选项1", value: '1'},
+        {label:"选项2", value: '2'},
+        {label:"选项3", value: '3'},
+        {label:"选项4", value: '4'},
       ],
-      $attrs: { minWidth: '200px', showOverflow: true,   editRender: {} },
+      $attrs: { minWidth: '200px', showOverflow: true,   editRender: {name: 'VxeSelect'} },
     }, {
       text: '多选',
       type: 'formCheckbox',
       name: 'checkbox',
         split: '，',
       option: [
-        {name:"选项1", value: '1'},
-        {name:"选项2", value: '2'},
-        {name:"选项3", value: '3'},
-        {name:"选项4", value: '4'},
+        {label:"选项1", value: '1'},
+        {label:"选项2", value: '2'},
+        {label:"选项3", value: '3'},
+        {label:"选项4", value: '4'},
       ],
-      $attrs: { minWidth: '100px', showOverflow: true,   editRender: {} },
+      $attrs: { minWidth: '100px', showOverflow: true,   editRender: {name: 'VxeCheckbox'} },
     },{
       text: '单选',
       type: 'formRadio',
       name: 'radio',
       split: '，',
       option: [
-        {name:"选项1", value: '1'},
-        {name:"选项2", value: '2'},
-        {name:"选项3", value: '3'},
-        {name:"选项4", value: '4'},
+        {label:"选项1", value: '1'},
+        {label:"选项2", value: '2'},
+        {label:"选项3", value: '3'},
+        {label:"选项4", value: '4'},
       ],
       $attrs: { minWidth: '100px', showOverflow: true,   editRender: {} },
     },
@@ -816,7 +814,7 @@ const base: inputFormModel[] = [
         text: '文字输入',
         type: 'text',
         name: 'bmbm',
-        $attrs: { minWidth: '100px', showOverflow: true,   editRender: {} },
+        $attrs: { minWidth: '100px', showOverflow: true,   editRender: {name: 'VxeInput'} },
       },
       {
         text: 'switch',
@@ -845,18 +843,18 @@ const base: inputFormModel[] = [
         text: 'textarea',
         type: 'textarea',
         name: 'textarea',
-        $attrs: { minWidth: '100px', showOverflow: true,   editRender: {} },
+        $attrs: { minWidth: '100px', showOverflow: true,   editRender: {name: 'VxeInput'} },
       },
       {
         text: '病名名称',
         type: 'text',
         name: 'ysmc',
-        $attrs: { minWidth: '100px', showOverflow: true,   editRender: {} },
+        $attrs: { minWidth: '100px', showOverflow: true,   editRender: {name: 'VxeInput'} },
       },{
         text: '日期',
         type: 'date',
         name: 'date',
-        $attrs: { minWidth: '100px', showOverflow: true , editRender: {} },
+        $attrs: { minWidth: '100px', showOverflow: true , editRender: {name: 'VxeInput'} },
         $formAttrs: {
           clearable: true,
           labelFormat: 'yyyy-MM-dd',
@@ -901,7 +899,7 @@ const base: inputFormModel[] = [
 
       },
       ],
-    value: [
+    tableData: [
       {
 
         "zkbm": "",
@@ -951,6 +949,19 @@ const base: inputFormModel[] = [
        ],
      },
      editConfig: { trigger: 'click', mode: 'cell'},
+     mouseConfig: {
+      selected: true
+     },
+     keyboardConfig: {
+      isEdit: true,
+      isArrow: true,
+      isEnter: true,
+      isTab: true,
+      isDel: true,
+      isBack: true,
+      isEsc: true,
+      isLastEnterAppendRow: true
+    },
      validConfig: {
        msgMode: 'full'
      },

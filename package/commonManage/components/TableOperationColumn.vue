@@ -1,7 +1,7 @@
 <template>
   <vxe-column :width="menuWidth??menu.menuWidth" v-if="isMenu??menu.isMenu" :fixed="menu.fixed??'right'" :title="menu.title??'操作'" v-bind="menu?.$attrs??{}">
     <template #default="{ row }">
-      <slot :row="row">
+      <slot :row="row" :data="{row, tableData: $parent.tableData, tableRef: $parent.tableRef}">
         <a-button type="link" v-if="isView??menu.isView" @click="handleView(row)">
           <template #icon v-if="(viewIcon??menu.viewIcon) !== undefined">
             <component v-if="(viewIcon??menu.viewIcon) !== false && typeof (viewIcon??menu.viewIcon) === 'function'" :is="viewIcon??menu.viewIcon"></component>

@@ -1,12 +1,14 @@
 <template>
-  <div class=" pb-2 mr-0 overflow-hidden bg-white basic-table basic-table-form-container aCrudTable vxeTableData">
+  <div class=" pb-2 mr-0 overflow-hidden bg-white basic-table basic-table-form-container aCrudTable vxeTableData"
+   :style="{ '--current-row-bg': tablePropsRef.currentRowBg, '--current-row-color': tablePropsRef.currentRowColor }"
+   >
 
     <template v-if="tableTransferPropsRef.isToolBox??tablePropsRef.isToolBox">
       <vxe-toolbar
           custom
           print
           export
-          
+
           v-if="tableTransferPropsRef?.toolBox?.showType !== 'button' && tablePropsRef?.toolBox?.showType !== 'button'"
           ref="toolbarRef"
           v-bind="tableTransferPropsRef?.toolBox??tablePropsRef.toolBox"
@@ -17,6 +19,7 @@
       <div  v-else
             ref="toolbarRef"  style="width: 100%;display: flex;justify-content: space-between;padding:0 0 5px  0;">
         <a-row style="width: 100%;">
+          
           <a-col :span="12">
             <a-space >
               <slot name="buttons"  :data="{ tableData, tableRef: aCardTable}">
@@ -27,6 +30,9 @@
 
           <a-col :span="12" style="text-align: right;">
             <a-space >
+              <slot name="menuLeft"  :data="{ tableData, tableRef: aCardTable}">
+
+              </slot>
               <a-input placeholder="请输入搜索内容" v-if="tableTransferPropsRef?.toolBox?.showSearch === true || tablePropsRef?.toolBox?.showSearch === true" v-model:value="filterName" @keyup="searchEvent"/>
               <a-button  v-if="tableTransferPropsRef?.toolBox?.showExport !== false && tablePropsRef?.toolBox?.showExport !== false" @click="openExport">
                 <DownloadOutlined />
@@ -44,6 +50,8 @@
                 <SettingOutlined />
                 设置
               </a-button>
+              <slot name="menuRight"  :data="{ tableData, tableRef: aCardTable}">
+                </slot>
             </a-space>
           </a-col>
         </a-row>
@@ -66,8 +74,8 @@
         :table-methods="tableMethods"
         :table-ref="aCardTable"
         :is-sortable="tableTransferPropsRef.isSortable"
-        :size="tablePropsRef?.size"
-        :slot-type="slotType"
+        :size="tableTransferPropsRef?.size" 
+        :edit-type="tableTransferPropsRef.editType" 
       >
         <template v-for="(_, name) in $slots" #[name]="slotData">
           <slot :name="name" v-bind="slotData"></slot>
@@ -75,8 +83,8 @@
       </table-column>
 
       <table-operation-column
-        v-if="tableTransferPropsRef.isMenu"
-        :is-menu="tableTransferPropsRef.isMenu"
+        v-if="tableTransferPropsRef.isMenu??tableTransferPropsRef?.menu?.isMenu"
+        :is-menu="tableTransferPropsRef.isMenu??tableTransferPropsRef?.menu?.isMenu"
         :menu="tableTransferPropsRef.menu"
         :menu-width="tableTransferPropsRef.menuWidth"
         :is-view="tableTransferPropsRef.isView"
@@ -89,8 +97,8 @@
         @view="handleFormShow('show', $event)"
         @edit="handleFormShow('update', $event)"
       >
-        <template #default="{ row }">
-          <slot :row="row"></slot>
+        <template #default="{ row, data }">
+          <slot :row="row" :data="data"></slot>
         </template>
       </table-operation-column>
     </vxe-table>
@@ -139,24 +147,22 @@ const { proxy } = getCurrentInstance();
  const filterName = ref();
  const tableColumn = ref(new Map());
  const slots = useSlots();
-
- const slotType = computed(() => {
-   return tableTransferPropsRef.value?.slotType == 'edit' ? 'default' : 'edit';
- })
-
+ 
 
  watch(() => tableData, (data) => {
 
-    if (tableTransferPropsRef.value.isForm) {
+    if (tableTransferPropsRef.value.editType == 'all' || tableTransferPropsRef.value.editType == 'edit') {
       emits('change', data.value);
     }
  }, {deep: true})
 
 
- 
+
 const tableDefaultProps = ref({...{
     maxHeight: "600px",
     align: "center",
+    currentRowBg: '#e6f7ff',
+    currentRowColor: 'black',
     columnConfig:{ isCurrent: true, isHover: true, resizable: true },
     rowConfig: { isCurrent: true, isHover: true },
     headerCellClassName: () => 'headerCellClassName',
@@ -219,7 +225,7 @@ function initFun() {
           assertIsFunction(item);
           item.fun( tableColumn.value, item, tableData);
         } else  {
-        
+
 
             let params = item.params;
             if(item.dynamicParams) {
@@ -247,7 +253,7 @@ function initPage(params) {
   pageSize.value =  tableTransferPropsRef.value?.pagination?.pageSizeField in params && tableTransferPropsRef.value?.pagination?.pageSizeField ?
       params[tableTransferPropsRef.value?.pagination.pageSizeField]??10 :
       'limit' in params && params.page ? params.limit : 10;
- 
+
 
       if (tableTransferPropsRef.value?.pagination?.pageField in tableTransferPropsRef.value.params && tableTransferPropsRef.value?.pagination?.pageField) {
       // 如果页面table配置传了pageField
@@ -270,7 +276,7 @@ function initPage(params) {
     } else {
       // 默认使用limit字段
       tableTransferPropsRef.value.params.limit  = pageSize.value;
-    } 
+    }
     console.log(tableTransferPropsRef.value.params, 293);
 
 }
@@ -316,21 +322,21 @@ function setTableProps(props) {
 
   // 设置 table props， 由默认props 和 传入的 props 组成
     tablePropsRef.value = { ...tableDefaultProps.value, ...tableTransferPropsRef.value?.$attrs??{}};
-  // 初始化参数 如果没有传入params 则使用searchMethods的参数 
- 
+  // 初始化参数 如果没有传入params 则使用searchMethods的参数
+
     tableTransferPropsRef.value.params =  tableTransferPropsRef.value.params??{};
 
 
 
-    
 
-    // isform 是否是在form表单中使用的，可编辑状态
-  if (tableTransferPropsRef.value.isForm) {
-    tableData.value = tableTransferPropsRef.value.value;
+
+     
+  if (tableTransferPropsRef.value.editType == 'all' || tableTransferPropsRef.value.editType == 'edit') {
+    tableData.value = tableTransferPropsRef.value.tableData;
     if (tableData.value?.length == 0) {
       return;
     }
-  
+
   }
 
 
@@ -365,11 +371,11 @@ function getTableRef() {
 
 
 /**
- * 
+ *
  * @param current 传入页数，设置当前分页
- * 
+ *
  */
- 
+
 function setCurrentPagination(current) {
    if (current * pageSize.value > tableTotal.value) {
      return message.info('当前设置页数已超过数据总页数');
@@ -380,17 +386,17 @@ function setCurrentPagination(current) {
 
 /**
  * 获取当前分页
- * 
- */ 
+ *
+ */
 function getCurrentPagination() {
   return currentPage.value;
 }
 
 /**
  * 获取数据总数
- * 
+ *
  */
- 
+
 function getTotalPagination() {
   console.log(tableTotal.value);
   return tableTotal.value;
@@ -398,7 +404,7 @@ function getTotalPagination() {
 
 
 /**
- * 
+ *
  * @param props 传入table配置，并与当前配置合并，如果重复的参数，传入的配置会覆盖初始化时设置的配置
  */
 
@@ -412,7 +418,7 @@ function mergeTableProps(props) {
 
 
 /**
- * 
+ *
  * @param columns 设置table列参数，会完全覆盖初始化时传入的配置
  */
 
@@ -424,7 +430,7 @@ function setTableColumns(columns) {
 
 
 /**
- * 
+ *
  * @param params 设置最新的查询参数
  */
 function setTableParams(params) {
@@ -434,15 +440,15 @@ function setTableParams(params) {
 
 /**
  * 重置参数，将参数设置为初始化时的参数，并调用getData方法
- * 
+ *
  */
-// 
+//
 function reset() {
   tableTransferPropsRef.value.params = deepCopy(resetParams.value);
   initPage(deepCopy(resetParams.value));
   getData();
 }
- 
+
 
 
  // 如果有查看和编辑
@@ -450,7 +456,7 @@ function reset() {
   if ( !tableTransferPropsRef.value.formMethods) {
     message.error('table未关联form页面');
     return;
-  } 
+  }
    tableTransferPropsRef.value.formMethods.handleFormShow(t, row);
  }
 
@@ -465,25 +471,25 @@ function reset() {
   aCardTable.value.openCustom();
  }
 
- 
+
 function setTablePropsValue(key, value){
   tableTransferPropsRef.value[key] = value;
- 
+
   }
   function getTablePropsValue(key){
     console.log(tableTransferPropsRef.value)
     return tableTransferPropsRef.value[key];
   }
 
-  function setTableDataValue(key, value) { 
+  function setTableDataValue(key, value) {
     for (let index = 0; index < tableTransferPropsRef.value.formData.length; index++) {
       if ( tableTransferPropsRef.value.formData[index].name == key) {
         tableTransferPropsRef.value.formData[index] = value;
       }
     }
-   
+
   }
-  
+
   function getTableDataValue(key) {
     return tableTransferPropsRef.value.formData.find(item => item.name == key);
   }
@@ -513,6 +519,7 @@ const searchEvent = () => {
    getData,
    getSearch,
    getTableData,
+   setTableData,
    reset,
    getTableRef,
    setTableColumns,
@@ -539,8 +546,8 @@ const searchEvent = () => {
 async function getData(params?, isMerge = false) {
   console.log(params, tableTransferPropsRef.value);
   initFun();
-   if (tableTransferPropsRef.value.mockData ||  tableTransferPropsRef.value.value) {
-     tableData.value = tableTransferPropsRef.value.mockData??tableTransferPropsRef.value.value;
+   if (tableTransferPropsRef.value.mockData ||  tableTransferPropsRef.value.localData) {
+     tableData.value = tableTransferPropsRef.value.mockData??tableTransferPropsRef.value.localData;
      tableTotal.value = tableData.value.length;
      return tableData.value;
    }
@@ -555,8 +562,8 @@ async function getData(params?, isMerge = false) {
 
     // 如果有params，则判断isMerge，如果为true，则合并初始参数与当前参数进行查询，如果为false，则直接使用params参数进行查询。如果没有params，则直接使用初始参数进行查询
        tableData.value = await useGetTable(tableTransferPropsRef.value.api,
-        params ? 
-         isMerge ? {...params, ...tableTransferPropsRef.value.params} 
+        params ?
+         isMerge ? {...params, ...tableTransferPropsRef.value.params}
           : params
           : tableTransferPropsRef.value.params
          , tableTotal, tableLoading, tableTransferPropsRef.value.dataCallback) || [];
@@ -567,7 +574,7 @@ async function getData(params?, isMerge = false) {
  }
 
  /**
-  * 
+  *
   * @param params 设置查询参数，在调用getData方法
   */
 
@@ -575,9 +582,9 @@ async function getData(params?, isMerge = false) {
  async function getSearch(params) {
 if(tableTransferPropsRef.value.searchMethods) {
   const validateRes = await  tableTransferPropsRef.value.searchMethods.validateSearch();
-  
-if(validateRes){ 
-    await getTableRef().setTableParams(params); 
+
+if(validateRes){
+    await getTableRef().setTableParams(params);
   return await getTableRef().getData();
 } else {
   return false;
@@ -586,15 +593,18 @@ if(validateRes){
   await getTableRef().setTableParams(params);
   return await getTableRef().getData();
 }
-} 
+}
 
 /**
- * 
- * 
+ *
+ *
  */
 
  function getTableData() {
    return tableData.value;
+ }
+ function setTableData(data) {
+   return tableData.value  = data;
  }
 
 defineExpose({getTableRef, tableMethods, aCardTable})
@@ -837,6 +847,16 @@ export default {
   }
   .cellClassName {
     color: black;
+  }
+
+  .vxe-table--render-default .vxe-body--row.row--current, .vxe-table--render-default .vxe-body--row.row--current>.vxe-body--column {
+    background: var(--current-row-bg) !important;
+  }
+  .vxe-cell--wrapper.row--current {
+    color: var(--current-row-color) !important;
+    span.vxe-checkbox--icon.vxe-table-icon-checkbox-checked-fill {
+      background: white;
+    }
   }
 }
 </style>
