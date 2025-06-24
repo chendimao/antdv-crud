@@ -167,7 +167,7 @@ import {
   useSlots
 } from 'vue';
   import { Form, message } from 'ant-design-vue';
-  import FormInputItem from './FormInputItem';
+  import FormInputItem from './FormInputItem/';
   import {deepCopy} from "../utils";
   import aCrudFormFooter from './components/aCrudFormFooter.vue';
 import { isFunction } from '../utils/is';
@@ -209,7 +209,7 @@ import inputItem from "./InputItem";
   const resetForm = ref({});// 重置数据 修改时为当前行数据 新增时为resetForm数据
   const emits = defineEmits(['register', 'formCancel', 'formSubmit']);
   const props = defineProps({
-    formProps: {},
+    config: {},
   });
   const slots = useSlots();
   const loading = ref(false);
@@ -247,7 +247,7 @@ import inputItem from "./InputItem";
         }
       })
     }
-
+    console.log(flatFormData, 250);
     flatFormData(aCardFormRef.value.formData);
     // aCardFormRef.value.formData.forEach((item) => {
     //   console.log(item);
@@ -261,8 +261,8 @@ import inputItem from "./InputItem";
     // 初始化数据
     aCardFormRef.value.formState = deepCopy(resetForm.value);
       formList.forEach((item) => {
-     // 自定义validator的 传入当前表单值以便动态校验 item.rules有值
-     item.rules && (typeof item.show === 'function' ? item.show(aCardFormRef.value.formState, item, aCardFormRef.value.type)??true : item.show??true) ? validateList.value[item['name']] = item.rules.map(ruleItem => {
+     // 自定义validator的 传入当前表单值以便动态校验
+     item.rules ? validateList.value[item['name']] = item.rules.map(ruleItem => {
        if (ruleItem.validator) {
          //console.log(aCardFormRef.value,ruleItem.validator, typeof ruleItem.validator);
          // ruleItem.cardForm = aCardFormRef;
@@ -337,12 +337,9 @@ import inputItem from "./InputItem";
     console.log(t, aCardFormRef.value.type);
     aCardFormRef.value.type = t;
     setFormVisible(true);
-    title.value = aCardFormRef.value[aCardFormRef.value.type + 'Title']??typeText.value[aCardFormRef.value.type] + aCardFormRef.value.title;
+    title.value = aCardFormRef.value[aCardFormRef.value.type + 'Title']??typeText.value[aCardFormRef.value.type] + (aCardFormRef.value.title??'');
     console.log(title.value, 328);
-    
-   // console.log(aCardFormRef.value.visible);
-    
-    aCardFormRef.value.type = t;
+     
     if (t == 'insert') {
       aCardFormRef.value.formState = deepCopy(resetForm.value);
     } else {
@@ -439,8 +436,8 @@ import inputItem from "./InputItem";
     }
 
   }
-watch(() => props.formProps, (data) => {
-  formTransferPropsRef.value = {...formTransferPropsRef.value, ...data};
+watch(() => props.config, (data) => {
+  setFormProps({...formTransferPropsRef.value, ...data})
   console.log(data, formTransferPropsRef, 425);
 }, {deep: true })
 
@@ -476,6 +473,7 @@ function setFormStateValue(key, value) {
 
   function setFormVisible(visible) {
     aCardFormRef.value.visible = visible;
+    console.log(visible, 476);
     if (visible) {
       initForm();
     }

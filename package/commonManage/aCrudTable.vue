@@ -1,7 +1,7 @@
 <template>
   <div class=" pb-2 mr-0 overflow-hidden bg-white basic-table basic-table-form-container aCrudTable vxeTableData"
-   :style="{ '--current-row-bg': tablePropsRef.currentRowBg, '--current-row-color': tablePropsRef.currentRowColor }"
-   >
+       :style="{ '--current-row-bg': tablePropsRef.currentRowBg, '--current-row-color': tablePropsRef.currentRowColor }"
+  >
 
     <template v-if="tableTransferPropsRef.isToolBox??tablePropsRef.isToolBox">
       <vxe-toolbar
@@ -19,7 +19,7 @@
       <div  v-else
             ref="toolbarRef"  style="width: 100%;display: flex;justify-content: space-between;padding:0 0 5px  0;">
         <a-row style="width: 100%;">
-          
+
           <a-col :span="12">
             <a-space >
               <slot name="buttons"  :data="{ tableData, tableRef: aCardTable}">
@@ -51,7 +51,7 @@
                 设置
               </a-button>
               <slot name="menuRight"  :data="{ tableData, tableRef: aCardTable}">
-                </slot>
+              </slot>
             </a-space>
           </a-col>
         </a-row>
@@ -65,17 +65,17 @@
                :print-config="{}"
                :export-config="{}"
                v-if="tableTransferPropsRef"
-                :loading="tableLoading"
+               :loading="tableLoading"
                v-bind="tablePropsRef"
                :data="tableData">
       <table-column
-        :columns="tableColumn"
-        :table-data="tableData"
-        :table-methods="tableMethods"
-        :table-ref="aCardTable"
-        :is-sortable="tableTransferPropsRef.isSortable"
-        :size="tableTransferPropsRef?.size" 
-        :edit-type="tableTransferPropsRef.editType" 
+          :columns="tableColumn"
+          :table-data="tableData"
+          :table-methods="tableMethods"
+          :table-ref="aCardTable"
+          :is-sortable="tableTransferPropsRef.isSortable"
+          :size="tableTransferPropsRef?.size"
+          :edit-type="tableTransferPropsRef.editType"
       >
         <template v-for="(_, name) in $slots" #[name]="slotData">
           <slot :name="name" v-bind="slotData"></slot>
@@ -83,19 +83,19 @@
       </table-column>
 
       <table-operation-column
-        v-if="tableTransferPropsRef.isMenu??tableTransferPropsRef?.menu?.isMenu"
-        :is-menu="tableTransferPropsRef.isMenu??tableTransferPropsRef?.menu?.isMenu"
-        :menu="tableTransferPropsRef.menu"
-        :menu-width="tableTransferPropsRef.menuWidth"
-        :is-view="tableTransferPropsRef.isView"
-        :is-edit="tableTransferPropsRef.isEdit"
-        :view-icon="tableTransferPropsRef.viewIcon"
-        :edit-icon="tableTransferPropsRef.editIcon"
-        :view-text="tableTransferPropsRef.viewText"
-        :edit-text="tableTransferPropsRef.editText"
-        :form-methods="tableTransferPropsRef.formMethods"
-        @view="handleFormShow('show', $event)"
-        @edit="handleFormShow('update', $event)"
+          v-if="tableTransferPropsRef.isMenu??tableTransferPropsRef?.menu?.isMenu"
+          :is-menu="tableTransferPropsRef.isMenu??tableTransferPropsRef?.menu?.isMenu"
+          :menu="tableTransferPropsRef.menu"
+          :menu-width="tableTransferPropsRef.menuWidth"
+          :is-view="tableTransferPropsRef.isView"
+          :is-edit="tableTransferPropsRef.isEdit"
+          :view-icon="tableTransferPropsRef.viewIcon"
+          :edit-icon="tableTransferPropsRef.editIcon"
+          :view-text="tableTransferPropsRef.viewText"
+          :edit-text="tableTransferPropsRef.editText"
+          :form-methods="tableTransferPropsRef.formMethods"
+          @view="handleFormShow('show', $event)"
+          @edit="handleFormShow('update', $event)"
       >
         <template #default="{ row, data }">
           <slot :row="row" :data="data"></slot>
@@ -110,7 +110,7 @@
           v-model:pageSize="pageSize"
           @change="handlePaginationChange"
           @showSizeChange="handlePageSizeChange"
-        v-bind="paginationConfig"
+          v-bind="paginationConfig"
       />
     </div>
 
@@ -131,30 +131,36 @@ import TableOperationColumn from './components/TableOperationColumn.vue';
 import TableColumn from './components/TableColumn.vue';
 const { proxy } = getCurrentInstance();
 
- const emits = defineEmits([ 'register', 'change']);
+const emits = defineEmits([ 'register', 'change']);
 
 
- const tableTotal = ref(0);
- const tableLoading = ref(false);
- const tableData = ref([]);
- const aCardTable = ref();
- const toolbarRef = ref();
- const tablePropsRef = ref();
- const tableTransferPropsRef = ref();
- const currentPage = ref(1);
- const pageSize = ref(10);
- const resetParams = ref();
- const filterName = ref();
- const tableColumn = ref(new Map());
- const slots = useSlots();
- 
+const tableTotal = ref(0);
+const tableLoading = ref(false);
+const tableData = ref([]);
+const aCardTable = ref();
+const toolbarRef = ref();
+const tablePropsRef = ref();
+const tableTransferPropsRef = ref();
+const currentPage = ref(1);
+const pageSize = ref(10);
+const resetParams = ref();
+const filterName = ref();
+const tableColumn = ref(new Map());
+const slots = useSlots();
 
- watch(() => tableData, (data) => {
+const props = defineProps({
+  config: {default: {}}
+});
 
-    if (tableTransferPropsRef.value.editType == 'all' || tableTransferPropsRef.value.editType == 'edit') {
-      emits('change', data.value);
-    }
- }, {deep: true})
+watch(() => props.config, (data) => {
+  setTableProps({...tableTransferPropsRef.value, ...data})
+}, {deep: true })
+watch(() => tableData, (data) => {
+
+  if (tableTransferPropsRef.value.editType == 'all' || tableTransferPropsRef.value.editType == 'edit') {
+    emits('change', data.value);
+  }
+}, {deep: true})
 
 
 
@@ -184,30 +190,30 @@ const tableDefaultProps = ref({...{
     },
   }, ...proxy.$crudGlobalTableConfig??{}})
 
- const paginationConfig = ref();
+const paginationConfig = ref();
 const tableDefaultPaginationConfig = ref({
-    showTotal: (total) => `共 ${total} 条数据`,
-   showSizeChanger: false,
-   showLessItems: true
- });
+  showTotal: (total) => `共 ${total} 条数据`,
+  showSizeChanger: false,
+  showLessItems: true
+});
 const paginationTransferPropsRef = ref();
- onMounted(() => {
- //  tableTransferPropsRef.immediate && getData();
-   // 将表格和工具栏进行关联
+onMounted(() => {
+  //  tableTransferPropsRef.immediate && getData();
+  // 将表格和工具栏进行关联
 
-   console.log(slots, 326);
+  console.log(slots, 326);
 
 
-    if ((tableTransferPropsRef.value.isToolBox || tablePropsRef.value.isToolBox) && tableTransferPropsRef.value?.toolBox?.showType !== 'button' && tablePropsRef.value?.toolBox?.showType !== 'button') {
-      const $table = aCardTable.value
-      const $toolbar = toolbarRef.value
-      if ($table && $toolbar) {
-        $table.connect($toolbar)
-      }
+  if ((tableTransferPropsRef.value.isToolBox || tablePropsRef.value.isToolBox) && tableTransferPropsRef.value?.toolBox?.showType !== 'button' && tablePropsRef.value?.toolBox?.showType !== 'button') {
+    const $table = aCardTable.value
+    const $toolbar = toolbarRef.value
+    if ($table && $toolbar) {
+      $table.connect($toolbar)
     }
+  }
 
 
- })
+})
 
 
 
@@ -227,10 +233,10 @@ function initFun() {
         } else  {
 
 
-            let params = item.params;
-            if(item.dynamicParams) {
-              params = {...params, ...item.dynamicParams(tableColumn.value,item, tableData)};
-            }
+          let params = item.params;
+          if(item.dynamicParams) {
+            params = {...params, ...item.dynamicParams(tableColumn.value,item, tableData)};
+          }
           column.option = await getOptionList(item.api, params, item.relationField??item.field, item.childrenField);
 
         }
@@ -244,73 +250,73 @@ function initFun() {
 // 初始化当前页和每页条数
 function initPage(params) {
 
-   if (tableTransferPropsRef.value?.pagination?.isPagination === false) {
-     return;
-   }
+  if (tableTransferPropsRef.value?.pagination?.isPagination === false) {
+    return;
+  }
   currentPage.value = tableTransferPropsRef.value?.pagination?.pageField in params && tableTransferPropsRef.value?.pagination?.pageField ?
-       params[tableTransferPropsRef.value?.pagination.pageField]??1 :
+      params[tableTransferPropsRef.value?.pagination.pageField]??1 :
       'page' in params && params.page ? params.page : 1;
   pageSize.value =  tableTransferPropsRef.value?.pagination?.pageSizeField in params && tableTransferPropsRef.value?.pagination?.pageSizeField ?
       params[tableTransferPropsRef.value?.pagination.pageSizeField]??10 :
       'limit' in params && params.page ? params.limit : 10;
 
 
-      if (tableTransferPropsRef.value?.pagination?.pageField in tableTransferPropsRef.value.params && tableTransferPropsRef.value?.pagination?.pageField) {
-      // 如果页面table配置传了pageField
-      tableTransferPropsRef.value.params[tableTransferPropsRef.value?.pagination.pageField]  = currentPage.value
-    } else if (tablePropsRef.value?.pagination?.pageField in tableTransferPropsRef.value.params && tablePropsRef.value.pageField) {
-       // 如果传了全局配置传了pageField
-      tableTransferPropsRef.value.params[tablePropsRef.value.pageField]  = currentPage.value;
-    } else {
-      // 默认使用page字段
-      'page' in tableTransferPropsRef.value.params && tableTransferPropsRef.value.params.page ?   tableTransferPropsRef.value.params.page = currentPage.value :  tableTransferPropsRef.value.params.page = undefined;
-    }
+  if (tableTransferPropsRef.value?.pagination?.pageField in tableTransferPropsRef.value.params && tableTransferPropsRef.value?.pagination?.pageField) {
+    // 如果页面table配置传了pageField
+    tableTransferPropsRef.value.params[tableTransferPropsRef.value?.pagination.pageField]  = currentPage.value
+  } else if (tablePropsRef.value?.pagination?.pageField in tableTransferPropsRef.value.params && tablePropsRef.value.pageField) {
+    // 如果传了全局配置传了pageField
+    tableTransferPropsRef.value.params[tablePropsRef.value.pageField]  = currentPage.value;
+  } else {
+    // 默认使用page字段
+    'page' in tableTransferPropsRef.value.params && tableTransferPropsRef.value.params.page ?   tableTransferPropsRef.value.params.page = currentPage.value :  tableTransferPropsRef.value.params.page = undefined;
+  }
 
 
-    if (tableTransferPropsRef.value?.pagination?.pageSizeField) {
-      // 如果页面table配置传了pageSizeField
-      tableTransferPropsRef.value.params[tableTransferPropsRef.value?.pagination.pageSizeField]  = pageSize.value
-    } else if (tablePropsRef.value.pageSizeField) {
-      // 如果传了全局配置传了pageSizeField
-      tableTransferPropsRef.value.params[tablePropsRef.value.pageSizeField]  = pageSize.value;
-    } else {
-      // 默认使用limit字段
-      tableTransferPropsRef.value.params.limit  = pageSize.value;
-    }
-    console.log(tableTransferPropsRef.value.params, 293);
+  if (tableTransferPropsRef.value?.pagination?.pageSizeField) {
+    // 如果页面table配置传了pageSizeField
+    tableTransferPropsRef.value.params[tableTransferPropsRef.value?.pagination.pageSizeField]  = pageSize.value
+  } else if (tablePropsRef.value.pageSizeField) {
+    // 如果传了全局配置传了pageSizeField
+    tableTransferPropsRef.value.params[tablePropsRef.value.pageSizeField]  = pageSize.value;
+  } else {
+    // 默认使用limit字段
+    tableTransferPropsRef.value.params.limit  = pageSize.value;
+  }
+  console.log(tableTransferPropsRef.value.params, 293);
 
 }
 
 // 页码或 pageSize 改变的回调
 function handlePaginationChange(page, pageSize) {
   if (tableTransferPropsRef.value?.pagination?.pageField in tableTransferPropsRef.value.params && tableTransferPropsRef.value?.pagination?.pageField) {
-      // 如果页面table配置传了pageField
-      tableTransferPropsRef.value.params[tableTransferPropsRef.value?.pagination.pageField]  = page
-    } else if (tablePropsRef.value?.pagination?.pageField in tableTransferPropsRef.value.params && tablePropsRef.value.pageField) {
-       // 如果传了全局配置传了pageField
-      tableTransferPropsRef.value.params[tablePropsRef.value.pageField]  = page;
-    } else {
-      // 默认使用page字段
-      'page' in tableTransferPropsRef.value.params && tableTransferPropsRef.value.params.page ?   tableTransferPropsRef.value.params.page = page :  tableTransferPropsRef.value.params.page = undefined;
-    }
-    getData();
+    // 如果页面table配置传了pageField
+    tableTransferPropsRef.value.params[tableTransferPropsRef.value?.pagination.pageField]  = page
+  } else if (tablePropsRef.value?.pagination?.pageField in tableTransferPropsRef.value.params && tablePropsRef.value.pageField) {
+    // 如果传了全局配置传了pageField
+    tableTransferPropsRef.value.params[tablePropsRef.value.pageField]  = page;
+  } else {
+    // 默认使用page字段
+    'page' in tableTransferPropsRef.value.params && tableTransferPropsRef.value.params.page ?   tableTransferPropsRef.value.params.page = page :  tableTransferPropsRef.value.params.page = undefined;
+  }
+  getData();
 }
 
 function handlePageSizeChange(current, pageSize) {
   if (tableTransferPropsRef.value?.pagination?.pageSizeField) {
-      // 如果页面table配置传了pageSizeField
-      tableTransferPropsRef.value.params[tableTransferPropsRef.value?.pagination.pageSizeField]  = pageSize
-    } else if (tablePropsRef.value.pageSizeField) {
-      // 如果传了全局配置传了pageSizeField
-      tableTransferPropsRef.value.params[tablePropsRef.value.pageSizeField]  = pageSize;
-    } else {
-      // 默认使用limit字段
-      tableTransferPropsRef.value.params.limit  = pageSize;
-    }
-    // 如果更改了每页数量，重新设置当前页为1
-    currentPage.value = 1;
+    // 如果页面table配置传了pageSizeField
+    tableTransferPropsRef.value.params[tableTransferPropsRef.value?.pagination.pageSizeField]  = pageSize
+  } else if (tablePropsRef.value.pageSizeField) {
+    // 如果传了全局配置传了pageSizeField
+    tableTransferPropsRef.value.params[tablePropsRef.value.pageSizeField]  = pageSize;
+  } else {
+    // 默认使用limit字段
+    tableTransferPropsRef.value.params.limit  = pageSize;
+  }
+  // 如果更改了每页数量，重新设置当前页为1
+  currentPage.value = 1;
 
-    getData();
+  getData();
 }
 
 // 设置 table props
@@ -321,16 +327,16 @@ function setTableProps(props) {
 
 
   // 设置 table props， 由默认props 和 传入的 props 组成
-    tablePropsRef.value = { ...tableDefaultProps.value, ...tableTransferPropsRef.value?.$attrs??{}};
+  tablePropsRef.value = { ...tableDefaultProps.value, ...tableTransferPropsRef.value?.$attrs??{}};
   // 初始化参数 如果没有传入params 则使用searchMethods的参数
 
-    tableTransferPropsRef.value.params =  tableTransferPropsRef.value.params??{};
+  tableTransferPropsRef.value.params =  tableTransferPropsRef.value.params??{};
 
 
 
 
 
-     
+
   if (tableTransferPropsRef.value.editType == 'all' || tableTransferPropsRef.value.editType == 'edit') {
     tableData.value = tableTransferPropsRef.value.tableData;
     if (tableData.value?.length == 0) {
@@ -340,7 +346,7 @@ function setTableProps(props) {
   }
 
 
-    console.log( tableTransferPropsRef.value.params);
+  console.log( tableTransferPropsRef.value.params);
   resetParams.value = deepCopy(tableTransferPropsRef.value.params);
 
 
@@ -363,7 +369,7 @@ function setPaginationProps(props) {
 }
 
 function getTableRef() {
-    return aCardTable.value;
+  return aCardTable.value;
 }
 
 
@@ -377,9 +383,9 @@ function getTableRef() {
  */
 
 function setCurrentPagination(current) {
-   if (current * pageSize.value > tableTotal.value) {
-     return message.info('当前设置页数已超过数据总页数');
-   }
+  if (current * pageSize.value > tableTotal.value) {
+    return message.info('当前设置页数已超过数据总页数');
+  }
   currentPage.value = current;
   getData();
 }
@@ -434,7 +440,7 @@ function setTableColumns(columns) {
  * @param params 设置最新的查询参数
  */
 function setTableParams(params) {
-   tableTransferPropsRef.value.params = deepCopy(params);
+  tableTransferPropsRef.value.params = deepCopy(params);
   initPage(tableTransferPropsRef.value.params);
 }
 
@@ -451,48 +457,48 @@ function reset() {
 
 
 
- // 如果有查看和编辑
- function handleFormShow(t = 'insert', row) {
+// 如果有查看和编辑
+function handleFormShow(t = 'insert', row) {
   if ( !tableTransferPropsRef.value.formMethods) {
     message.error('table未关联form页面');
     return;
   }
-   tableTransferPropsRef.value.formMethods.handleFormShow(t, row);
- }
+  tableTransferPropsRef.value.formMethods.handleFormShow(t, row);
+}
 
- function openExport() {
+function openExport() {
   aCardTable.value.openExport();
- }
+}
 
- function openPrint() {
+function openPrint() {
   aCardTable.value.openPrint();
- }
- function openCustom() {
+}
+function openCustom() {
   aCardTable.value.openCustom();
- }
+}
 
 
 function setTablePropsValue(key, value){
   tableTransferPropsRef.value[key] = value;
 
-  }
-  function getTablePropsValue(key){
-    console.log(tableTransferPropsRef.value)
-    return tableTransferPropsRef.value[key];
-  }
+}
+function getTablePropsValue(key){
+  console.log(tableTransferPropsRef.value)
+  return tableTransferPropsRef.value[key];
+}
 
-  function setTableDataValue(key, value) {
-    for (let index = 0; index < tableTransferPropsRef.value.formData.length; index++) {
-      if ( tableTransferPropsRef.value.formData[index].name == key) {
-        tableTransferPropsRef.value.formData[index] = value;
-      }
+function setTableDataValue(key, value) {
+  for (let index = 0; index < tableTransferPropsRef.value.formData.length; index++) {
+    if ( tableTransferPropsRef.value.formData[index].name == key) {
+      tableTransferPropsRef.value.formData[index] = value;
     }
-
   }
 
-  function getTableDataValue(key) {
-    return tableTransferPropsRef.value.formData.find(item => item.name == key);
-  }
+}
+
+function getTableDataValue(key) {
+  return tableTransferPropsRef.value.formData.find(item => item.name == key);
+}
 
 
 const searchEvent = () => {
@@ -514,43 +520,43 @@ const searchEvent = () => {
   }
 }
 
- // 导出外部需要使用的方法
- const tableMethods = {
-   getData,
-   getSearch,
-   getTableData,
-   setTableData,
-   reset,
-   getTableRef,
-   setTableColumns,
-   setTableParams,
-   setTableProps,
-   setTablePropsValue,
-   getTablePropsValue,
-   setTableDataValue,
-   getTableDataValue,
-   mergeTableProps,
-   setCurrentPagination,
-   getCurrentPagination,
-   getTotalPagination,
- }
+// 导出外部需要使用的方法
+const tableMethods = {
+  getData,
+  getSearch,
+  getTableData,
+  setTableData,
+  reset,
+  getTableRef,
+  setTableColumns,
+  setTableParams,
+  setTableProps,
+  setTablePropsValue,
+  getTablePropsValue,
+  setTableDataValue,
+  getTableDataValue,
+  mergeTableProps,
+  setCurrentPagination,
+  getCurrentPagination,
+  getTotalPagination,
+}
 
 
- /**
-  * 初始化并调用查询接口
-  * params 查询参数， 可不填
-  * isMerge 是否将当前传入的参数与原参数进行合并查询
-  */
+/**
+ * 初始化并调用查询接口
+ * params 查询参数， 可不填
+ * isMerge 是否将当前传入的参数与原参数进行合并查询
+ */
 
 
 async function getData(params?, isMerge = false) {
   console.log(params, tableTransferPropsRef.value);
   initFun();
-   if (tableTransferPropsRef.value.mockData ||  tableTransferPropsRef.value.localData) {
-     tableData.value = tableTransferPropsRef.value.mockData??tableTransferPropsRef.value.localData;
-     tableTotal.value = tableData.value.length;
-     return tableData.value;
-   }
+  if (tableTransferPropsRef.value.mockData ||  tableTransferPropsRef.value.localData) {
+    tableData.value = tableTransferPropsRef.value.mockData??tableTransferPropsRef.value.localData;
+    tableTotal.value = tableData.value.length;
+    return tableData.value;
+  }
 
   if (tableTransferPropsRef.value.beforeCallback) {
     tableTransferPropsRef.value.beforeCallback(tableTransferPropsRef.value);
@@ -558,41 +564,41 @@ async function getData(params?, isMerge = false) {
 
 
 
-   if (tableTransferPropsRef.value.api) {
+  if (tableTransferPropsRef.value.api) {
 
     // 如果有params，则判断isMerge，如果为true，则合并初始参数与当前参数进行查询，如果为false，则直接使用params参数进行查询。如果没有params，则直接使用初始参数进行查询
-       tableData.value = await useGetTable(tableTransferPropsRef.value.api,
+    tableData.value = await useGetTable(tableTransferPropsRef.value.api,
         params ?
-         isMerge ? {...params, ...tableTransferPropsRef.value.params}
-          : params
-          : tableTransferPropsRef.value.params
-         , tableTotal, tableLoading, tableTransferPropsRef.value.dataCallback) || [];
-     return tableData;
-   } else {
-     message.error('请配置API');
-   }
- }
+            isMerge ? {...params, ...tableTransferPropsRef.value.params}
+                : params
+            : tableTransferPropsRef.value.params
+        , tableTotal, tableLoading, tableTransferPropsRef.value.dataCallback) || [];
+    return tableData;
+  } else {
+    message.error('请配置API');
+  }
+}
 
- /**
-  *
-  * @param params 设置查询参数，在调用getData方法
-  */
+/**
+ *
+ * @param params 设置查询参数，在调用getData方法
+ */
 
 
- async function getSearch(params) {
-if(tableTransferPropsRef.value.searchMethods) {
-  const validateRes = await  tableTransferPropsRef.value.searchMethods.validateSearch();
+async function getSearch(params) {
+  if(tableTransferPropsRef.value.searchMethods) {
+    const validateRes = await  tableTransferPropsRef.value.searchMethods.validateSearch();
 
-if(validateRes){
+    if(validateRes){
+      await getTableRef().setTableParams(params);
+      return await getTableRef().getData();
+    } else {
+      return false;
+    }
+  }  else {
     await getTableRef().setTableParams(params);
-  return await getTableRef().getData();
-} else {
-  return false;
-}
-}  else {
-  await getTableRef().setTableParams(params);
-  return await getTableRef().getData();
-}
+    return await getTableRef().getData();
+  }
 }
 
 /**
@@ -600,12 +606,12 @@ if(validateRes){
  *
  */
 
- function getTableData() {
-   return tableData.value;
- }
- function setTableData(data) {
-   return tableData.value  = data;
- }
+function getTableData() {
+  return tableData.value;
+}
+function setTableData(data) {
+  return tableData.value  = data;
+}
 
 defineExpose({getTableRef, tableMethods, aCardTable})
 console.log(tableMethods);

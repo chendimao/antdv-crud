@@ -34,21 +34,21 @@
                                              :sizeField="item.sizeField"
                                              :tableField="item.tableField"
                                              :valueField="item.valueField"
-                                             :selectField="item.selectField"
                                              :callbackFun="item.callbackFun"
                                              :pageField="item.pageField"
                                              :name="item.name"
-                                             :transfer="item.transfer"
                                              :debounceTime="item.debounceTime"
                                              :showPage="item.showPage"
-                                             v-model="inputValue" 
+                                             v-model="inputValue"
                                              :searchField="item.searchField"
                                              @change="handleDictChange"
-                                             :attrs="item.$attrs"
+                                             v-bind="{
+                                              ...item.$attrs,
+                                              }"
                                 />
                               </template>
                               <template v-else-if="item.type == 'table'">
-                                <a-crud-table  
+                                <a-crud-table :isForm="true"
                                               v-if="formTable"
                                               ref="inputItemRef"
                                               @register="formTable.register"
@@ -241,7 +241,8 @@ const slots = useSlots();
 
 // 加载自定义css
 const handleLoadStyle = () => {
- 
+
+  console.log(inputItem.value.css, 131)
   const css = ` .aCardFormItem .${inputItem.value.name} {
     ${inputItem.value.css}
   }`;
@@ -254,13 +255,13 @@ watch(() => props.item, async (data) => {
   inputItem.value = data;
   // 如果是table
   if (inputItem.value.type === 'table') {
-    const isFormParams =     
-        formTable.value = new useTable({
-           isToolBox: true,
+    const isFormParams = inputItem.value.isForm === true ? { isToolBox: true,
           toolBox: {showExport: false,showPrint: false,showRefresh: false,showSetting: false},
-          editType: 'edit',
-          pagination: {isPagination: false } ,
+          isForm: true,
+          pagination: {isPagination: false } } : {};
+        formTable.value = new useTable({
         ...inputItem.value,
+        ...isFormParams
       });
   }
 
@@ -284,7 +285,7 @@ watch(() => props.item, async (data) => {
 
 
   // 执行自定义css
-  handleLoadStyle();
+  // handleLoadStyle();
 
 
 
@@ -345,7 +346,6 @@ const handleDictChange = (value, data) => {
 const handleTableChange = (value) => {
   emit('change', inputItem.value, value);
 }
-
 
 
 

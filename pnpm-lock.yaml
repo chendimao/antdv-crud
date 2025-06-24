@@ -7,6 +7,10 @@ settings:
 importers:
 
   .:
+    dependencies:
+      antdv-crud:
+        specifier: ^2.0.46
+        version: 2.0.46
     devDependencies:
       '@ant-design/colors':
         specifier: ^7.0.2
@@ -964,6 +968,9 @@ packages:
     engines: {node: '>=12.22.0'}
     peerDependencies:
       vue: '>=3.2.0'
+
+  antdv-crud@2.0.46:
+    resolution: {integrity: sha512-7MJomEwir/pgefHc7cMrKFOrD3Iwv+i878NS5bQYZ9lwyXLwCeDVwVbXscWbmcbEMqI8z3fVASGCHf4yxe74wg==}
 
   array-tree-filter@2.1.0:
     resolution: {integrity: sha512-4ROwICNlNw/Hqa9v+rk5h22KjmzB1JGTMVKP2AKJBOCgb0yL0ASf0+YvCcLNNwquOHNX48jkeZIJ3a+oOQqKcw==}
@@ -2644,6 +2651,8 @@ snapshots:
       vue: 3.5.13(typescript@5.7.3)
       vue-types: 3.0.2(vue@3.5.13(typescript@5.7.3))
       warning: 4.0.3
+
+  antdv-crud@2.0.46: {}
 
   array-tree-filter@2.1.0: {}
 

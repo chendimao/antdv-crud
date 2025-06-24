@@ -1,0 +1,35 @@
+{
+  "name": "antdv-crud",
+  "version": "1.0.0",
+  "description": "A Vue 3 CRUD component library based on Ant Design Vue",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "files": [
+    "index.js",
+    "index.d.ts",
+    "commonManage/",
+    "utils/",
+    "hooks/",
+    "model/"
+  ],
+  "keywords": [
+    "vue",
+    "vue3",
+    "ant-design-vue",
+    "crud",
+    "form",
+    "table",
+    "search",
+    "typescript"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "peerDependencies": {
+    "vue": "^3.0.0",
+    "ant-design-vue": "^3.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^18.0.0",
+    "typescript": "^4.9.0"
+  }
+} 

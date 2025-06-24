@@ -1,11 +1,17 @@
 {
   "name": "antdv-crud",
-  "version": "2.0.38",
+  "version": "2.0.54",
   "type": "module",
   "files": [
+    "index.js",
+    "index.d.ts",
+    "commonManage/",
+    "utils/",
+    "hooks/",
+    "model/",
     "dist/*",
     "antdv-crud.d.js"
-  ],
+  ], 
   "main": "dist/antdv-crud.umd.js",
   "module": "dist/antdv-crud.es.js",
   "license": "MIT",
@@ -49,5 +55,8 @@
   },
   "volta": {
     "node": "20.18.0"
+  },
+  "dependencies": {
+    "antdv-crud": "^2.0.51"
   }
 }

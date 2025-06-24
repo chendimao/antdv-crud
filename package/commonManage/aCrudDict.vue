@@ -1,6 +1,6 @@
 <template>
 
-    <vxe-pulldown ref="pulldownRef" id="dictPulldown"  style="width: 100%;"   popup-class-name="dropdown-table" :transfer="transfer" v-bind="attrs">
+    <vxe-pulldown ref="pulldownRef" id="dictPulldown"  style="width: 100%;"  popup-class-name="dropdown-table" :transfer="transfer">
       <template #default>
         <a-input v-model:value="searchName"
                  autocomplete="off"
@@ -86,11 +86,9 @@ const props = defineProps({
    pageField: {type: String, default: 'page'},
    sizeField: {type: String, default: 'limit'},
   name: {type: String, default: 'dmmc'},
-  attrs: {type: Object, default: () => ({})},
   defaultValue: {type: String, default: ''},
   debounceTime: {type: String, default: '200'},
   searchField: {type: String, default: 'dmmc'},
-  selectField: {type: String, default: 'dmmc'}, // 主要用于复杂的回显字段，输入框的回显字段优先级：  selectField > searchField > name
 
   callbackFun: {},
   tableField: {type: Array, default: () => [{field: 'dmmc', title: '名称', width: 100}, {field: 'dm', title: '代码', width: 100}, {field: 'icd10', title: 'icd10', width: 120}]},
@@ -222,14 +220,13 @@ const pageChangeEvent = (ev) => {
 
 function handleSubmit(ev) {
   pulldownRef.value.togglePanel();
-  searchName.value = ev.row[props.selectField??props.searchField??props.name];
+  searchName.value = ev.row[props.searchField??props.name];
   currentData.value = ev;
   if (!historyData.value.includes(searchName.value)) {
     historyData.value.push(searchName.value);
     historyData.value = historyData.value.splice(-3);
   }
   searchNameTmp.value = searchName.value;
-  console.log(ev, searchName.value, currentData.value, tableData)
   emits('change',  searchName.value, currentData.value, tableData);
 
 }

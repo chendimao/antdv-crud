@@ -232,7 +232,7 @@ const base: inputFormModel[] = [
     name: 'radio',
     span: 12,
     value: '',
-     option: stateList,
+    option: stateList,
 
     rules:[
       { required: true, message: '请选择单选'},
@@ -382,7 +382,7 @@ const base: inputFormModel[] = [
       {
         type: 'function',
         fun: (formState) => {
-          console.log(formState);
+          console.log(formState, 385);
           formState.value.bm = `${formState.value.zkbm}.${formState.value.bmbm}.${formState.value.zhbm}.${formState.value.ysbm}`;
         },
       },
@@ -1097,6 +1097,71 @@ const base: inputFormModel[] = [
     fullscreen: false,
     labelCol: { style: { width: '130px' } },
 
+  },
+  {
+    type: 'grid',
+    name: '栅格',
+    columns: [
+      {span: 12, children: [
+        {
+          text: '下拉框',
+          type: 'select',
+          name: 'select1',
+          span: 8,
+          value: '',
+          style: '',
+          class: '',
+           option: stateList,
+          computedFun: [
+            {type: 'function', fun: (formState, Data, inputItem, value, type, otherData ) => {
+                console.log(formState, otherData);
+              }}
+          ],
+      
+          rules:[
+            { required: true, message: '请输入select'},
+          ],
+          labelCol: { style: { width: '100px' } },
+        },{
+          text: '下拉框远程获取option',
+          type: 'select',
+          name: 'select',
+          span: 8,
+          value: '',
+          style: '',
+          class: '',
+           option: stateList,
+          computedFun: [
+            {type: 'option', api: getSortName, params: {sortSort: 3}, field: {labels: 'sortname', value: 'sortname'}}
+          ],
+          $attrs: {
+            onChange: (...data) => {
+              console.log(data);
+            }
+          },
+          rules:[
+            { required: true, message: '请输入select'},
+          ],
+          labelCol: { style: { width: '100px' } },
+        },
+        {
+          text: '  多选',
+          type: 'checkbox',
+          name: 'checkbox',
+          span: 8,
+          value: '',
+          style: '',
+          class: '',
+           option: stateList,
+          
+          rules:[
+            { required: true, message: '请输入select'},
+          ],
+          labelCol: { style: { width: '130px' } },
+        }, 
+      ]},
+      {span: 12, children: []}
+    ],
   },
   {
     type: 'p',

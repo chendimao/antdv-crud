@@ -59,7 +59,7 @@ interface InputFormItem {
 }
 
 const props = defineProps<{
-  modelValue?: boolean | string | number;
+  modelValue?: boolean;
   validateFun?: (name: string, options: { trigger: string }) => Promise<void>;
   item: InputFormItem;
   formState?: Record<string, any>;
@@ -69,7 +69,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-  (e: 'update:modelValue', value: boolean | string | number): void;
+  (e: 'update:modelValue', value: boolean): void;
   (e: 'change', item: InputFormItem, checked: boolean): void;
 }>();
 

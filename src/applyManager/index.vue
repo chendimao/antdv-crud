@@ -6,6 +6,7 @@
       <a-crud-search ref="searchRef"
                      @register="testUseSearch.register"
                      @search="emitSearch"
+                     :config="searchProps"
                      >
 
         <router-link to="/home1">to page2</router-link>
@@ -95,12 +96,51 @@
         >
 
 
+        <a-button
+            @click="handleUpdateConfig"
+            type="primary"
+            style="float: left; margin : 10px"
+            size="middle"
+            class="!px-2"
+        >
+          测试修改 table config</a-button
+        >
+          <a-button
+            @click="handleUpdateSearchConfig"
+            type="primary"
+            style="float: left; margin : 10px"
+            size="middle"
+            class="!px-2"
+        >
+          测试修改 search config</a-button
+        >  
+         <a-button
+            @click="handleUpdateFormConfig"
+            type="primary"
+            style="float: left; margin : 10px"
+            size="middle"
+            class="!px-2"
+        >
+          测试修改 form config</a-button
+        >
+  <a-button
+            @click="handleUpdateFormConfig"
+            type="primary"
+            style="float: left; margin : 10px"
+            size="middle"
+            class="!px-2"
+        >
+          测试修改 form config</a-button
+        >
+
+
       </a-crud-search>
+   
     </template>
     <a-row>
       <a-col :span="24">
         字典弹窗单独使用：
-        <a-crud-dict style="width:200px;" :immediate="false" @change="changeDict" :api="GetDiagnosis"
+        <a-crud-dict style="width:200px;" :immediate="true" @change="changeDict" :api="GetDiagnosis"
                      :tableField="[
                  { field: 'a3', title: '名称', width: 150 },
                   { field: 'a1', title: '编码', width: 150 },
@@ -111,6 +151,7 @@
           <a-crud-table
             @register="testUseTable.register"
             ref="crudTableRef"
+            :config="tableProps"
           >
             <template #buttons="data">
               <a-button
@@ -126,7 +167,9 @@
                 新增</a-button>
 
             </template>
-           
+            <template #default="data">
+              <a-button type="link" @click="handleAddShow('insert', data)">删除</a-button>
+            </template>
 
             <template #bz="data">test bz
 <!--              <a-input v-model:value="data.formState.bz"  @blur="data.validateFun(data.item.name, { trigger: 'blur' }).catch(() => {})"/>-->
@@ -233,7 +276,14 @@ const crudTableRef = ref();
     isMenu: true,
     menuWidth: 300,
     isView: true,
-    isEdit: false,
+    isEdit: true,
+    css: `
+      .vxe-cell--wrapper{
+        background: red !important;
+        color: white;
+      }
+    `,
+    name: 'tableProps',
     beforeCallback: (props) => {
       props.params.userId = 'sfadfas';
     },
@@ -258,8 +308,7 @@ const crudTableRef = ref();
   });
 
 
-  const formProps =  ref({
-      title: '用户管理',
+  const formProps =  ref({ 
       formData: retireData,
       insertApi: web_alterationApply_insertOrUpdate,
       updateApi: web_alterationApply_insertOrUpdate,
@@ -269,14 +318,13 @@ const crudTableRef = ref();
       /// visible: true,
 
     });
-  const formProps2 =  ref({
-      title: '用户管理',
+  const formProps2 =  ref({ 
       formData: retireData,
       css: `
 
 
-         .szsrk .ant-form-item-label >label  {
-          // background:red;
+           .ant-form-item-label >label  {
+          background:red;
           color: white;
           }
           .table tr  {
@@ -294,13 +342,13 @@ const crudTableRef = ref();
       /// visible: true,
 
     });
-    const searchProps =  {
+    const searchProps =  ref({
       formData: searchData,
-    } ;
+    } );
     const testUseForm = new antdCrud.useForm(formProps.value);
     const testUseForm2 = new antdCrud.useForm(formProps2.value);
     const testUseTable = new antdCrud.useTable(tableProps.value);
-    const testUseSearch = new antdCrud.useSearch(searchProps );
+    const testUseSearch = new antdCrud.useSearch(searchProps.value );
     console.log(testUseForm, testUseTable.tableMethods, testUseSearch);
 
 onMounted(async () => {
@@ -457,6 +505,38 @@ await methods.value.mergeTableProps({api: web_alterationApply_getByList});
   }
 
 
+  function handleUpdateConfig() {
+    tableProps.value.$attrs.currentRowColor = 'red';
+
+  }
+
+  function handleUpdateSearchConfig() { 
+    console.log(searchProps.value.formData.push({
+    text: '测试search config修改',
+    type: 'text',
+    name: 'text4',
+    span: 6, 
+    style: 'width: 660px',
+    labelCol: { style: { width: '90px' } },
+    wrapperCol: { style: { width: '200px' } },
+
+  }));
+    
+  }
+
+  function handleUpdateFormConfig() { 
+    console.log(formProps2.value.formData.push({
+    text: '测试form config修改',
+    type: 'text',
+    name: 'text4',
+    span: 6, 
+    style: 'width: 660px',
+    labelCol: { style: { width: '90px' } },
+    wrapperCol: { style: { width: '200px' } },
+
+  }));
+    
+  }
 
 </script>
 <style scoped lang="less">
