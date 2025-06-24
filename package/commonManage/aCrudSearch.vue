@@ -156,13 +156,16 @@ function mergeSearchParams(params) {
 
 }
 function emitResetParams() {
+  console.log('reset', resetForm.value, 159);
   emits('reset', deepCopy(resetForm.value));
 }
 
 async function getData(type: 'reset' | 'search' = 'search') {
 
   if (type == 'reset') {
-    searchFormRef.value.clear();
+    if (aCardSearchRef.value?.tableMethods) {
+      searchFormRef.value.clear();
+    }
   } else if (type == 'search') {
     if (aCardSearchRef.value.dataCallback && !aCardSearchRef.value.dataCallback(aCardSearchRef.value.params)) {
       return;

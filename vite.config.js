@@ -16,7 +16,7 @@ export default defineConfig({
     open:true //如果存在本地服务端口，将在打包后自动展示
   }),],
   esbuild: {
-     //drop: process.env.NODE_ENV !=='development' ? ["console", "debugger"] : [],
+     drop:  ["console", "debugger"] ,
   },
   build: {
     rollupOptions: {

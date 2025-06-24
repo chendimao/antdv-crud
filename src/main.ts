@@ -73,7 +73,7 @@ antdCrud.config(app, {
         isToolBox: true,
         toolBox: {
             showType: 'button',
-        },
+        }, 
         },
     formConfig: {FooterCancelText: '退出', FooterSubmitText: '确定', },
     searchConfig: {searchText: '搜索', resetText: '重载234'},

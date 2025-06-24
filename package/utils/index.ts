@@ -87,14 +87,7 @@ export function formatDate(dateInput, format = 'yyyy-MM-dd') {
 
 
 
-
-export function deepMerge<T = any>(src: any = {}, target: any = {}): T {
-  let key: string;
-  for (key in target) {
-    src[key] = isObject(src[key]) ? deepMerge(src[key], target[key]) : (src[key] = target[key]);
-  }
-  return src;
-}
+ 
 
 export function openWindow(
   url: string,
@@ -163,6 +156,26 @@ export function deepCopy(obj, clones = new WeakMap()) {
 
   return newObj;
 }
+
+export function deepMerge(target, source) {
+  for (const key in source) {
+    if (
+      source[key] &&
+      typeof source[key] === 'object' &&
+      !Array.isArray(source[key])
+    ) {
+      if (!target[key] || typeof target[key] !== 'object') {
+        target[key] = {};
+      }
+      deepMerge(target[key], source[key]);
+    } else {
+      target[key] = source[key];
+    }
+  }
+  return target;
+}
+
+
 
 export const valueToName = (arr, value , targetKey, returnKey) => {
 

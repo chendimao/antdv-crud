@@ -9,15 +9,16 @@ function pathResolve(dir) {
 
 export default defineConfig({
   plugins: [vue(), vueJsx()],
+  esbuild: {
+    drop:  ["console", "debugger"]  ,
+  },
   build: {
     outDir: 'dist-demo',
     rollupOptions: {
       input: {
         main: resolve(__dirname, 'index.html'),
       },
-    //   esbuild: {
-    //   drop: ['console', 'debugger'],
-    // },
+
     },
   },
   resolve: {

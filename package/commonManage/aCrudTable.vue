@@ -126,7 +126,7 @@ import {
   EyeOutlined,
   EditOutlined, DownloadOutlined, PrinterOutlined, ReloadOutlined, SettingOutlined
 } from '@ant-design/icons-vue';
-import {assertIsFunction, assertIsOption, computedFun, isComputedFunction} from "../model";
+import {assertIsFunction, assertIsOption, type computedFun, isComputedFunction} from "../model";
 import TableOperationColumn from './components/TableOperationColumn.vue';
 import TableColumn from './components/TableColumn.vue';
 const { proxy } = getCurrentInstance();
@@ -169,7 +169,7 @@ const tableDefaultProps = ref({...{
     align: "center",
     currentRowBg: '#e6f7ff',
     currentRowColor: 'black',
-    columnConfig:{ isCurrent: true, isHover: true, resizable: true },
+    columnConfig:{  isCurrent: false, isHover: true, resizable: true },
     rowConfig: { isCurrent: true, isHover: true },
     headerCellClassName: () => 'headerCellClassName',
     cellClassName: () => 'cellClassName',
@@ -177,8 +177,7 @@ const tableDefaultProps = ref({...{
     border: 'default',
     size: 'mini',
     loadingConfig:{ icon: 'vxe-icon-indicator roll', text: '正在拼命加载中...' },
-    class: "mytable-style" ,
-    data:"tableData",
+    class: "mytable-style" , 
     menuWidth: 150,
     isMenu: true,
     immediate: true,
@@ -338,7 +337,7 @@ function setTableProps(props) {
 
 
   if (tableTransferPropsRef.value.editType == 'all' || tableTransferPropsRef.value.editType == 'edit') {
-    tableData.value = tableTransferPropsRef.value.tableData;
+    tableData.value = tableTransferPropsRef.value.tableData || [];
     if (tableData.value?.length == 0) {
       return;
     }
