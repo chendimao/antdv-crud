@@ -1,3 +1,4 @@
+import { h } from "vue";
 
 
 export default  [
@@ -29,6 +30,7 @@ export default  [
         text: '病名名称',
         type: 'text',
         name: 'bmmc',
+       
         $attrs: { minWidth: '100px', showOverflow: true },
       },
     

@@ -274,8 +274,8 @@ watch(() => props.item, async (data) => {
         if(item.dynamicParams) {
           params = {...params, ...item.dynamicParams(props.formState)};
         }
-        if(item.api && (item.field || item.relationField)) {
-          inputItem.value.option = await getOptionList(item.api, params, item.field??item.relationField??{   label: 'label', value: 'value' }, item.childrenField);
+        if(item.api && (item.field || item.relationField || item.dataCallback)) {
+          inputItem.value.option = await getOptionList(item.api, params, item.field??item.relationField??{   label: 'label', value: 'value' }, item.childrenField, item.dataCallback);
         }
       } else if (item.type == 'function') {
         // 处理函数类型

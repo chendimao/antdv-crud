@@ -13,7 +13,7 @@ export interface CrudUtil {
   withInstall: <T>(component: T, alias?: string) => T & Plugin;
   deepCopy: (obj: any, clones?: WeakMap<any, any>) => any;
   valueToName: (arr: any[], value: any, targetKey: string, returnKey: string) => any;
-  getOptionList: (api: Function, params: any, relationField: any, childrenField?: any) => Promise<any[]>;
+  getOptionList: (api: Function, params: any, relationField: any, childrenField?: any, dataCallback?: Function) => Promise<any[]>;
   debounceRef: (value: any, delay: number) => any;
   debounce: (func: Function, wait: number, immediate?: boolean) => Function;
 }
@@ -52,7 +52,7 @@ export function getDynamicProps<T, U>(props: T): Partial<U>;
 export const withInstall: <T>(component: T, alias?: string) => T & Plugin;
 export function deepCopy(obj: any, clones?: WeakMap<any, any>): any;
 export const valueToName: (arr: any[], value: any, targetKey: string, returnKey: string) => any;
-export const getOptionList: (api: Function, params: any, relationField: any, childrenField?: any) => Promise<any[]>;
+export const getOptionList: (api: Function, params: any, relationField: any, childrenField?: any, dataCallback?: Function) => Promise<any[]>;
 export const debounceRef: (value: any, delay: number) => any;
 export function debounce(func: Function, wait: number, immediate?: boolean): Function;
 

@@ -22,8 +22,9 @@
     <vxe-column v-else-if="item.type === 'radio'" v-bind="item.$attrs" :type="'radio'"></vxe-column>
     <vxe-column v-else-if="item.type === 'expand'" v-bind="item.$attrs" :type="'expand'"></vxe-column>
     <vxe-column v-else :sortable="isSortable !== false && item.sortable !== false" :field="item.name" :title="item.text" :width="item.width" v-bind="item.$attrs">
-      <template #header>
-        <span>{{item.fun ? item.fun(columns, tableData) : item.text}}</span>
+      <template #header="headerData">
+        <div v-render="() => item.headerH(columns, headerData)" v-if="item.headerH"></div>
+        <span v-else>{{item.fun ? item.fun(columns, tableData) : item.text}}</span>
       </template>
 
       <template v-if="editType == 'default' || editType == 'edit'" #default="{ row, $rowIndex }">

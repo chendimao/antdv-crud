@@ -1,7 +1,7 @@
 import type { App, Plugin } from 'vue';
 
 import { unref, customRef} from 'vue';
-import {isArray, isObject} from './is';
+import {isArray, isFunction, isObject} from './is';
 import {isNumber} from "./is";
 import {useGetTable} from "../hooks/useGetData";
 
@@ -212,11 +212,17 @@ export const valueToName = (arr, value , targetKey, returnKey) => {
  * @param params 请求参数
  * @param relationField 映射关联字段
  * @param childrenField 树结构列表参数
+ * @param dataCallback 数据回调
  */
 
-export const getOptionList = async (api, params, relationField, childrenField = {field: 'children', label: 'label', value: 'value'}) => {
+export const getOptionList = async (api, params, relationField, childrenField = {field: 'children', label: 'label', value: 'value'}, dataCallback) => {
   console.log(api);
   const data = await useGetTable(api, params);
+
+  if (isFunction(dataCallback)) {
+   return dataCallback(data);
+  }
+
   return data.map((item) => {
     const returnValue = {};
     if (relationField) {

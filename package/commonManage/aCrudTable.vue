@@ -236,7 +236,7 @@ function initFun() {
           if(item.dynamicParams) {
             params = {...params, ...item.dynamicParams(tableColumn.value,item, tableData)};
           }
-          column.option = await getOptionList(item.api, params, item.relationField??item.field, item.childrenField);
+          column.option = await getOptionList(item.api, params, item.relationField??item.field, item.childrenField, item.dataCallback);
 
         }
       })
