@@ -12,9 +12,9 @@
         @start="onDragStart" 
         v-bind="{
           group: { 
-            name: 'form-draggable',
-            pull: true,    // 允许从目标容器拉出
-            put: true      // 允许放入目标容器
+            name:  'form-draggable',
+            pull: true,   
+            put:  'form-draggable'  
           },
           ghostClass: 'ghost',
           draggable: '.dragging',
@@ -166,6 +166,7 @@ watch(() => _formData.value, (data) => {
 
 function handleDeleteComponent(index) {
 _formData.value.splice(index, 1);
+console.log(_formData, 169);
 }
 
 const onDragChange = (event) => {
@@ -175,7 +176,7 @@ const onDragChange = (event) => {
     
     // 获取新添加的元素引用
     const addedElement = _formData.value[event.added.newIndex];
-    
+    console.log('formRender: Added element',_formData.value, addedElement);
     // 为新添加的元素生成唯一的 ID 和 name
     // 这里复用 cloneItem 的逻辑，确保在添加到目标时 ID 唯一
     addedElement.name = addedElement.id = `${addedElement.type}_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;

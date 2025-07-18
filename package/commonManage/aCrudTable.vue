@@ -231,7 +231,9 @@ const { proxy } = getCurrentInstance();
 
  const emits = defineEmits([ 'register', 'change']);
 
-
+ const props = defineProps({
+    config: {},
+  });
  const tableTotal = ref(0);
  const tableLoading = ref(false);
  const tableData = ref([]);
@@ -258,6 +260,10 @@ const { proxy } = getCurrentInstance();
     }
  }, {deep: true})
 
+
+ watch(() => props.config, (data) => {
+  setTableProps({...tableTransferPropsRef.value, ...data});
+}, {deep: true })
 
  
 const tableDefaultProps = ref({...{

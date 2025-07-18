@@ -130,23 +130,7 @@
     <a-layout-sider v-model:collapsed="configCollapsed" :width="450" :collapsedWidth="0" style="min-height: 800px;height: 100vh;overflow: hidden;" theme="light"  :trigger="null" collapsible>
       <a-tabs v-model:activeKey="menuActiveKey">
         <a-tab-pane key="1" tab="表单" style="padding: 5px;">
-          <a-form :model="formConfig" labelWrap layout="vertical" :labelAlign="'left'" :label-col="{style: {width: '100px'}}" name="basic"   autocomplete="off">
-            <a-form-item label="表单布局">
-              <a-radio-group v-model:value="formConfig.layout" button-style="solid">
-                <a-radio-button value="horizontal">水平</a-radio-button>
-                <a-radio-button value="vertical">垂直</a-radio-button>
-                <a-radio-button value="inline">行内</a-radio-button>
-              </a-radio-group>
-            </a-form-item>
-            <a-form-item label="全局标签宽度">
-                <a-input  v-model:value="formConfig.labelCol.style.width"/>
-
-            </a-form-item>
-            <a-form-item label="表单属性">
-              <a-checkbox-group v-model:value="formConfig.attribute" :options="attributeOption" />
-
-            </a-form-item>
-          </a-form>
+          <form-config v-model:formConfig="formConfig" />
         </a-tab-pane>
         <a-tab-pane key="2" tab="控件" force-render style="padding:5px;">
           <form-control
@@ -195,6 +179,7 @@
     />
     <a-crud-form ref="formRef"
                    @register="dataForm.register"
+                   :config="formProps"
     ></a-crud-form>
  
 
@@ -247,6 +232,7 @@ import FormControl from "./component/formControl.vue";
 import FormGrid from "./component/formGrid.vue";
 import FormRender from "./component/formRender.vue";
 import codeMirror from "./component/codeMirror.vue";
+import FormConfig from "./component/formConfig.vue";
 import tableData from "../../src/applyManager2/data/table";
 import searchData from "../../src/applyManager2/data/search";
 import retireData from "../../src/applyManager2/data/form";
@@ -262,8 +248,7 @@ const menuActiveKey = ref('1'); //
 const currentIndex = ref(); // 当前选中的组件
 const jsonVisible = ref(false);
 const previewVisible = ref(false);
-const jsonData = ref();
-const previewData = ref();
+const jsonData = ref(); 
 const codeEditorRef = ref();
 const editorValue = ref('');
 
@@ -281,49 +266,30 @@ const formConfig = ref({
   labelCol: { style: {width: '150px'}},
   wrapperCol: {},
   size: 'small',
-  currentItem: {},
+  currentItem: {}, 
   currentIndex: 0,
   attribute: [],
   activeKey: 1,
+  $attrs: {},
+  css: ``,
+  name: 'formconfig',
 });
 
 const crudTableRef = ref();
 const test = ref(123);
 const handleData = ref();
+const currentFormData = ref([]);
+const formProps = computed(() => {
+  console.log(281);
+  return formConfig.value;
+})
 const dataForm = new antdCrud.useForm(
-   {
-        title: '表单预览',
-        formData: [], 
-        name: 'bmgl',
-      } 
+  formProps.value
 ) 
 const methods = ref();
 onMounted(() => {
 })
-
-
-const data = [
-  { id: 1, parentId: null, name: 'CEO' },
-  { id: 2, parentId: 1, name: '技术部' },
-  { id: 3, parentId: 1, name: '市场部' },
-  { id: 4, parentId: 2, name: '前端组' },
-  { id: 5, parentId: 2, name: '后端组' },
-  { id: 6, parentId: 3, name: '推广组' },
-  { id: 7, parentId: 4, name: 'React小组' },
-  { id: 8, parentId: 5, name: 'Java小组' }
-];
-let treeData = [];
-const buildTreeData = (treeData,  parentId = null) => {
-   
- return treeData.filter(item => item.parentId == parentId).map(item => {
   
-   return {...item, 
-   children: buildTreeData(treeData, item.id)}
- })
-}
- 
-console.log(buildTreeData(data,  null));
-
 watch(() => formConfig.value.formData, (val) => {
   console.log(val);
 }, {deep: true});
@@ -354,8 +320,12 @@ function componentEnd(e){
 
 }
 function handleSelectComponent(e, index){
- formConfig.value.currentItem = e;
- formConfig.value.currentIndex = index;
+  if (typeof index === 'undefined') {
+    index = formConfig.value.formData.findIndex(item => item && item.id === e.id);
+  }
+  formConfig.value.currentItem = e;
+  formConfig.value.currentIndex = index;
+  console.log(index, e, 349);
 }
 
 const onDragChange = (event) => {
@@ -431,12 +401,9 @@ function printConfig() {
   }
 }
 async function formPreview() {
-
-  
-  previewData.value =formConfig.value.formData;
-  console.log(previewData.value, formConfig.value.currentItem);
-  
-  dataForm.methods.value.setFormData(previewData.value);
+ console.log(formConfig.value, formProps.value, 422); 
+  console.log( formConfig.value.currentItem);
+   
   dataForm.methods.value.handleFormShow('update');
 
 }
@@ -478,7 +445,7 @@ function handleComponentAdded(element, index) {
   
   // 调用 handleSelectComponent 方法来选中新添加的组件
   // handleSelectComponent 会使用带有新 ID 的 element
-  handleSelectComponent(element, index); // 保持传递 index，虽然 handleSelectComponent 可能只用 element
+ // handleSelectComponent(element, index); // 保持传递 index，虽然 handleSelectComponent 可能只用 element
 }
 
 </script>

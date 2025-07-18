@@ -23,7 +23,7 @@
           <template v-else-if="item.type == 'grid'">
               <a-col :span="item.span" >
                 <a-row>
-                  <a-col :span="colItem.span" v-for="colItem in item.columns">
+                  <a-col style="display: flex !important;"  :span="colItem.span" v-for="colItem in item.columns">
 
                 <template  v-for="cItem in colItem.children">
                   <a-col  :span="cItem.span"  v-if="(typeof cItem?.show === 'function' ? cItem?.show(formState, cItem, type)??true : cItem?.show??true)">

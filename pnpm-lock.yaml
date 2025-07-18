@@ -24,8 +24,8 @@ importers:
         specifier: '3'
         version: 3.2.20(vue@3.5.13(typescript@5.7.2))
       antdv-crud:
-        specifier: 2.0.32
-        version: 2.0.32
+        specifier: ^2.0.51
+        version: 2.0.51
       axios:
         specifier: ^1.6.8
         version: 1.7.9
@@ -796,8 +796,8 @@ packages:
     peerDependencies:
       vue: '>=3.2.0'
 
-  antdv-crud@2.0.32:
-    resolution: {integrity: sha512-9R1qRALSqytgA7zZs1eGaHLBVZbdPFUZlMzzDmn67Xi6EQtpsNZNJKpmDBFpZanOTzAk5peZe0aLmk/h+295cg==}
+  antdv-crud@2.0.51:
+    resolution: {integrity: sha512-xr+VhGWAVH3GtiDE1wW54Jpucm/XSV/Hn6nMhwMEmDcrJNwA4qsBSJ8637mcMcfb4BIIcd1TckcrUG5SLHaqgA==}
 
   array-tree-filter@2.1.0:
     resolution: {integrity: sha512-4ROwICNlNw/Hqa9v+rk5h22KjmzB1JGTMVKP2AKJBOCgb0yL0ASf0+YvCcLNNwquOHNX48jkeZIJ3a+oOQqKcw==}
@@ -2229,7 +2229,7 @@ snapshots:
       vue-types: 3.0.2(vue@3.5.13(typescript@5.7.2))
       warning: 4.0.3
 
-  antdv-crud@2.0.32: {}
+  antdv-crud@2.0.51: {}
 
   array-tree-filter@2.1.0: {}
 

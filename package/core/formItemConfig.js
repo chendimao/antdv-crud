@@ -48,8 +48,8 @@ export const baseComponent  = [
         show: true,
         $attrs: {
             options: [
-                { label: '选项1', value: 1 },
-                { label: '选项2', value: 2 }
+                { label: '选项1', value: '1' },
+                { label: '选项2', value: '2' }
               ],
         },
         value: '',

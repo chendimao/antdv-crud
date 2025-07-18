@@ -1,4 +1,4 @@
-import aCrudForm from "./commonManage/ACrudForm/aCrudForm.vue";
+import aCrudForm from "./commonManage/aCrudForm.vue";
 import aCrudTable from "./commonManage/aCrudTable.vue";
 import aCrudSearch from "./commonManage/aCrudSearch.vue";
  import crudUtil from "./utils/index.ts";

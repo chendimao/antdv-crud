@@ -285,7 +285,7 @@ watch(() => props.item, async (data) => {
 
 
   // 执行自定义css
-  handleLoadStyle();
+  // handleLoadStyle();
 
 
 

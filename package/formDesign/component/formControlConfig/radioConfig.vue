@@ -60,11 +60,7 @@
         <a-radio value="small">小</a-radio>
       </a-radio-group>
     </a-form-item>
-
-    <!-- Radio 配置 -->
-    <a-form-item label="自动获取焦点">
-      <a-switch v-model:checked="modelValue.$attrs.autofocus" />
-    </a-form-item>
+ 
 
     <a-form-item label="选中状态">
       <a-switch v-model:checked="modelValue.$attrs.checked" />
@@ -235,8 +231,8 @@ const initConfig = () => {
 
   // 处理 options 优先级
   const options = props.modelValue.$attrs.options || props.modelValue.options || [
-    { label: '选项1', value: 1, valueType: 'number', disabled: false },
-    { label: '选项2', value: 2, valueType: 'number', disabled: false }
+    { label: '选项1', value: '1', valueType: 'string', disabled: false },
+    { label: '选项2', value: '2', valueType: 'string', disabled: false }
   ];
 
   // 确保每个选项都有 valueType
