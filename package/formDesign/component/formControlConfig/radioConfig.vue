@@ -11,14 +11,17 @@
     <!-- 选项配置 -->
     <a-form-item label="选项配置">
       <div class="options-config">
-        <div v-for="(option, index) in modelValue.$attrs.options" :key="index" class="option-item">
-          <a-input v-model:value="option.label" placeholder="选项名称" style="width: 120px; margin-right: 8px;" />
-          <a-select v-model:value="option.valueType" style="width: 80px; margin-right: 8px;" @change="handleValueTypeChange(index)">
+        <div style="margin-bottom: 8px;">
+          <a-select v-model:value="modelValue.$attrs.optionsValueType" style="width: 120px; margin-right: 8px;">
             <a-select-option value="string">字符串</a-select-option>
             <a-select-option value="number">数字</a-select-option>
           </a-select>
+          <span>选项值类型</span>
+        </div>
+        <div v-for="(option, index) in modelValue.$attrs.options" :key="index" class="option-item">
+          <a-input v-model:value="option.label" placeholder="选项名称" style="width: 120px; margin-right: 8px;" />
           <a-input 
-            v-if="option.valueType === 'string'"
+            v-if="modelValue.$attrs.optionsValueType === 'string'"
             v-model:value="option.value" 
             placeholder="选项值" 
             style="width: 120px; margin-right: 8px;" 
@@ -29,8 +32,6 @@
             placeholder="选项值" 
             style="width: 120px; margin-right: 8px;" 
           />
-          <a-switch v-model:checked="option.disabled" style="margin-right: 8px;" />
-          <span style="margin-right: 8px;">禁用</span>
           <a-button type="link" danger @click="removeOption(index)">
             <delete-outlined />
           </a-button>
@@ -231,8 +232,8 @@ const initConfig = () => {
 
   // 处理 options 优先级
   const options = props.modelValue.$attrs.options || props.modelValue.options || [
-    { label: '选项1', value: '1', valueType: 'string', disabled: false },
-    { label: '选项2', value: '2', valueType: 'string', disabled: false }
+    { label: '选项1', value: '1' },
+    { label: '选项2', value: '2' }
   ];
 
   // 确保每个选项都有 valueType

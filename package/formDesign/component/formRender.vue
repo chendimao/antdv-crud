@@ -3,38 +3,34 @@
 <div class="form-render-container">
   
     <draggable
-        tag="div"
-        class="ant-row form-draggable"
+      tag="div"
+      class="form-draggable"
+      :class="{ 'is-layout': isChildren }"
+      v-model="_formData"
+      @change="onDragChange"
+      @end="onDragEnd"
+      @start="onDragStart" 
+      :group="{ 
+          name:  'form-draggable',
+          pull: true,   
+          put:  'form-draggable'  
+        } "
+         :ghostClass="'drag-ghost'"
+         :chosenClass="'drag-chosen'"
+         :draggable="'.dragging'"
+         :animation="300"
+         :handle="'.drag-handle'"
      
-        v-model="_formData"
-        @change="onDragChange"
-        @end="onDragEnd"
-        @start="onDragStart" 
-        v-bind="{
-          group: { 
-            name:  'form-draggable',
-            pull: true,   
-            put:  'form-draggable'  
-          },
-          ghostClass: 'ghost',
-          draggable: '.dragging',
-          animation: 500,
-          handle: '.drag-handle'
-        }"
-        item-key="id"
+      item-key="id"
     >
   
  
       <template #item="{element,index}">
-        
-        <div 
-          :style="{
-            width: `${element.span * 4.16}%`, 
-            'zIndex': isChildren ? '10000': '0'
-          }" 
-          class="form-item-wrapper dragging"
-        >
-        
+        <div class=" dragging" style="width:100%;position:relative;">
+          <div class="drag-handle" style="position:absolute;left:0;top:0;z-index:2;cursor:move;">
+            <DragOutlined />
+          </div>
+          <!-- 保留原有表单项内容 -->
           <template v-if="element.type == 'grid' && element?.columns.length > 0">
             <div 
               @click.stop="emitSelectComponent(element)"
@@ -47,7 +43,6 @@
                   :key="item.id"
                   class="grid-col"
                 >
-                 
                   <form-render
                     v-model:formData="item.children"
                     :currentItem="_currentItem"
@@ -57,7 +52,6 @@
                     @selectAdded="(element, index) => emits('selectAdded', element, index)"
                   />
                 </a-col>
-               
               </a-row>
               <DeleteOutlined 
                   v-if="_currentItem.id == element.id" 
@@ -66,7 +60,44 @@
                 />
             </div>
           </template>
-          
+          <template v-else-if="element.type == 'tabs' && element?.columns?.length > 0">
+            <div
+              @click.stop="emitSelectComponent(element)"
+              :class="['grid-container', {'active-grid': _currentItem.id == element.id }]"
+            >
+              <a-tabs
+                :activeKey="element.activeKey"
+                :tabPosition="element.$attrs?.tabPosition || 'top'"
+                :type="element.$attrs?.type || 'line'"
+                :size="element.$attrs?.size || 'default'"
+                :animated="element.$attrs?.animated !== false"
+                :centered="element.$attrs?.centered"
+                :destroyInactiveTabPane="element.$attrs?.destroyInactiveTabPane"
+                :tabBarGutter="element.$attrs?.tabBarGutter"
+                @change="key => { element.activeKey = key }"
+              >
+                <a-tab-pane
+                  v-for="tab in element.columns"
+                  :key="tab.key"
+                  :tab="tab.title"
+                >
+                  <form-render
+                    v-model:formData="tab.children"
+                    :currentItem="_currentItem"
+                    :isChildren="true"
+                    @selectComponent="emitSelectComponent"
+                    @onDragChange="onDragChange"
+                    @selectAdded="(element, index) => emits('selectAdded', element, index)"
+                  />
+                </a-tab-pane>
+              </a-tabs>
+              <DeleteOutlined 
+                  v-if="_currentItem.id == element.id" 
+                  class="delete-icon"
+                  @click="handleDeleteComponent(index)"
+                />
+            </div>
+          </template>
           <template v-else>
             <a-col class="form-field" :span="24" v-if="element.type && (element.show??true)">
               <div class="drag-mas" @click.stop="emitSelectComponent(element)"></div>
@@ -79,7 +110,6 @@
                   :labelAlign="element.labelAlign"
                 >
                   <aCrudFormItem :item="element" :validateFun="() => {}"/>
-                 
                   <span class="field-id">{{element.id}}</span>
                 </a-form-item>
                 <DeleteOutlined 
@@ -91,13 +121,6 @@
               <slot></slot>
             </a-col>
           </template>
-          
-          <div 
-            v-if="_currentItem.id == element.id"
-            class="widget-view-drag widget-col-drag drag-widget drag-handle"
-          >
-            <DragOutlined />
-          </div>
         </div>
       </template>
     </draggable>
@@ -171,21 +194,21 @@ console.log(_formData, 169);
 
 const onDragChange = (event) => {
   console.log('formRender: onDragChange', event);
-  if (event.added) {
-    console.log('formRender: Added element', event.added);
+  // if (event.added) {
+  //   console.log('formRender: Added element', event.added);
     
-    // 获取新添加的元素引用
-    const addedElement = _formData.value[event.added.newIndex];
-    console.log('formRender: Added element',_formData.value, addedElement);
-    // 为新添加的元素生成唯一的 ID 和 name
-    // 这里复用 cloneItem 的逻辑，确保在添加到目标时 ID 唯一
-    addedElement.name = addedElement.id = `${addedElement.type}_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+  //   // 获取新添加的元素引用
+  //   const addedElement = _formData.value[event.added.newIndex];
+  //   console.log('formRender: Added element',_formData.value, addedElement);
+  //   // 为新添加的元素生成唯一的 ID 和 name
+  //   // 这里复用 cloneItem 的逻辑，确保在添加到目标时 ID 唯一
+  //   addedElement.name = addedElement.id = `${addedElement.type}_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
     
-    console.log('formRender: New element with unique ID', addedElement);
+  //   console.log('formRender: New element with unique ID', addedElement);
     
-    // 触发 selectAdded 事件，传递新添加的元素和它的索引
-    emits('selectAdded', addedElement, event.added.newIndex);
-  }
+  //   // 触发 selectAdded 事件，传递新添加的元素和它的索引
+  //   emits('selectAdded', addedElement, event.added.newIndex);
+  // }
   // 如果需要在拖动结束后也触发父组件的 onDragChange 事件，可以取消注释下面这行
   // emits('onDragChange',event)
 };
@@ -214,16 +237,42 @@ export default {
 }
 </script>
 
-<style scoped lang="less">
+<style    lang="less">
 .form-render-container {
   position: relative;
   width: 100%;
+  display: block !important;
   
-  .form-draggable {
-    min-height: 90px;
-    width: 100%;
-    padding: 4px;
-  }
+}
+
+.form-draggable { 
+    display: block !important;
+  min-height: 90vh;
+  width: 100%;
+  padding: 4px;
+  gap: 8px;
+}
+
+.is-layout {
+  min-height: 20vh;
+}
+
+
+// 拖拽动画
+.form-draggable > .form-item-wrapper {
+  transition: transform 0.3s cubic-bezier(.55,0,.1,1), box-shadow 0.3s;
+  will-change: transform;
+}
+.form-draggable > .form-item-wrapper.ghost {
+  opacity: 0.5;
+  background: #e6f7ff;
+  border: 1.5px dashed #1890ff;
+}
+.form-draggable > .form-item-wrapper.chosen {
+  box-shadow: 0 6px 24px rgba(24,144,255,0.18);
+  z-index: 10;
+  background: #fff;
+  border: 1.5px solid #1890ff;
 }
 
 .form-item-wrapper {
@@ -469,5 +518,28 @@ export default {
 .dragging {
   opacity: 0.8;
   background: #fafafa;
+}
+.drag-ghost {
+  background: #e6f7ff !important;
+  border: 2px dashed #ff2018 !important;
+  border-radius: 8px !important;
+  box-shadow: 0 2px 12px rgba(24,144,255,0.10) !important;
+  opacity: 0.7 !important;
+  width: 100% !important;
+  min-height: 40px;
+}
+.form-item-wrapper .drag-handle {
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.form-item-wrapper:hover .drag-handle,
+.form-item-wrapper.active .drag-handle {
+  opacity: 1;
+}
+.drag-chosen {
+  box-shadow: 0 6px 24px rgba(24,144,255,0.18);
+  z-index: 10;
+  background: #fff;
+  border: 1.5px solid #1890ff;
 }
 </style>

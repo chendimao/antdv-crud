@@ -1,6 +1,7 @@
 import aCrudForm from "./commonManage/aCrudForm.vue";
 import aCrudTable from "./commonManage/aCrudTable.vue";
 import aCrudSearch from "./commonManage/aCrudSearch.vue";
+import aFormItemInput from "./commonManage/InputItem/index";
  import crudUtil from "./utils/index.ts";
 import './utils/common.css';
 import useForm from './hooks/useForm.ts';
@@ -11,6 +12,7 @@ import aCrudDict from "./commonManage/aCrudDict.vue";
 import { render } from "vue";
 const components = [
     aCrudForm,
+    aFormItemInput,
     aCrudTable,
     aCrudSearch,
     aCrudDict

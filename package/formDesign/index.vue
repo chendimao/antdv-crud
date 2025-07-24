@@ -98,6 +98,7 @@
         </button>
       </div>
       <a-form class="aCardFormItem"
+                style="height: 90vh;overflow: auto;"
               :layout="formConfig.layout"
               :model="formConfig.formData"
               labelWrap name="basic" ref="formRef"
@@ -105,7 +106,7 @@
               :wrapper-col="formConfig.wrapperCol"
               :colon="formConfig.attribute.includes('colon')"
               autocomplete="off">
-        <a-row   style="padding: 5px;margin: 2px; ">
+        <div   style="padding: 5px;margin: 2px; display:block;position:relative">
           <form-render
               v-model:formData="formConfig.formData"
               :currentItem="formConfig.currentItem"
@@ -117,7 +118,7 @@
 
           </form-render>
 
-        </a-row>
+        </div>
 
       </a-form>
     </a-layout-content>
@@ -128,7 +129,7 @@
     />
     <menu-fold-outlined v-else class="trigger" @click="() => (configCollapsed = !configCollapsed)" />
     <a-layout-sider v-model:collapsed="configCollapsed" :width="450" :collapsedWidth="0" style="min-height: 800px;height: 100vh;overflow: hidden;" theme="light"  :trigger="null" collapsible>
-      <a-tabs v-model:activeKey="menuActiveKey">
+      <a-tabs v-model:activeKey="menuActiveKey" class="form-design-tabs">
         <a-tab-pane key="1" tab="表单" style="padding: 5px;">
           <form-config v-model:formConfig="formConfig" />
         </a-tab-pane>
@@ -404,7 +405,7 @@ async function formPreview() {
  console.log(formConfig.value, formProps.value, 422); 
   console.log( formConfig.value.currentItem);
    
-  dataForm.methods.value.handleFormShow('update');
+  dataForm.methods.value.handleFormShow('preview');
 
 }
 
@@ -509,7 +510,32 @@ export default {
     background: #f8f9fb;
     border-radius: 8px;
     min-height: 40px;
+    max-height: 70vh;
+    overflow-y: auto;
+    
+    // 自定义滚动条样式
+    &::-webkit-scrollbar {
+      width: 8px;
+      background: transparent;
+    }
+    &::-webkit-scrollbar-thumb {
+      background: #e5e6eb;
+      border-radius: 6px;
+      transition: background 0.2s;
+    }
+    &::-webkit-scrollbar-thumb:hover {
+      background: #b2bcd1;
+    }
+    &::-webkit-scrollbar-corner {
+      background: transparent;
+    }
+
+    // Firefox
+    scrollbar-width: thin;
+    scrollbar-color: #e5e6eb #f8f9fb;
   }
+  // 让 a-collapse-panel 外层有滚动条
+ 
 
   .selectComponent {
     width: 110px;
@@ -624,11 +650,36 @@ export default {
     }
   }
  
-
-
-}
+ 
 }
 
 
+}
 
+
+
+</style>
+
+<style lang="less">
+// 全局滚动条美化
+::-webkit-scrollbar {
+  width: 8px;
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #e5e6eb;
+  border-radius: 6px;
+  transition: background 0.2s;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #b2bcd1;
+}
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+// Firefox
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #e5e6eb #f8f9fb;
+}
 </style>

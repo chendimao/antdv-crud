@@ -24,7 +24,7 @@
      <a-form-item label="标签对齐方式">
        <a-radio-group  v-model:value="current.labelAlign">
          <a-radio value="left">左对齐</a-radio>
-         <a-radio value="right">左对齐</a-radio>
+         <a-radio value="right">右对齐</a-radio>
        </a-radio-group>
      </a-form-item>
      <a-form-item label="是否必填">
@@ -36,7 +36,13 @@
      </a-form-item>
 
      <!-- 组件特定配置 -->
-     <radio-config v-if="current?.type === 'radio'" v-model="current" />
+     <component
+       v-if="current && configComponentMap[current.type]"
+       :is="configComponentMap[current.type]"
+       v-model="current"
+     />
+     <!-- 保留原有的inputConfig、radioConfig、numberConfig等静态写法作为兼容 -->
+   
 
      <a-button @click="showCodeEditor" type="primary" style="margin-top:5px;">代码编辑器</a-button>
    </a-form>
@@ -62,6 +68,34 @@ import {isArray} from "../../utils/is";
 import { message } from 'ant-design-vue';
 import codeMirror from './codeMirror.vue';
 import radioConfig from './formControlConfig/radioConfig.vue';
+import inputConfig from './formControlConfig/inputConfig.vue';
+import numberConfig from './formControlConfig/numberConfig.vue';
+// 批量导入所有formControlConfig下的配置组件
+import tagConfig from './formControlConfig/tagConfig.vue';
+import dateConfig from './formControlConfig/dateConfig.vue';
+import rateConfig from './formControlConfig/rateConfig.vue';
+import tabsConfig from './formControlConfig/tabsConfig.vue';
+import timeConfig from './formControlConfig/timeConfig.vue';
+import yearConfig from './formControlConfig/yearConfig.vue';
+import badgeConfig from './formControlConfig/badgeConfig.vue';
+import monthConfig from './formControlConfig/monthConfig.vue';
+import cascaderConfig from './formControlConfig/cascaderConfig.vue';
+import selectConfig from './formControlConfig/selectConfig.vue';
+import treeSelectConfig from './formControlConfig/treeSelectConfig.vue';
+import autoCompleteConfig from './formControlConfig/autoCompleteConfig.vue';
+import uploadConfig from './formControlConfig/uploadConfig.vue';
+import colorPickerConfig from './formControlConfig/colorPickerConfig.vue';
+import sliderConfig from './formControlConfig/sliderConfig.vue';
+import switchConfig from './formControlConfig/switchConfig.vue';
+import textareaConfig from './formControlConfig/textareaConfig.vue';
+import progressConfig from './formControlConfig/progressConfig.vue';
+import avatarConfig from './formControlConfig/avatarConfig.vue';
+import stepsConfig from './formControlConfig/stepsConfig.vue';
+import badgeConfig2 from './formControlConfig/badgeConfig.vue';
+import descriptionsConfig from './formControlConfig/descriptionsConfig.vue';
+import statisticConfig from './formControlConfig/statisticConfig.vue';
+import checkboxConfig from './formControlConfig/checkboxConfig.vue';
+import tagConfig2 from './formControlConfig/tagConfig.vue';
 import { DeleteOutlined, PlusOutlined } from '@ant-design/icons-vue';
 import { stringify, parse, safeStringify, safeParse } from '../../utils/serialization';
 
@@ -345,6 +379,38 @@ const removeOption = (index) => {
   current.value.$attrs.options.splice(index, 1);
 };
 
+// 组件映射表
+const configComponentMap = {
+  radio: radioConfig,
+  text: inputConfig,
+  number: numberConfig,
+  tag: tagConfig,
+  date: dateConfig,
+  rate: rateConfig,
+  tabs: tabsConfig,
+  time: timeConfig,
+  year: yearConfig,
+  badge: badgeConfig,
+  month: monthConfig,
+  cascader: cascaderConfig,
+  checkbox: checkboxConfig,
+  select: selectConfig,
+  treeSelect: treeSelectConfig,
+  autoComplete: autoCompleteConfig,
+  upload: uploadConfig,
+  colorPicker: colorPickerConfig,
+  slider: sliderConfig,
+  switch: switchConfig,
+  textarea: textareaConfig,
+  progress: progressConfig,
+  avatar: avatarConfig,
+  steps: stepsConfig,
+  badge2: badgeConfig2,
+  descriptions: descriptionsConfig,
+  statistic: statisticConfig,
+  tag2: tagConfig2,
+};
+
 </script>
 <style scoped lang="less">
 .options-config {
@@ -353,5 +419,24 @@ const removeOption = (index) => {
     align-items: center;
     margin-bottom: 8px;
   }
+  // 自定义滚动条样式
+  &::-webkit-scrollbar {
+    width: 8px;
+    background: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: #e5e6eb;
+    border-radius: 6px;
+    transition: background 0.2s;
+  }
+  &::-webkit-scrollbar-thumb:hover {
+    background: #b2bcd1;
+  }
+  &::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+  // Firefox
+  scrollbar-width: thin;
+  scrollbar-color: #e5e6eb #f8f9fb;
 }
 </style>

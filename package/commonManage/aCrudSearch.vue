@@ -83,17 +83,14 @@ function setSearchProps(props) {
   console.log(props);
   // 配置优先级  手动配置 >  全局配置 >  默认配置
   aCardSearchRef.value = {...aCardSearchDefaultRef.value, ...proxy.$crudGlobalSearchConfig??{},  ...props,};
-   
+   console.log(aCardSearchRef.value.tableMethods, 86)
   initForm();
 }
 
 watch(() => props.config, (data) => {
-  aCardSearchRef.value = {...aCardSearchRef.value, ...data};
-  console.log(data, aCardSearchRef);
+  
  
-    initForm();
- 
-  // setSearchProps(data);
+   setSearchProps({...aCardSearchRef.value, ...data});
  }, {deep: true})
  
 
@@ -159,13 +156,16 @@ function mergeSearchParams(params) {
 
 }
 function emitResetParams() {
+  console.log('reset', resetForm.value, 159);
   emits('reset', deepCopy(resetForm.value));
 }
 
 async function getData(type: 'reset' | 'search' = 'search') {
 
   if (type == 'reset') {
-    searchFormRef.value.clear();
+    if (aCardSearchRef.value?.tableMethods) {
+      searchFormRef.value.clear();
+    }
   } else if (type == 'search') {
     if (aCardSearchRef.value.dataCallback && !aCardSearchRef.value.dataCallback(aCardSearchRef.value.params)) {
       return;
@@ -175,7 +175,7 @@ async function getData(type: 'reset' | 'search' = 'search') {
   const typeList = {reset: [getResetParams, emitResetParams], search: [getSearchParams, emitSearchParams]}
 
   // 如果使用了table组件，则直接调用table组件的getSearch方法 
-  if (aCardSearchRef.value?.tableMethods) { 
+  if (aCardSearchRef.value?.tableMethods && aCardSearchRef.value.isTable !== false) { 
    // tableRef.value._value.getSearch( typeList[type][0]());
     const validateRes = await validateSearch();
     console.log(validateRes);

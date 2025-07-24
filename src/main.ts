@@ -2,8 +2,8 @@ import { createApp } from 'vue'
 import './style.css'
 import App from './App.vue'
  import antdFormDesign from '../package/index.js';
- import antdCrud from '../package/crud.js';
- // import antdCrud from 'antdv-crud';
+ //import antdCrud from '../package/crud.js';
+ import antdCrud from 'antdv-crud';
 import VXETable from "vxe-table";
 import 'vxe-table/lib/style.css';
 import 'antdv-crud/dist/style.css';

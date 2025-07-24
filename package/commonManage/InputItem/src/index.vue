@@ -48,7 +48,7 @@
                                 />
                               </template>
                               <template v-else-if="item.type == 'table'">
-                                <a-crud-table :isForm="true"
+                                <a-crud-table  
                                               v-if="formTable"
                                               ref="inputItemRef"
                                               @register="formTable.register"
@@ -255,13 +255,13 @@ watch(() => props.item, async (data) => {
   inputItem.value = data;
   // 如果是table
   if (inputItem.value.type === 'table') {
-    const isFormParams = inputItem.value.isForm === true ? { isToolBox: true,
+    const isFormParams = { isToolBox: true,
           toolBox: {showExport: false,showPrint: false,showRefresh: false,showSetting: false},
-          isForm: true,
-          pagination: {isPagination: false } } : {};
+       
+          pagination: {isPagination: false } };
         formTable.value = new useTable({
+          ...isFormParams,
         ...inputItem.value,
-        ...isFormParams
       });
   }
 
@@ -274,8 +274,8 @@ watch(() => props.item, async (data) => {
         if(item.dynamicParams) {
           params = {...params, ...item.dynamicParams(props.formState)};
         }
-        if(item.api && (item.field || item.relationField)) {
-          inputItem.value.option = await getOptionList(item.api, params, item.field??item.relationField??{   label: 'label', value: 'value' }, item.childrenField);
+        if(item.api && (item.field || item.relationField || item.dataCallback)) {
+          inputItem.value.option = await getOptionList(item.api, params, item.field??item.relationField??{   label: 'label', value: 'value' }, item.childrenField, item.dataCallback);
         }
       } else if (item.type == 'function') {
         // 处理函数类型

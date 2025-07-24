@@ -29,7 +29,7 @@
     "@vitejs/plugin-vue": "^5.2.1",
     "@vitejs/plugin-vue-jsx": "^4.1.1",
     "ant-design-vue": "3",
-    "antdv-crud": "^2.0.51",
+    "antdv-crud": "^2.0.66",
     "axios": "^1.6.8",
     "codemirror": "^5",
     "codemirror-editor-vue3": "^2.8.0",

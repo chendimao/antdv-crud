@@ -14,6 +14,7 @@
           <!-- 子组件 -->
           <draggable
               v-model="element.children"
+                :animation="200"
               :group="{ name: 'child-group', pull: true, put: true }"
               ghost-class="ghost-placeholder"
 
@@ -39,14 +40,14 @@ export default {
     // 数据定义
     const parentItems = ref([
       {
-        text: "父项 1",
+        text: "父项11111 1",
         children: [
           { text: "子项 1-1" },
           { text: "子项 1-2" }
         ]
       },
       {
-        text: "父项 2",
+        text: "父项 2222222",
         children: [
           { text: "子项 2-1" },
           { text: "子项 2-2" }

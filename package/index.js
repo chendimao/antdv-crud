@@ -1,15 +1,11 @@
 
 import aFormDesign from "./formDesign/index.vue";
-
-import aFormItemInput from "./commonManage/InputItem/index";
+ 
 import './utils/common.css';
 const components = [
-    aFormDesign,
-    aFormItemInput
+    aFormDesign, 
 ];
-
-console.log(aFormItemInput);
-
+ 
 
 const install = function(Vue, config = undefined) {
 

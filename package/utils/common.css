@@ -51,7 +51,7 @@
     }
 
 
-    .form-design .ant-tabs-content-holder {
+    .form-design-tabs .ant-tabs-content-holder {
         height:calc(100vh - 70px);
         overflow: auto;
     }
