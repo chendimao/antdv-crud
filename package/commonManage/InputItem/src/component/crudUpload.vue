@@ -99,42 +99,48 @@ const inputValue = computed({
  
 
 onMounted(() => {
-  if ( props.item?.initFun) {
-  inputValue.value =  props.item.initFun(props.formState);
-      console.log( props.item, inputValue.value, 123);
-    }
+  if (props.item?.initFun) {
+    inputValue.value = props.item.initFun(props.formState);
+    console.log(props.item, inputValue.value, 123);
+  }
 
-    if (props.item?.$attrs?.onMounted) {
-      props.item?.$attrs?.onMounted(props.item, props.formState, props.formData,);
-    }
+  if (props.item?.$attrs?.onMounted) {
+    props.item?.$attrs?.onMounted(props.item, props.formState, props.formData);
+  }
+});
 
-})
 // 事件处理函数
 const eventHandlers = {
-  
   onChange: (info: any) => {
-    if (props.item.$attrs?.onChange) {
-      props.item.$attrs.onChange(props.item, props.formState, props.formData, info);
-    }
-    emit('change', props.item, info);
+    setTimeout(() => {
+      if (props.item.$attrs?.onChange) {
+        props.item.$attrs.onChange(props.item, props.formState, props.formData, info);
+      }
+      emit('change', props.item, info);
+    }, 0);
   },
   onPreview: (file: any) => {
-    console.log(file, 114);
-    if (props.item.$attrs?.onPreview) {
-      props.item.$attrs.onPreview(file);
-    }
+    setTimeout(() => {
+      console.log(file, 114);
+      if (props.item.$attrs?.onPreview) {
+        props.item.$attrs.onPreview(props.item, props.formState, props.formData, file);
+      }
+    }, 0);
   },
-  onRemove: (file: any) => { 
-    if (props.item.$attrs?.onRemove) {
-      props.item.$attrs.onRemove(file);
-    }
+  onRemove: (file: any) => {
+    setTimeout(() => {
+      if (props.item.$attrs?.onRemove) {
+        props.item.$attrs.onRemove(props.item, props.formState, props.formData, file);
+      }
+    }, 0);
   },
   onDownload: (file: any) => {
-    console.log(file, 126);
-    if (props.item.$attrs?.onDownload) {
-      props.item.$attrs.onDownload(file);
-    }
-  },
-  
+    setTimeout(() => {
+      console.log(file, 126);
+      if (props.item.$attrs?.onDownload) {
+        props.item.$attrs.onDownload(props.item, props.formState, props.formData, file);
+      }
+    }, 0);
+  }
 };
 </script> 

@@ -50,13 +50,17 @@ interface EventHandlers {
   onChange?: (item: any, formState: any, formData: any, ...args: any[]) => void;
   onClick?: (item: any, formState: any, formData: any, ...args: any[]) => void;
   onKeydown?: (item: any, formState: any, formData: any, ...args: any[]) => void;
+  onMounted?: (item: any, formState: any, formData: any, ...args: any[]) => void;
+  options?: CheckboxOption[];
 }
 
 interface InputFormItem {
   name?: string;
   $attrs?: EventHandlers;
+  $slots?: Record<string, any>;
   option: CheckboxOption[];
   size?: 'small' | 'default' | 'large';
+  toStringField?: boolean | string;
 }
 
 const props = defineProps<{
@@ -77,8 +81,8 @@ const emit = defineEmits<{
 const inputValue = computed({
   get: () => props.modelValue ?? [],
   set: (val: any) => {
-    if (props.item.toString !== false) {
-        val = String(val).split(props.item?.toString??',');
+    if (props.item.toStringField !== false) {
+        val = String(val).split(props.item?.toStringField ?? ',');
         if (val && val[0] == '') {
             val = [];
         }
@@ -88,49 +92,61 @@ const inputValue = computed({
     eventHandlers.onInput(val);
   }
 });
+
 onMounted(() => {
   if (props.item?.$attrs?.onMounted) {
-    props.item?.$attrs?.onMounted(props.item, props.formState, props.formData,);
+    props.item?.$attrs?.onMounted(props.item, props.formState, props.formData);
   }
-
 });
 // 事件处理函数
 const eventHandlers = {
   onFocus: (e: Event) => {
-    if (props.item.$attrs?.onFocus) {
-      props.item.$attrs.onFocus(props.item, props.formState, props.formData, e);
-    }
+    setTimeout(() => {
+      if (props.item.$attrs?.onFocus) {
+        props.item.$attrs.onFocus(props.item, props.formState, props.formData, e);
+      }
+    }, 0);
   },
   onBlur: (e: Event) => {
-    if (props.validateFun && props.item?.name) {
-      props.validateFun(props.item.name, { trigger: 'blur' }).catch(() => {
-        // 处理错误
-      });
-    }
-    if (props.item.$attrs?.onBlur) {
-      props.item.$attrs.onBlur(props.item, props.formState, props.formData, e);
-    }
+    setTimeout(() => {
+      if (props.validateFun && props.item?.name) {
+        props.validateFun(props.item.name, { trigger: 'blur' }).catch(() => {
+          // 处理错误
+        });
+      }
+      if (props.item.$attrs?.onBlur) {
+        props.item.$attrs.onBlur(props.item, props.formState, props.formData, e);
+      }
+    }, 0);
   },
   onInput: (val: (string | number)[]) => {
-    if (props.item.$attrs?.onInput) {
-      props.item.$attrs.onInput(props.item, props.formState, props.formData, val);
-    }
+    setTimeout(() => {
+      if (props.item.$attrs?.onInput) {
+        props.item.$attrs.onInput(props.item, props.formState, props.formData, val);
+      }
+    }, 0);
   },
   onChange: (value: (string | number)[]) => {
-    if (props.item.$attrs?.onChange) {
-      props.item.$attrs.onChange(props.item, props.formState, props.formData, value);
-    }
-    emit('change', props.item, value);
+    setTimeout(() => {
+      if (props.item.$attrs?.onChange) {
+        props.item.$attrs.onChange(props.item, props.formState, props.formData, value);
+      }
+      emit('change', props.item, value);
+    }, 0);
   },
   onClick: (e: Event) => {
-    if (props.item.$attrs?.onClick) {
-      props.item.$attrs.onClick(props.item, props.formState, props.formData, e);
-    }
+    setTimeout(() => {
+      if (props.item.$attrs?.onClick) {
+        props.item.$attrs.onClick(props.item, props.formState, props.formData, e);
+      }
+    }, 0);
   },
   onKeydown: (e: KeyboardEvent) => {
-    if (props.item.$attrs?.onKeydown) {
-      props.item.$attrs.onKeydown(props.item, props.formState, props.formData, e);
-    }
+    setTimeout(() => {
+      if (props.item.$attrs?.onKeydown) {
+        props.item.$attrs.onKeydown(props.item, props.formState, props.formData, e);
+      }
+    }, 0);
   }
 };
 </script> 

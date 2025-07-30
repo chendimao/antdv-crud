@@ -68,11 +68,13 @@ interface EventHandlers {
   onSearch?: (item: any, formState: any, formData: any, ...args: any[]) => void;
   onClear?: (item: any, formState: any, formData: any, ...args: any[]) => void;
   onPressEnter?: (item: any, formState: any, formData: any, ...args: any[]) => void;
+  onMounted?: (item: any, formState: any, formData: any, ...args: any[]) => void;
 }
 
 interface InputFormItem {
   name?: string;
   $attrs?: EventHandlers;
+  $slots?: Record<string, any>;
   allowClear?: boolean;
   afterText?: string;
 }
@@ -104,168 +106,225 @@ const inputValue = computed({
 onMounted(() => {
   console.log('onmounted', props.item?.$attrs, 105);
   if (props.item?.$attrs?.onMounted) {
-    props.item?.$attrs?.onMounted(props.item, props.formState, props.formData,);
+    props.item?.$attrs?.onMounted(props.item, props.formState, props.formData);
   }
-
 });
 
 
-// 原生事件处理函数
+// 事件处理函数
 const eventHandlers = {
   onFocus: (e: Event) => {
-    if (props.item.$attrs?.onFocus) {
-      props.item.$attrs.onFocus(props.item, props.formState, props.formData, e);
-    }
+    setTimeout(() => {
+      if (props.item.$attrs?.onFocus) {
+        props.item.$attrs.onFocus(props.item, props.formState, props.formData, e);
+      }
+    }, 0);
   },
   onBlur: (e: Event) => {
-    if (props.validateFun && props.item?.name) {
-      props.validateFun(props.item.name, { trigger: 'blur' }).catch(() => {
-        // 处理错误
-      });
-    }
-    if (props.item.$attrs?.onBlur) {
-      props.item.$attrs.onBlur(props.item, props.formState, props.formData, e);
-    }
+    setTimeout(() => {
+      if (props.validateFun && props.item?.name) {
+        props.validateFun(props.item.name, { trigger: 'blur' }).catch(() => {
+          // 处理错误
+        });
+      }
+      if (props.item.$attrs?.onBlur) {
+        props.item.$attrs.onBlur(props.item, props.formState, props.formData, e);
+      }
+    }, 0);
   },
   onInput: (e: Event) => {
-    if (props.item.$attrs?.onInput) {
-      props.item.$attrs.onInput(props.item, props.formState, props.formData, e);
-    }
+    setTimeout(() => {
+      if (props.item.$attrs?.onInput) {
+        props.item.$attrs.onInput(props.item, props.formState, props.formData, e);
+      }
+    }, 0);
   },
   onChange: (e: Event) => {
-    if (props.item.$attrs?.onChange) {
-      props.item.$attrs.onChange(props.item, props.formState, props.formData, e);
-    }
+    setTimeout(() => {
+      if (props.item.$attrs?.onChange) {
+        props.item.$attrs.onChange(props.item, props.formState, props.formData, e);
+      }
+    }, 0);
   },
   onSubmit: (e: Event) => {
-    if (props.item.$attrs?.onSubmit) {
-      props.item.$attrs.onSubmit(props.item, props.formState, props.formData, e);
-    }
-    e.preventDefault();
+    setTimeout(() => {
+      if (props.item.$attrs?.onSubmit) {
+        props.item.$attrs.onSubmit(props.item, props.formState, props.formData, e);
+      }
+      e.preventDefault();
+    }, 0);
   },
   onReset: (e: Event) => {
-    if (props.item.$attrs?.onReset) {
-      props.item.$attrs.onReset(props.item, props.formState, props.formData, e);
-    }
-    e.preventDefault();
+    setTimeout(() => {
+      if (props.item.$attrs?.onReset) {
+        props.item.$attrs.onReset(props.item, props.formState, props.formData, e);
+      }
+      e.preventDefault();
+    }, 0);
   },
   onKeydown: (e: KeyboardEvent) => {
-    if (props.item.$attrs?.onKeydown) {
-      props.item.$attrs.onKeydown(props.item, props.formState, props.formData, e);
-    }
+    setTimeout(() => {
+      if (props.item.$attrs?.onKeydown) {
+        props.item.$attrs.onKeydown(props.item, props.formState, props.formData, e);
+      }
+    }, 0);
   },
   onKeypress: (e: KeyboardEvent) => {
-    if (props.item.$attrs?.onKeypress) {
-      props.item.$attrs.onKeypress(props.item, props.formState, props.formData, e);
-    }
-    if (e.key === 'Enter') {
-      e.preventDefault();
-    }
+    setTimeout(() => {
+      if (props.item.$attrs?.onKeypress) {
+        props.item.$attrs.onKeypress(props.item, props.formState, props.formData, e);
+      }
+      if (e.key === 'Enter') {
+        e.preventDefault();
+      }
+    }, 0);
   },
   onKeyup: (e: KeyboardEvent) => {
-    if (props.item.$attrs?.onKeyup) {
-      props.item.$attrs.onKeyup(props.item, props.formState, props.formData, e);
-    }
+    setTimeout(() => {
+      if (props.item.$attrs?.onKeyup) {
+        props.item.$attrs.onKeyup(props.item, props.formState, props.formData, e);
+      }
+    }, 0);
   },
   onClick: (e: MouseEvent) => {
-    if (props.item.$attrs?.onClick) {
-      props.item.$attrs.onClick(props.item, props.formState, props.formData, e);
-    }
+    setTimeout(() => {
+      if (props.item.$attrs?.onClick) {
+        props.item.$attrs.onClick(props.item, props.formState, props.formData, e);
+      }
+    }, 0);
   },
   onDblclick: (e: MouseEvent) => {
-    if (props.item.$attrs?.onDblclick) {
-      props.item.$attrs.onDblclick(props.item, props.formState, props.formData, e);
-    }
+    setTimeout(() => {
+      if (props.item.$attrs?.onDblclick) {
+        props.item.$attrs.onDblclick(props.item, props.formState, props.formData, e);
+      }
+    }, 0);
   },
   onMousedown: (e: MouseEvent) => {
-    if (props.item.$attrs?.onMousedown) {
-      props.item.$attrs.onMousedown(props.item, props.formState, props.formData, e);
-    }
+    setTimeout(() => {
+      if (props.item.$attrs?.onMousedown) {
+        props.item.$attrs.onMousedown(props.item, props.formState, props.formData, e);
+      }
+    }, 0);
   },
   onMouseup: (e: MouseEvent) => {
-    if (props.item.$attrs?.onMouseup) {
-      props.item.$attrs.onMouseup(props.item, props.formState, props.formData, e);
-    }
+    setTimeout(() => {
+      if (props.item.$attrs?.onMouseup) {
+        props.item.$attrs.onMouseup(props.item, props.formState, props.formData, e);
+      }
+    }, 0);
   },
   onMousemove: (e: MouseEvent) => {
-    if (props.item.$attrs?.onMousemove) {
-      props.item.$attrs.onMousemove(props.item, props.formState, props.formData, e);
-    }
+    setTimeout(() => {
+      if (props.item.$attrs?.onMousemove) {
+        props.item.$attrs.onMousemove(props.item, props.formState, props.formData, e);
+      }
+    }, 0);
   },
   onMouseover: (e: MouseEvent) => {
-    if (props.item.$attrs?.onMouseover) {
-      props.item.$attrs.onMouseover(props.item, props.formState, props.formData, e);
-    }
+    setTimeout(() => {
+      if (props.item.$attrs?.onMouseover) {
+        props.item.$attrs.onMouseover(props.item, props.formState, props.formData, e);
+      }
+    }, 0);
   },
   onMouseout: (e: MouseEvent) => {
-    if (props.item.$attrs?.onMouseout) {
-      props.item.$attrs.onMouseout(props.item, props.formState, props.formData, e);
-    }
+    setTimeout(() => {
+      if (props.item.$attrs?.onMouseout) {
+        props.item.$attrs.onMouseout(props.item, props.formState, props.formData, e);
+      }
+    }, 0);
   },
   onCopy: (e: ClipboardEvent) => {
-    if (props.item.$attrs?.onCopy) {
-      props.item.$attrs.onCopy(props.item, props.formState, props.formData, e);
-    }
+    setTimeout(() => {
+      if (props.item.$attrs?.onCopy) {
+        props.item.$attrs.onCopy(props.item, props.formState, props.formData, e);
+      }
+    }, 0);
   },
   onCut: (e: ClipboardEvent) => {
-    if (props.item.$attrs?.onCut) {
-      props.item.$attrs.onCut(props.item, props.formState, props.formData, e);
-    }
+    setTimeout(() => {
+      if (props.item.$attrs?.onCut) {
+        props.item.$attrs.onCut(props.item, props.formState, props.formData, e);
+      }
+    }, 0);
   },
   onPaste: (e: ClipboardEvent) => {
-    if (props.item.$attrs?.onPaste) {
-      props.item.$attrs.onPaste(props.item, props.formState, props.formData, e);
-    }
+    setTimeout(() => {
+      if (props.item.$attrs?.onPaste) {
+        props.item.$attrs.onPaste(props.item, props.formState, props.formData, e);
+      }
+    }, 0);
   },
   onDrag: (e: DragEvent) => {
-    if (props.item.$attrs?.onDrag) {
-      props.item.$attrs.onDrag(props.item, props.formState, props.formData, e);
-    }
+    setTimeout(() => {
+      if (props.item.$attrs?.onDrag) {
+        props.item.$attrs.onDrag(props.item, props.formState, props.formData, e);
+      }
+    }, 0);
   },
   onDragstart: (e: DragEvent) => {
-    if (props.item.$attrs?.onDragstart) {
-      props.item.$attrs.onDragstart(props.item, props.formState, props.formData, e);
-    }
+    setTimeout(() => {
+      if (props.item.$attrs?.onDragstart) {
+        props.item.$attrs.onDragstart(props.item, props.formState, props.formData, e);
+      }
+    }, 0);
   },
   onDragend: (e: DragEvent) => {
-    if (props.item.$attrs?.onDragend) {
-      props.item.$attrs.onDragend(props.item, props.formState, props.formData, e);
-    }
+    setTimeout(() => {
+      if (props.item.$attrs?.onDragend) {
+        props.item.$attrs.onDragend(props.item, props.formState, props.formData, e);
+      }
+    }, 0);
   },
   onDragenter: (e: DragEvent) => {
-    if (props.item.$attrs?.onDragenter) {
-      props.item.$attrs.onDragenter(props.item, props.formState, props.formData, e);
-    }
+    setTimeout(() => {
+      if (props.item.$attrs?.onDragenter) {
+        props.item.$attrs.onDragenter(props.item, props.formState, props.formData, e);
+      }
+    }, 0);
   },
   onDragover: (e: DragEvent) => {
-    if (props.item.$attrs?.onDragover) {
-      props.item.$attrs.onDragover(props.item, props.formState, props.formData, e);
-    }
+    setTimeout(() => {
+      if (props.item.$attrs?.onDragover) {
+        props.item.$attrs.onDragover(props.item, props.formState, props.formData, e);
+      }
+    }, 0);
   },
   onDragleave: (e: DragEvent) => {
-    if (props.item.$attrs?.onDragleave) {
-      props.item.$attrs.onDragleave(props.item, props.formState, props.formData, e);
-    }
+    setTimeout(() => {
+      if (props.item.$attrs?.onDragleave) {
+        props.item.$attrs.onDragleave(props.item, props.formState, props.formData, e);
+      }
+    }, 0);
   },
   onDrop: (e: DragEvent) => {
-    if (props.item.$attrs?.onDrop) {
-      props.item.$attrs.onDrop(props.item, props.formState, props.formData, e);
-    }
+    setTimeout(() => {
+      if (props.item.$attrs?.onDrop) {
+        props.item.$attrs.onDrop(props.item, props.formState, props.formData, e);
+      }
+    }, 0);
   },
   onSearch: (value: string) => {
-    if (props.item.$attrs?.onSearch) {
-      props.item.$attrs.onSearch(props.item, props.formState, props.formData, value);
-    }
+    setTimeout(() => {
+      if (props.item.$attrs?.onSearch) {
+        props.item.$attrs.onSearch(props.item, props.formState, props.formData, value);
+      }
+    }, 0);
   },
   onPressEnter: (e: Event) => {
-    if (props.item.$attrs?.onPressEnter) {
-      props.item.$attrs.onPressEnter(props.item, props.formState, props.formData, e);
-    }
+    setTimeout(() => {
+      if (props.item.$attrs?.onPressEnter) {
+        props.item.$attrs.onPressEnter(props.item, props.formState, props.formData, e);
+      }
+    }, 0);
   },
   onClear: () => {
-    if (props.item.$attrs?.onClear) {
-      props.item.$attrs.onClear(props.item, props.formState, props.formData);
-    }
+    setTimeout(() => {
+      if (props.item.$attrs?.onClear) {
+        props.item.$attrs.onClear(props.item, props.formState, props.formData);
+      }
+    }, 0);
   }
 };
 

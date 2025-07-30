@@ -98,156 +98,52 @@ const inputValue = computed({
 });
 onMounted(() => {
   if (props.item?.$attrs?.onMounted) {
-    props.item?.$attrs?.onMounted(props.item, props.formState, props.formData,);
+    props.item?.$attrs?.onMounted(props.item, props.formState, props.formData);
   }
-
 });
-// 原生事件处理函数
+
+// 事件处理函数
 const eventHandlers = {
   onFocus: (e: Event) => {
-    if (props.item.$attrs?.onFocus) {
-      props.item.$attrs.onFocus(props.item, props.formState, props.formData, e);
-    }
+    setTimeout(() => {
+      if (props.item.$attrs?.onFocus) {
+        props.item.$attrs.onFocus(props.item, props.formState, props.formData, e);
+      }
+    }, 0);
   },
   onBlur: (e: Event) => {
-    if (props.validateFun && props.item?.name) {
-      props.validateFun(props.item.name, { trigger: 'blur' }).catch(() => {
-        // 处理错误
-      });
-    }
-    if (props.item.$attrs?.onBlur) {
-      props.item.$attrs.onBlur(props.item, props.formState, props.formData, e);
-    }
+    setTimeout(() => {
+      if (props.validateFun && props.item?.name) {
+        props.validateFun(props.item.name, { trigger: 'blur' }).catch(() => {
+          // 处理错误
+        });
+      }
+      if (props.item.$attrs?.onBlur) {
+        props.item.$attrs.onBlur(props.item, props.formState, props.formData, e);
+      }
+    }, 0);
   },
-  onInput: (e: Event) => {
-    if (props.item.$attrs?.onInput) {
-      props.item.$attrs.onInput(props.item, props.formState, props.formData, e);
-    }
+  onInput: (val: string) => {
+    setTimeout(() => {
+      if (props.item.$attrs?.onInput) {
+        props.item.$attrs.onInput(props.item, props.formState, props.formData, val);
+      }
+    }, 0);
   },
-  onChange: (e: Event) => {
-    if (props.item.$attrs?.onChange) {
-      props.item.$attrs.onChange(props.item, props.formState, props.formData, e);
-    }
+  onChange: (value: string) => {
+    setTimeout(() => {
+      if (props.item.$attrs?.onChange) {
+        props.item.$attrs.onChange(props.item, props.formState, props.formData, value);
+      }
+      emit('change', props.item, value);
+    }, 0);
   },
-  onSubmit: (e: Event) => {
-    if (props.item.$attrs?.onSubmit) {
-      props.item.$attrs.onSubmit(props.item, props.formState, props.formData, e);
-    }
-    e.preventDefault();
-  },
-  onReset: (e: Event) => {
-    if (props.item.$attrs?.onReset) {
-      props.item.$attrs.onReset(props.item, props.formState, props.formData, e);
-    }
-    e.preventDefault();
-  },
-  onKeydown: (e: KeyboardEvent) => {
-    if (props.item.$attrs?.onKeydown) {
-      props.item.$attrs.onKeydown(props.item, props.formState, props.formData, e);
-    }
-  },
-  onKeypress: (e: KeyboardEvent) => {
-    if (props.item.$attrs?.onKeypress) {
-      props.item.$attrs.onKeypress(props.item, props.formState, props.formData, e);
-    }
-    if (e.key === 'Enter') {
-      e.preventDefault();
-    }
-  },
-  onKeyup: (e: KeyboardEvent) => {
-    if (props.item.$attrs?.onKeyup) {
-      props.item.$attrs.onKeyup(props.item, props.formState, props.formData, e);
-    }
-  },
-  onClick: (e: MouseEvent) => {
-    if (props.item.$attrs?.onClick) {
-      props.item.$attrs.onClick(props.item, props.formState, props.formData, e);
-    }
-  },
-  onDblclick: (e: MouseEvent) => {
-    if (props.item.$attrs?.onDblclick) {
-      props.item.$attrs.onDblclick(props.item, props.formState, props.formData, e);
-    }
-  },
-  onMousedown: (e: MouseEvent) => {
-    if (props.item.$attrs?.onMousedown) {
-      props.item.$attrs.onMousedown(props.item, props.formState, props.formData, e);
-    }
-  },
-  onMouseup: (e: MouseEvent) => {
-    if (props.item.$attrs?.onMouseup) {
-      props.item.$attrs.onMouseup(props.item, props.formState, props.formData, e);
-    }
-  },
-  onMousemove: (e: MouseEvent) => {
-    if (props.item.$attrs?.onMousemove) {
-      props.item.$attrs.onMousemove(props.item, props.formState, props.formData, e);
-    }
-  },
-  onMouseover: (e: MouseEvent) => {
-    if (props.item.$attrs?.onMouseover) {
-      props.item.$attrs.onMouseover(props.item, props.formState, props.formData, e);
-    }
-  },
-  onMouseout: (e: MouseEvent) => {
-    if (props.item.$attrs?.onMouseout) {
-      props.item.$attrs.onMouseout(props.item, props.formState, props.formData, e);
-    }
-  },
-  onCopy: (e: ClipboardEvent) => {
-    if (props.item.$attrs?.onCopy) {
-      props.item.$attrs.onCopy(props.item, props.formState, props.formData, e);
-    }
-  },
-  onCut: (e: ClipboardEvent) => {
-    if (props.item.$attrs?.onCut) {
-      props.item.$attrs.onCut(props.item, props.formState, props.formData, e);
-    }
-  },
-  onPaste: (e: ClipboardEvent) => {
-    if (props.item.$attrs?.onPaste) {
-      props.item.$attrs.onPaste(props.item, props.formState, props.formData, e);
-    }
-  },
-  onDrag: (e: DragEvent) => {
-    if (props.item.$attrs?.onDrag) {
-      props.item.$attrs.onDrag(props.item, props.formState, props.formData, e);
-    }
-  },
-  onDragstart: (e: DragEvent) => {
-    if (props.item.$attrs?.onDragstart) {
-      props.item.$attrs.onDragstart(props.item, props.formState, props.formData, e);
-    }
-  },
-  onDragend: (e: DragEvent) => {
-    if (props.item.$attrs?.onDragend) {
-      props.item.$attrs.onDragend(props.item, props.formState, props.formData, e);
-    }
-  },
-  onDragenter: (e: DragEvent) => {
-    if (props.item.$attrs?.onDragenter) {
-      props.item.$attrs.onDragenter(props.item, props.formState, props.formData, e);
-    }
-  },
-  onDragover: (e: DragEvent) => {
-    if (props.item.$attrs?.onDragover) {
-      props.item.$attrs.onDragover(props.item, props.formState, props.formData, e);
-    }
-  },
-  onDragleave: (e: DragEvent) => {
-    if (props.item.$attrs?.onDragleave) {
-      props.item.$attrs.onDragleave(props.item, props.formState, props.formData, e);
-    }
-  },
-  onDrop: (e: DragEvent) => {
-    if (props.item.$attrs?.onDrop) {
-      props.item.$attrs.onDrop(props.item, props.formState, props.formData, e);
-    }
-  },
-  onResize: (size: { width: number; height: number }) => {
-    if (props.item.$attrs?.onResize) {
-      props.item.$attrs.onResize(size);
-    }
+  onResize: (e: ResizeEvent) => {
+    setTimeout(() => {
+      if (props.item.$attrs?.onResize) {
+        props.item.$attrs.onResize(props.item, props.formState, props.formData, e);
+      }
+    }, 0);
   }
 };
 </script> 

@@ -48,6 +48,7 @@ interface EventHandlers {
   onInput?: (item: any, formState: any, formData: any, ...args: any[]) => void;
   onChange?: (item: any, formState: any, formData: any, src: string) => void;
   onError?: (item: any, formState: any, formData: any, e: Event) => void;
+  onMounted?: (item: any, formState: any, formData: any, ...args: any[]) => void;
 }
 
 interface InputFormItem {
@@ -60,9 +61,8 @@ interface InputFormItem {
   draggable?: boolean;
   crossorigin?: 'anonymous' | 'use-credentials' | '';
   loading?: boolean;
-  $slots?: {
-    default?: boolean;
-  };
+  style?: string | Record<string, any>;
+  $slots?: Record<string, any>;
 }
 
 const props = defineProps<{
@@ -83,49 +83,58 @@ const emit = defineEmits<{
 const inputValue = computed({
   get: () => props.modelValue ?? '',
   set: (val) => {
-
     emit('update:modelValue', val);
-    eventHandlers.onInput(val);
   }
 });
+
 onMounted(() => {
   if (props.item?.$attrs?.onMounted) {
-    props.item?.$attrs?.onMounted(props.item, props.formState, props.formData,);
+    props.item?.$attrs?.onMounted(props.item, props.formState, props.formData);
   }
-
 });
+
 // 事件处理函数
 const eventHandlers = {
   onFocus: (e: Event) => {
-    if (props.item.$attrs?.onFocus) {
-      props.item.$attrs.onFocus(props.item, props.formState, props.formData, e);
-    }
+    setTimeout(() => {
+      if (props.item.$attrs?.onFocus) {
+        props.item.$attrs.onFocus(props.item, props.formState, props.formData, e);
+      }
+    }, 0);
   },
   onBlur: (e: Event) => {
-    if (props.validateFun && props.item?.name) {
-      props.validateFun(props.item.name, { trigger: 'blur' }).catch(() => {
-        // 处理错误
-      });
-    }
-    if (props.item.$attrs?.onBlur) {
-      props.item.$attrs.onBlur(props.item, props.formState, props.formData, e);
-    }
+    setTimeout(() => {
+      if (props.validateFun && props.item?.name) {
+        props.validateFun(props.item.name, { trigger: 'blur' }).catch(() => {
+          // 处理错误
+        });
+      }
+      if (props.item.$attrs?.onBlur) {
+        props.item.$attrs.onBlur(props.item, props.formState, props.formData, e);
+      }
+    }, 0);
   },
   onInput: (val: string) => {
-    if (props.item.$attrs?.onInput) {
-      props.item.$attrs.onInput(props.item, props.formState, props.formData, val);
-    }
+    setTimeout(() => {
+      if (props.item.$attrs?.onInput) {
+        props.item.$attrs.onInput(props.item, props.formState, props.formData, val);
+      }
+    }, 0);
   },
   onChange: (src: string) => {
-    if (props.item.$attrs?.onChange) {
-      props.item.$attrs.onChange(props.item, props.formState, props.formData, src);
-    }
-    emit('change', props.item, src);
+    setTimeout(() => {
+      if (props.item.$attrs?.onChange) {
+        props.item.$attrs.onChange(props.item, props.formState, props.formData, src);
+      }
+      emit('change', props.item, src);
+    }, 0);
   },
   onError: (e: Event) => {
-    if (props.item.$attrs?.onError) {
-      props.item.$attrs.onError(props.item, props.formState, props.formData, e);
-    }
+    setTimeout(() => {
+      if (props.item.$attrs?.onError) {
+        props.item.$attrs.onError(props.item, props.formState, props.formData, e);
+      }
+    }, 0);
   }
 };
 </script> 

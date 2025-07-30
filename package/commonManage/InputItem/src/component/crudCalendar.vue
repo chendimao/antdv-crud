@@ -96,47 +96,59 @@ const inputValue = computed({
 });
 onMounted(() => {
   if (props.item?.$attrs?.onMounted) {
-    props.item?.$attrs?.onMounted(props.item, props.formState, props.formData,);
+    props.item?.$attrs?.onMounted(props.item, props.formState, props.formData);
   }
-
 });
+
 // 事件处理函数
 const eventHandlers = {
   onFocus: (e: Event) => {
-    if (props.item.$attrs?.onFocus) {
-      props.item.$attrs.onFocus(props.item, props.formState, props.formData, e);
-    }
+    setTimeout(() => {
+      if (props.item.$attrs?.onFocus) {
+        props.item.$attrs.onFocus(props.item, props.formState, props.formData, e);
+      }
+    }, 0);
   },
   onBlur: (e: Event) => {
-    if (props.validateFun && props.item?.name) {
-      props.validateFun(props.item.name, { trigger: 'blur' }).catch(() => {
-        // 处理错误
-      });
-    }
-    if (props.item.$attrs?.onBlur) {
-      props.item.$attrs.onBlur(props.item, props.formState, props.formData, e);
-    }
+    setTimeout(() => {
+      if (props.validateFun && props.item?.name) {
+        props.validateFun(props.item.name, { trigger: 'blur' }).catch(() => {
+          // 处理错误
+        });
+      }
+      if (props.item.$attrs?.onBlur) {
+        props.item.$attrs.onBlur(props.item, props.formState, props.formData, e);
+      }
+    }, 0);
   },
   onInput: (val: Dayjs | null) => {
-    if (props.item.$attrs?.onInput && val) {
-      props.item.$attrs.onInput(props.item, props.formState, props.formData, val);
-    }
+    setTimeout(() => {
+      if (props.item.$attrs?.onInput) {
+        props.item.$attrs.onInput(props.item, props.formState, props.formData, val);
+      }
+    }, 0);
   },
-  onChange: (date: Dayjs) => {
-    if (props.item.$attrs?.onChange) {
-      props.item.$attrs.onChange(props.item, props.formState, props.formData, date);
-    }
-    emit('change', props.item, date);
+  onChange: (date: Dayjs | null) => {
+    setTimeout(() => {
+      if (props.item.$attrs?.onChange) {
+        props.item.$attrs.onChange(props.item, props.formState, props.formData, date);
+      }
+      emit('change', props.item, date);
+    }, 0);
   },
-  onPanelChange: (date: Dayjs, mode: string) => {
-    if (props.item.$attrs?.onPanelChange) {
-      props.item.$attrs.onPanelChange(props.item, props.formState, props.formData, date, mode);
-    }
+  onPanelChange: (date: Dayjs | null, mode: string) => {
+    setTimeout(() => {
+      if (props.item.$attrs?.onPanelChange) {
+        props.item.$attrs.onPanelChange(props.item, props.formState, props.formData, date, mode);
+      }
+    }, 0);
   },
-  onSelect: (date: Dayjs) => {
-    if (props.item.$attrs?.onSelect) {
-      props.item.$attrs.onSelect(props.item, props.formState, props.formData, date);
-    }
+  onSelect: (date: Dayjs | null) => {
+    setTimeout(() => {
+      if (props.item.$attrs?.onSelect) {
+        props.item.$attrs.onSelect(props.item, props.formState, props.formData, date);
+      }
+    }, 0);
   }
 };
 </script> 

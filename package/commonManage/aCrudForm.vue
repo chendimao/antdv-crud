@@ -183,6 +183,7 @@ import inputItem from "./InputItem";
     insert: '新增',
     show: '查看',
     check: '审核',
+    preview: '预览',
    }
   );
    const title = ref();
@@ -342,6 +343,7 @@ import inputItem from "./InputItem";
      
     if (t == 'insert') {
       aCardFormRef.value.formState = deepCopy(resetForm.value);
+    } else if (t == 'preview') { 
     } else {
 
       if (aCardFormRef.value['showApi'] && isFunction(aCardFormRef.value['showApi'])) {
@@ -362,11 +364,11 @@ import inputItem from "./InputItem";
 
   async function handleFormSubmit(params) {
     // 查看模式不掉保存接口
-    if (aCardFormRef.value.type == 'show') {
+    if (['show', 'preview'].includes(aCardFormRef.value.type)) {
       setFormVisible(false);
       return;
     }
-    else
+    if (['update', 'insert'].includes(aCardFormRef.value.type)) {
     {
       let flag = true;
       const res = await formItemRef.value.submit();
@@ -436,6 +438,7 @@ import inputItem from "./InputItem";
     }
 
   }
+}
 watch(() => props.config, (data) => {
   setFormProps({...formTransferPropsRef.value, ...data})
   console.log(data, formTransferPropsRef, 425);

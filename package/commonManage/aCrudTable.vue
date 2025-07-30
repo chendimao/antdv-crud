@@ -156,7 +156,7 @@ watch(() => props.config, (data) => {
   setTableProps({...tableTransferPropsRef.value, ...data})
 }, {deep: true })
 watch(() => tableData, (data) => {
-
+  console.log(tableTransferPropsRef.value.name, data, 159);
   if (tableTransferPropsRef.value.editType == 'all' || tableTransferPropsRef.value.editType == 'edit') {
     emits('change', data.value);
   }
@@ -242,6 +242,14 @@ function initFun() {
       })
     }
   })
+  
+  if (tableTransferPropsRef.value.mockData ||  tableTransferPropsRef.value.localData) {
+    tableData.value = tableTransferPropsRef.value.mockData??tableTransferPropsRef.value.localData;
+    tableTotal.value = tableData.value.length; 
+    return tableData.value;
+  }
+
+
 }
 
 
@@ -337,7 +345,7 @@ function setTableProps(props) {
 
 
   if (tableTransferPropsRef.value.editType == 'all' || tableTransferPropsRef.value.editType == 'edit') {
-    tableData.value = tableTransferPropsRef.value.tableData || [];
+    tableData.value = tableTransferPropsRef.value.localData??tableTransferPropsRef.value.mockData??[];
     if (tableData.value?.length == 0) {
       return;
     }
@@ -549,14 +557,9 @@ const tableMethods = {
 
 
 async function getData(params?, isMerge = false) {
-  console.log(params, tableTransferPropsRef.value);
-  initFun();
-  if (tableTransferPropsRef.value.mockData ||  tableTransferPropsRef.value.localData) {
-    tableData.value = tableTransferPropsRef.value.mockData??tableTransferPropsRef.value.localData;
-    tableTotal.value = tableData.value.length;
-    return tableData.value;
-  }
 
+  initFun();
+  
   if (tableTransferPropsRef.value.beforeCallback) {
     tableTransferPropsRef.value.beforeCallback(tableTransferPropsRef.value);
   }

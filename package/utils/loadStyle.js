@@ -8,19 +8,7 @@
 export async function loadStyle(cssText, id, isLess = false) {
   let finalCssText = cssText;
 
-  // 如果是 Less，尝试编译
-  if (isLess) {
-    try {
-      // 动态导入 less
-      const less = await import('less');
-      const result = await less.render(cssText);
-      finalCssText = result.css;
-    } catch (error) {
-    //  console.warn('Less 编译失败，将使用原始 CSS 样式:', error);
-      // 如果 Less 编译失败，使用原始 CSS
-      finalCssText = cssText;
-    }
-  }
+  
 
   // 如果提供了 ID，先检查是否已存在
   if (id) {

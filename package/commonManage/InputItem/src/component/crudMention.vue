@@ -99,52 +99,66 @@ const inputValue = computed({
 });
 onMounted(() => {
   if (props.item?.$attrs?.onMounted) {
-    props.item?.$attrs?.onMounted(props.item, props.formState, props.formData,);
+    props.item?.$attrs?.onMounted(props.item, props.formState, props.formData);
   }
-
 });
+
 // 事件处理函数
 const eventHandlers = {
   onFocus: (e: Event) => {
-    if (props.item.$attrs?.onFocus) {
-      props.item.$attrs.onFocus(props.item, props.formState, props.formData, e);
-    }
+    setTimeout(() => {
+      if (props.item.$attrs?.onFocus) {
+        props.item.$attrs.onFocus(props.item, props.formState, props.formData, e);
+      }
+    }, 0);
   },
   onBlur: (e: Event) => {
-    if (props.validateFun && props.item?.name) {
-      props.validateFun(props.item.name, { trigger: 'blur' }).catch(() => {
-        // 处理错误
-      });
-    }
-    if (props.item.$attrs?.onBlur) {
-      props.item.$attrs.onBlur(props.item, props.formState, props.formData, e);
-    }
+    setTimeout(() => {
+      if (props.validateFun && props.item?.name) {
+        props.validateFun(props.item.name, { trigger: 'blur' }).catch(() => {
+          // 处理错误
+        });
+      }
+      if (props.item.$attrs?.onBlur) {
+        props.item.$attrs.onBlur(props.item, props.formState, props.formData, e);
+      }
+    }, 0);
   },
   onInput: (val: string) => {
-    if (props.item.$attrs?.onInput) {
-      props.item.$attrs.onInput(props.item, props.formState, props.formData, val);
-    }
+    setTimeout(() => {
+      if (props.item.$attrs?.onInput) {
+        props.item.$attrs.onInput(props.item, props.formState, props.formData, val);
+      }
+    }, 0);
   },
   onChange: (value: string) => {
-    if (props.item.$attrs?.onChange) {
-      props.item.$attrs.onChange(props.item, props.formState, props.formData, value);
-    }
-    emit('change', props.item, value);
+    setTimeout(() => {
+      if (props.item.$attrs?.onChange) {
+        props.item.$attrs.onChange(props.item, props.formState, props.formData, value);
+      }
+      emit('change', props.item, value);
+    }, 0);
   },
   onSelect: (option: MentionOption) => {
-    if (props.item.$attrs?.onSelect) {
-      props.item.$attrs.onSelect(props.item, props.formState, props.formData, option);
-    }
+    setTimeout(() => {
+      if (props.item.$attrs?.onSelect) {
+        props.item.$attrs.onSelect(props.item, props.formState, props.formData, option);
+      }
+    }, 0);
   },
   onSearch: (value: string, prefix: string) => {
-    if (props.item.$attrs?.onSearch) {
-      props.item.$attrs.onSearch(props.item, props.formState, props.formData, value, prefix);
-    }
+    setTimeout(() => {
+      if (props.item.$attrs?.onSearch) {
+        props.item.$attrs.onSearch(props.item, props.formState, props.formData, value, prefix);
+      }
+    }, 0);
   },
   onKeydown: (e: KeyboardEvent) => {
-    if (props.item.$attrs?.onKeydown) {
-      props.item.$attrs.onKeydown(props.item, props.formState, props.formData, e);
-    }
+    setTimeout(() => {
+      if (props.item.$attrs?.onKeydown) {
+        props.item.$attrs.onKeydown(props.item, props.formState, props.formData, e);
+      }
+    }, 0);
   }
 };
 </script> 

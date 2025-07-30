@@ -110,6 +110,7 @@ const base: inputFormModel[] = [
 
   { text: '数字输入框', name: 'szsrk', type: 'number',
     span: 12,
+    value: 2,
     colStyle: {'color': 'red'},
     labelCol: { style: { width: '100px'  } },
     rules: [  
@@ -231,9 +232,10 @@ const base: inputFormModel[] = [
     type: 'radio',
     name: 'radio',
     span: 12,
-    value: '',
-    option: stateList,
-
+    value: '', 
+    $attrs: {
+      options: stateList
+    },
     rules:[
       { required: true, message: '请选择单选'},
       {  validator: testSlot, trigger: 'blur'}
@@ -685,7 +687,7 @@ const base: inputFormModel[] = [
 
       },
       ],
-    tableData: [
+    localData: [
       {
 
         "zkbm": "",
@@ -772,6 +774,7 @@ const base: inputFormModel[] = [
     text: '可编辑表格2',
     type: 'table',
     name: 'table2', 
+    editType: 'edit',
     columns: [
         {
       text: '下拉选',
@@ -899,7 +902,7 @@ const base: inputFormModel[] = [
 
       },
       ],
-    tableData: [
+    localData: [
       {
 
         "zkbm": "",
@@ -952,16 +955,7 @@ const base: inputFormModel[] = [
      mouseConfig: {
       selected: true
      },
-     keyboardConfig: {
-      isEdit: true,
-      isArrow: true,
-      isEnter: true,
-      isTab: true,
-      isDel: true,
-      isBack: true,
-      isEsc: true,
-      isLastEnterAppendRow: true
-    },
+     
      validConfig: {
        msgMode: 'full'
      },
