@@ -195,6 +195,15 @@ function initFun() {
         }
       })
     }
+
+    if (item.css) {
+      const css = ` .${item.name} {
+        ${item.css}
+      }`;
+      loadStyle(css, item.cssId??item.name, true);
+    }
+
+
     if ( item?.$attrs.hasOwnProperty('onMounted')) {
       item?.$attrs.onMounted(formState, Data,  props.type);
     }

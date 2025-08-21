@@ -314,7 +314,24 @@ const crudTableRef = ref();
       updateApi: web_alterationApply_insertOrUpdate,
       requestCallback: handleRequestCallback,
       name: 'bmgl',
-
+      dataSourceList: [{
+      key: 'wj860hqr',
+      name: 'DataSource_wj860hqr',
+      url: 'http://api.example.com/categories',
+      method: 'GET', 
+      params: {test: 1},
+      headers: {},
+      responseFunc: (res) => {
+        return res;
+      }, // 处理响应数据
+      requestFunc: (config) => {
+        console.log(config, 328);
+        return config;
+      }, // 处理请求配置
+      errorFunc: (err) => {
+        return err;
+      } // 错误处理
+    }]
       /// visible: true,
 
     });

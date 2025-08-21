@@ -27,13 +27,7 @@ export default defineConfig({
         globals: {
           vue: 'vue',
         },
-        chunkFileNames: (chunkInfo) => {
-          // 根据组件路径进行分组
-          if (chunkInfo.name.includes('crud')) {
-            return 'crudItem/[name].[hash].js';
-          }
-          return 'js/[name].[hash].js';
-        },
+       
         assetFileNames: (assetInfo) => {
           if (assetInfo.name.endsWith('.css')) {
             return 'style.css';

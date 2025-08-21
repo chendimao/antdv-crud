@@ -10,8 +10,7 @@ export const testDate = (formState, data, type) =>{
     formState.value.endDate = formState.value['date'][1];
 }
 export const testValidate = async ( data) => {
-    const {cardForm, refs} = data;
-    console.log(cardForm.value,refs );
+    const {cardForm, refs} = data; 
     return new Promise((resolve, reject) => {
         if (cardForm.value.formState.describe !== 'test') {
             resolve()

@@ -109,8 +109,11 @@ export const autoCompleteList = [
 const base: inputFormModel[] = [
 
   { text: '数字输入框', name: 'szsrk', type: 'number',
-    span: 12,
-    value: 2,
+    span: 8,
+    value:(formState, formData) => {
+      return (formState.szsrk2 + formState.szsrk3) * 2 - 2;
+    },
+    valueType: 'fn',
     colStyle: {'color': 'red'},
     labelCol: { style: { width: '100px'  } },
     rules: [  
@@ -125,6 +128,22 @@ const base: inputFormModel[] = [
     console.log(item, formState, formData, value);
   }
  }
+},{ text: '数字输入框2', name: 'szsrk2', type: 'number',
+    span: 8,
+    value:  (formState, formData) => {
+      console.log(formState, formData, 134);
+      return formState.szsrk3 * 3;
+    }, 
+    colStyle: {'color': 'red'},
+    labelCol: { style: { width: '100px'  } },
+    
+  
+},{ text: '数字输入框3', name: 'szsrk3', type: 'number',
+    span: 8,
+    value: 3,
+    colStyle: {'color': 'red'},
+    labelCol: { style: { width: '100px'  } },
+    
 },
   {
     text: 'input输入框',
@@ -199,10 +218,11 @@ const base: inputFormModel[] = [
     value: '',
     style: '',
     class: '',
-     option: stateList,
-    computedFun: [
-      {type: 'option', api: getSortName, params: {sortSort: 3}, field: {labels: 'sortname', value: 'sortname'}}
-    ],
+     option: [],
+     dataSource: 'wj860hqr',
+    // computedFun: [
+    //   {type: 'option', api: getSortName, params: {sortSort: 3}, field: {labels: 'sortname', value: 'sortname'}}
+    // ],
     $attrs: {
       onChange: (...data) => {
         console.log(data);

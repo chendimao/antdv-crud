@@ -49,7 +49,7 @@
           <span>{{ row[item.name] === item.openValue ? item.openLabel : row[item.name] === item.closeValue ? item.closeLabel: '' }}</span>
         </span>
         <span v-else-if="item.type == 'h'">
-          <div v-render="() => item.h(row, item, tableMethods, this)"></div>
+          <div v-render="() => renderHFunction(row, item, tableMethods)"></div>
         </span>
         <span v-else-if="item.type == 'slot'">
           <slot :name="item.name" :row="row" :data="{row, rowIndex: $rowIndex, tableData, tableRef}"></slot>
@@ -205,7 +205,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, watchEffect, nextTick } from 'vue';
 import { valueToName } from '../../utils';
 
 interface Props {
@@ -223,6 +223,28 @@ const props = withDefaults(defineProps<Props>(), {
   size: 'mini',
   editType: 'default', 
 });
+
+// 为每个行创建一个响应式的渲染函数
+const renderHFunction = (row: any, item: any, tableMethods: any) => {
+  // 使用 computed 来追踪 row 的变化
+  const rowData = computed(() => row);
+  
+  // 当 row 数据变化时，重新执行 h 函数
+  watchEffect(() => {
+    // 强制更新组件
+    nextTick(() => {
+      if (item.h && typeof item.h === 'function') {
+        item.h(rowData.value, item, tableMethods, null);
+      }
+    });
+  });
+  
+  // 初始执行
+  if (item.h && typeof item.h === 'function') {
+    return item.h(row, item, tableMethods, null);
+  }
+  return null;
+};
 
 // 事件处理函数
 const eventHandlers = (item: any) => {

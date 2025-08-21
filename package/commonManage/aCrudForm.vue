@@ -164,8 +164,10 @@ import {
   defineExpose,
   toRaw, unref,
   watch,
+  watchEffect,
   useSlots
 } from 'vue';
+import axios from 'axios';
   import { Form, message } from 'ant-design-vue';
   import FormInputItem from './FormInputItem/';
   import {deepCopy} from "../utils";
@@ -257,11 +259,13 @@ import inputItem from "./InputItem";
     
     formList.forEach((item) => {
       //  初始化默认数据
-      resetForm.value[item['name']] = item?.value??'';
+ 
+        resetForm.value[item['name']] =  item?.value??'';
+      
     });
     // 初始化数据
     aCardFormRef.value.formState = deepCopy(resetForm.value);
-      formList.forEach((item) => {
+      formList.forEach(async (item) => {
      // 自定义validator的 传入当前表单值以便动态校验
      item.rules ? validateList.value[item['name']] = item.rules.map(ruleItem => {
        if (ruleItem.validator) {
@@ -276,8 +280,96 @@ import inputItem from "./InputItem";
 
        return ruleItem;
      }) : '';
+ 
+      // 注册 watchEffect 动态追踪 fn 类型字段  用于自动计算
+              if (isFunction(item.value)) {
+                watchEffect(async () => {
+                  aCardFormRef.value.formState[item.name] = await item.value(aCardFormRef.value.formState, aCardFormRef.value.formData)??'';
+                })
+              }
+        
+              // 如果option type为fun 则需要动态获取option
+              if (item.dataSource) {
+                // 获取数据源配置
+                const dataSourceList = aCardFormRef.value.dataSourceList || [];
+                const dataSourceConfig = dataSourceList.find(ds => ds.key === item.dataSource);
+                
+                if (dataSourceConfig) {
+                  // 动态获取选项数据
+                  const fetchOptions = async () => {
+                    try {
+                      // 准备请求配置
+                      let config = {
+                        url: dataSourceConfig.url,
+                        method: dataSourceConfig.method || 'GET',
+                        params: dataSourceConfig.params || {},
+                        headers: dataSourceConfig.headers || {},
+                        data: dataSourceConfig.data || {}
+                      };
 
+                      // 执行请求前处理函数
+                      if (dataSourceConfig.requestFunc && typeof dataSourceConfig.requestFunc === 'function') {
+                        try {
+                          config = dataSourceConfig.requestFunc(config, aCardFormRef.value.formState, aCardFormRef.value.formData) || config;
+                        } catch (error) {
+                          console.error('Request function error:', error);
+                        }
+                      }
 
+                      // 发起请求
+                      const response = await axios(config);
+
+                      // 执行响应处理函数
+                      let processedData = response.data;
+                      if (dataSourceConfig.responseFunc && typeof dataSourceConfig.responseFunc === 'function') {
+                        try {
+                          processedData = dataSourceConfig.responseFunc(response, aCardFormRef.value.formState, aCardFormRef.value.formData) || processedData;
+                        } catch (error) {
+                          console.error('Response function error:', error);
+                        }
+                      }
+
+                      // 更新选项数据
+                      if (processedData && Array.isArray(processedData)) {
+                        item.options = processedData;
+                      } else if (processedData && typeof processedData === 'object') {
+                        // 如果返回的是对象，尝试转换为选项格式
+                        item.options = Object.keys(processedData).map(key => ({
+                          label: processedData[key],
+                          value: key
+                        }));
+                      }
+
+                      return item.options;
+
+                    } catch (error) {
+                      console.error('Remote data fetch error:', error);
+                      
+                      // 执行错误处理函数
+                      if (dataSourceConfig.errorFunc && typeof dataSourceConfig.errorFunc === 'function') {
+                        try {
+                          dataSourceConfig.errorFunc(error, aCardFormRef.value.formState, aCardFormRef.value.formData);
+                        } catch (funcError) {
+                          console.error('Error function error:', funcError);
+                        }
+                      }
+                      
+                      return [];
+                    }
+                  };
+
+                  // 如果配置为自动加载，立即执行
+                  if (dataSourceConfig.auto !== false) {
+                    console.log(await fetchOptions(), 364);
+                    item.options = await fetchOptions() || [];
+                  }
+
+                  // 将获取函数绑定到item上，以便后续手动调用
+                  item.fetchRemoteOptions = fetchOptions;
+                }
+              }
+
+              
 
 
    });
@@ -446,6 +538,7 @@ watch(() => props.config, (data) => {
 
 
 
+ 
 
 
 function getFormState() {

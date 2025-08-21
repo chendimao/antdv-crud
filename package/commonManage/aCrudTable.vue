@@ -165,7 +165,7 @@ watch(() => tableData, (data) => {
 
 
 const tableDefaultProps = ref({...{
-    maxHeight: "600px",
+    
     align: "center",
     currentRowBg: '#e6f7ff',
     currentRowColor: 'black',
@@ -566,7 +566,7 @@ async function getData(params?, isMerge = false) {
 
 
 
-  if (tableTransferPropsRef.value.api) {
+  if (tableTransferPropsRef.value.api && !tableTransferPropsRef.value.localData && !tableTransferPropsRef.value.mockData ) {
 
     // 如果有params，则判断isMerge，如果为true，则合并初始参数与当前参数进行查询，如果为false，则直接使用params参数进行查询。如果没有params，则直接使用初始参数进行查询
     tableData.value = await useGetTable(tableTransferPropsRef.value.api,
@@ -577,7 +577,7 @@ async function getData(params?, isMerge = false) {
         , tableTotal, tableLoading, tableTransferPropsRef.value.dataCallback) || [];
     return tableData;
   } else {
-    message.error('请配置API');
+  //  message.error('请配置API');
   }
 }
 
